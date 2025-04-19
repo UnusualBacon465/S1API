@@ -2,10 +2,10 @@
 S1API is an open source collaboration project to help standardize Schedule One modding processes.
 The goal is to provide a standard place for common functionalities so you can focus on making content versus reverse engineering the game.
 
-**This GitHub repository is intended for developers.**
-If you are just looking to mod your game, please refer to the
+> **This GitHub repository is intended for developers.**
+> If you are just looking to mod your game, please refer to the releases / mod repositories such as Thunderstore and Nexus Mods.
 
-## What does it do?
+## What Does it Do?
 * Allows creation of new game elements (quests, npcs, etc.)
 * Provides an easy-to-use abstraction for save/load of class data
 * Eases access to various common game functions without needing to import the assembly themselves, removing the Mono / Il2Cpp dependency for your mod.
@@ -14,12 +14,12 @@ If you are just looking to mod your game, please refer to the
 * Support mod developers by allowing them to compile a single assembly that works across both builds
 * Who knows what else? We will have to see who all is willing to collaborate on this ❤️
 
-## What's the limitations?
+## What Are the Limitations?
 * S1API will NOT be the be-all and end-all. It's just not possible.
 * Handle Il2Cpp / Mono communication when utilizing game assemblies as dependencies
 * Cover all modding needs. It will never be as flexible as writing your own mod referencing game assemblies.
 
-## How it's designed to work
+## How It's Designed to Work
 S1API is designed to compile for Mono and Il2Cpp separately.
 Mod users install the version applicable to they're preferred build.
 
@@ -30,7 +30,7 @@ I can't think of why you would. I wanted to make sure that is clarified though.
 S1API is designed to be a tag-along as well.
 If you want to do custom content specific to Mono or Il2Cpp, S1API can still assist with some of the common repetitive tasks.
 
-## Want to contribute?
+## Want to Contribute?
 This is a massive project with so many different areas to specialize in.
 If you're interested in contributing, please do!
 Look over the [CONTRIBUTING.md](CONTRIBUTING.md) for guidance on code standards and the process.
