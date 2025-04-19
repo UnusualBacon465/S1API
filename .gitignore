@@ -1,0 +1,7 @@
+.idea/
+*.dll
+*.zip
+obj/
+bin/
+*.user
+*Assemblies/
