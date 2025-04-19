@@ -160,8 +160,6 @@ namespace S1API.PhoneApp
                 if (container.transform.childCount < 2)
                 {
                     ClearContainer(container);
-                    // TODO: (@omar-akermi) Looks like a method got relabeled. Need to resolve :(
-                    // BuildUI(container);
                 }
             }
 
