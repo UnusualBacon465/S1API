@@ -6,7 +6,6 @@ using S1ItemFramework = ScheduleOne.ItemFramework;
 using S1Product = ScheduleOne.Product;
 #endif
 
-using MelonLoader;
 using S1API.Internal.Utils;
 using S1API.Money;
 using S1API.Products;

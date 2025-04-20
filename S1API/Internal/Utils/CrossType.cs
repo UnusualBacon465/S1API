@@ -1,12 +1,9 @@
 ﻿#if (MONO)
 using System;
-using UnityEngine;
 # elif (IL2CPP)
-
 using Il2CppSystem;
 using Il2CppInterop.Runtime;
 using Il2CppInterop.Runtime.InteropTypes;
-using MelonLoader;
 #endif
 
 namespace S1API.Internal.Utils

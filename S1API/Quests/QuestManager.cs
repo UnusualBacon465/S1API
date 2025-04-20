@@ -1,5 +1,4 @@
 ﻿using System;
-using UnityEngine;
 
 namespace S1API.Quests
 {
@@ -30,9 +29,7 @@ namespace S1API.Quests
         /// <returns></returns>
         public static Quest CreateQuest(Type questType, string? guid = null)
         {
-            GameObject gameObject = new GameObject(questType.Name);
             Quest quest = (Quest)Activator.CreateInstance(questType);
-            quest.InitializeInternal(gameObject, guid ?? Guid.NewGuid().ToString());
             Quests.Add(quest);
             return quest;
         }

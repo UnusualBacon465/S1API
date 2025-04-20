@@ -1,14 +1,19 @@
-﻿using S1API.Saveables;
-
-namespace S1API.Quests
+﻿namespace S1API.Quests
 {
     /// <summary>
-    /// INTERNAL: Default data saved for quests to keep the derived class known.
+    /// INTERNAL: Generic data applied for all custom quests.
     /// </summary>
-    class QuestData : SaveData
+    public class QuestData
     {
-        public readonly string QuestType;
-
-        public QuestData() => QuestType = GetType().Name;
+        /// <summary>
+        /// TODO
+        /// </summary>
+        public readonly string ClassName;
+        
+        /// <summary>
+        /// TODO
+        /// </summary>
+        public QuestData(string className) => 
+            ClassName = className;
     }
 }

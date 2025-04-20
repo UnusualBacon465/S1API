@@ -4,7 +4,6 @@ using S1ItemFramework = Il2CppScheduleOne.ItemFramework;
 using S1ItemFramework = ScheduleOne.ItemFramework;
 #endif
 
-using MelonLoader;
 using S1API.Internal.Abstraction;
 
 namespace S1API.Items
@@ -14,7 +13,7 @@ namespace S1API.Items
     /// NOTE: A definition is "what" the item is. For example, "This is a `Soda`".
     /// Any instanced items in the game will be a <see cref="ItemInstance"/> instead.
     /// </summary>
-    public class ItemDefinition : ISaveable
+    public class ItemDefinition : IGUIDReference
     {
         /// <summary>
         /// INTERNAL: A reference to the item definition in the game.
@@ -27,6 +26,14 @@ namespace S1API.Items
         /// <param name="s1ItemDefinition"></param>
         internal ItemDefinition(S1ItemFramework.ItemDefinition s1ItemDefinition) => 
             S1ItemDefinition = s1ItemDefinition;
+
+        /// <summary>
+        /// INTERNAL: Gets an item definition from a GUID.
+        /// </summary>
+        /// <param name="guid">The GUID to look for</param>
+        /// <returns>The applicable item definition, if found.</returns>
+        internal static ItemDefinition GetFromGUID(string guid) =>
+            ItemManager.GetItemDefinition(guid);
         
         /// <summary>
         /// Performs an equals check on the game item definition instance.
@@ -51,7 +58,6 @@ namespace S1API.Items
         /// <returns>Whether the item definitions are the same or not.</returns>
         public static bool operator ==(ItemDefinition? left, ItemDefinition? right)
         {
-            MelonLogger.Msg($"Doing a == comparison");
             if (ReferenceEquals(left, right)) return true;
             return left?.S1ItemDefinition == right?.S1ItemDefinition;
         }
@@ -70,7 +76,7 @@ namespace S1API.Items
         /// </summary>
         public virtual string GUID => 
             S1ItemDefinition.ID;
-        
+
         /// <summary>
         /// The unique identifier assigned to this item definition.
         /// </summary>

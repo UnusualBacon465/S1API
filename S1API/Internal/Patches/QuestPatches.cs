@@ -15,8 +15,10 @@ using System.IO;
 using System.Linq;
 using HarmonyLib;
 using Newtonsoft.Json;
+using S1API.Internal.Abstraction;
 using S1API.Internal.Utils;
 using S1API.Quests;
+using UnityEngine;
 
 namespace S1API.Internal.Patches
 {
@@ -36,18 +38,10 @@ namespace S1API.Internal.Patches
         [HarmonyPostfix]
         private static void QuestManagerWriteData(S1Quests.QuestManager __instance, string parentFolderPath, ref List<string> __result)
         {
-            System.Collections.Generic.List<string> list = __result.ToArray().ToList();
-            
             string questsPath = Path.Combine(parentFolderPath, "Quests");
             
             foreach (Quest quest in QuestManager.Quests)
-            {
-                string questDataPath = Path.Combine(questsPath, quest.S1Quest.SaveFolderName);
-                if (!Directory.Exists(questDataPath))
-                    Directory.CreateDirectory(questDataPath);
-                
-                quest.SaveInternal(questDataPath, ref list);
-            }
+                quest.SaveInternal(questsPath, ref __result);
         }
         
         /// <summary>
@@ -56,7 +50,7 @@ namespace S1API.Internal.Patches
         /// <param name="__instance">Instance of the quest loader.</param>
         /// <param name="mainPath">Path to the base Quest folder.</param>
         [HarmonyPatch(typeof(S1Loaders.QuestsLoader), "Load")]
-        [HarmonyPrefix]
+        [HarmonyPostfix]
         private static void QuestsLoaderLoad(S1Loaders.QuestsLoader __instance, string mainPath)
         {
             string[] questDirectories = Directory.GetDirectories(mainPath)
@@ -71,18 +65,18 @@ namespace S1API.Internal.Patches
                 if (questDataText == null)
                     continue;
 
-                S1Datas.QuestData? baseQuestData = JsonConvert.DeserializeObject<S1Datas.QuestData>(questDataText);
+                S1Datas.QuestData baseQuestData = JsonUtility.FromJson<S1Datas.QuestData>(questDataText);
 
                 string questDirectoryPath = Path.Combine(mainPath, questDirectory);
                 string questDataPath = Path.Combine(questDirectoryPath, "QuestData");
                 if (!__instance.TryLoadFile(questDataPath, out string questText))
                     continue;
 
-                QuestData? questData = JsonConvert.DeserializeObject<QuestData>(questText);
-                if (questData?.QuestType == null)
+                QuestData? questData = JsonConvert.DeserializeObject<QuestData>(questText, ISaveable.SerializerSettings);
+                if (questData?.ClassName == null)
                     continue;
 
-                Type? questType = ReflectionUtils.GetTypeByName(questData.QuestType);
+                Type? questType = ReflectionUtils.GetTypeByName(questData.ClassName);
                 if (questType == null || !typeof(Quest).IsAssignableFrom(questType))
                     continue;
 
@@ -114,7 +108,7 @@ namespace S1API.Internal.Patches
         [HarmonyPatch(typeof(S1Quests.Quest), "Start")]
         [HarmonyPrefix]
         private static void QuestStart(S1Quests.Quest __instance) => 
-            QuestManager.Quests.FirstOrDefault(quest => quest.S1Quest == __instance)?.StartInternal();
+            QuestManager.Quests.FirstOrDefault(quest => quest.S1Quest == __instance)?.CreateInternal();
 
         /////// TODO: Quests doesn't have OnDestroy. Find another way to clean up
         // [HarmonyPatch(typeof(S1Quests.Quest), "OnDestroy")]

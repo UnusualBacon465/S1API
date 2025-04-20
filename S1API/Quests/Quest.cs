@@ -4,19 +4,21 @@ using S1Dev = Il2CppScheduleOne.DevUtilities;
 using S1Map = Il2CppScheduleOne.Map;
 using S1Data = Il2CppScheduleOne.Persistence.Datas;
 using S1Contacts = Il2CppScheduleOne.UI.Phone.ContactsApp;
-using Il2CppInterop.Runtime;
+using Il2CppSystem.Collections.Generic;
 #elif (MONO)
 using S1Quests = ScheduleOne.Quests;
 using S1Dev = ScheduleOne.DevUtilities;
 using S1Map = ScheduleOne.Map;
 using S1Data = ScheduleOne.Persistence.Datas;
 using S1Contacts = ScheduleOne.UI.Phone.ContactsApp;
+using System.Reflection;
+using System.Collections.Generic;
 #endif
 
 using System;
-using System.Reflection;
+using System.IO;
 using HarmonyLib;
-using MelonLoader;
+using S1API.Internal.Abstraction;
 using S1API.Internal.Utils;
 using S1API.Saveables;
 using UnityEngine;
@@ -53,21 +55,24 @@ namespace S1API.Quests
         /// </summary>
         protected readonly QuestEntry[] QuestEntries = Array.Empty<QuestEntry>();
         
-        [SaveableField("SOEQuest")] 
-        private QuestData _questData = new QuestData();
+        [SaveableField("QuestData")] 
+        private readonly QuestData _questData;
         
-        internal string? SaveFolder => _s1Quest?.SaveFolderName;
+        internal string? SaveFolder => S1Quest.SaveFolderName;
         
-        internal S1Quests.Quest S1Quest => _s1Quest ?? throw new InvalidOperationException("S1Quest not initialized");
-        private S1Quests.Quest? _s1Quest;
-        private GameObject? _gameObject;
+        internal readonly S1Quests.Quest S1Quest;
+        private readonly GameObject _gameObject;
         
-        internal override void InitializeInternal(GameObject gameObject, string guid = "")
+        /// <summary>
+        /// INTERNAL: Public constructor used for instancing the quest.
+        /// </summary>
+        public Quest()
         {
-            MelonLogger.Msg("Adding Quest Component...");
-            _gameObject = gameObject;
-            _s1Quest = gameObject.AddComponent<S1Quests.Quest>();
-            S1Quest.StaticGUID = guid;
+            _questData = new QuestData(GetType().Name);
+            
+            _gameObject = new GameObject("Quest");
+            S1Quest = _gameObject.AddComponent<S1Quests.Quest>();
+            S1Quest.StaticGUID = string.Empty;
             S1Quest.onActiveState = new UnityEvent();
             S1Quest.onComplete = new UnityEvent();
             S1Quest.onInitialComplete = new UnityEvent();
@@ -76,8 +81,6 @@ namespace S1API.Quests
             S1Quest.onTrackChange = new UnityEvent<bool>();
             S1Quest.TrackOnBegin = true;
             S1Quest.AutoCompleteOnAllEntriesComplete = true;
-            // S1Quest.autoInitialize = false;
-            MelonLogger.Msg("Assigning auto init...");
 #if (MONO)
             FieldInfo autoInitField = AccessTools.Field(typeof(S1Quests.Quest), "autoInitialize");
             autoInitField.SetValue(S1Quest, false);
@@ -85,19 +88,17 @@ namespace S1API.Quests
             S1Quest.autoInitialize = false;
 #endif
             
-            MelonLogger.Msg("Creating IconPrefab...");
             // Setup quest icon prefab
             GameObject iconPrefabObject = new GameObject("IconPrefab", 
                 CrossType.Of<RectTransform>(), 
                 CrossType.Of<CanvasRenderer>(), 
                 CrossType.Of<Image>()
             );
-            iconPrefabObject.transform.SetParent(gameObject.transform);
+            iconPrefabObject.transform.SetParent(_gameObject.transform);
             Image iconImage = iconPrefabObject.GetComponent<Image>();
             iconImage.sprite = S1Dev.PlayerSingleton<S1Contacts.ContactsApp>.Instance.AppIcon;
             S1Quest.IconPrefab = iconPrefabObject.GetComponent<RectTransform>();
             
-            MelonLogger.Msg("Creating PoIUIPrefab...");
             // Setup UI for POI prefab
             var uiPrefabObject = new GameObject("PoIUIPrefab",
                 CrossType.Of<RectTransform>(), 
@@ -105,9 +106,8 @@ namespace S1API.Quests
                 CrossType.Of<EventTrigger>(),
                 CrossType.Of<Button>()
             );
-            uiPrefabObject.transform.SetParent(gameObject.transform);
+            uiPrefabObject.transform.SetParent(_gameObject.transform);
 
-            MelonLogger.Msg("Creating MainLabel...");
             var labelObject = new GameObject("MainLabel",
                 CrossType.Of<RectTransform>(), 
                 CrossType.Of<CanvasRenderer>(), 
@@ -115,7 +115,6 @@ namespace S1API.Quests
             );
             labelObject.transform.SetParent(uiPrefabObject.transform);
 
-            MelonLogger.Msg("Creating IconContainer...");
             var iconContainerObject = new GameObject("IconContainer",
                 CrossType.Of<RectTransform>(), 
                 CrossType.Of<CanvasRenderer>(), 
@@ -128,10 +127,9 @@ namespace S1API.Quests
             iconRectTransform.sizeDelta = new Vector2(20, 20);
             
             // Setup POI prefab
-            MelonLogger.Msg("Creating POIPrefab...");
             GameObject poiPrefabObject = new GameObject("POIPrefab");
             poiPrefabObject.SetActive(false);
-            poiPrefabObject.transform.SetParent(gameObject.transform);
+            poiPrefabObject.transform.SetParent(_gameObject.transform);
             S1Map.POI poi = poiPrefabObject.AddComponent<S1Map.POI>();
             poi.DefaultMainText = "Did it work?";
 #if (MONO)
@@ -141,22 +139,31 @@ namespace S1API.Quests
             poi.UIPrefab = uiPrefabObject;
 #endif
             S1Quest.PoIPrefab = poiPrefabObject;
-            
-            MelonLogger.Msg("Quest created.");
-            
-            // Initialize the quest
-            S1Quest.InitializeQuest(Title, Description, Array.Empty<S1Data.QuestEntryData>(), _s1Quest?.StaticGUID);
-            MelonLogger.Msg("Quest initialized.");
-            
-            base.InitializeInternal(gameObject, guid);
         }
 
-        internal override void StartInternal()
+        /// <summary>
+        /// INTERNAL: Delayed initialization of the quest.
+        /// This allows the base game to get things setup beforehand.
+        /// </summary>
+        internal override void CreateInternal()
         {
-            base.StartInternal();
+            
+            base.CreateInternal();
+            
+            // Initialize the quest
+            S1Quest.InitializeQuest(Title, Description, Array.Empty<S1Data.QuestEntryData>(), S1Quest?.StaticGUID);
             
             if (AutoBegin)
-                _s1Quest?.Begin();
+                S1Quest?.Begin();
+        }
+
+        internal override void SaveInternal(string folderPath, ref List<string> extraSaveables)
+        {
+            string questDataPath = Path.Combine(folderPath, S1Quest.SaveFolderName);
+            if (!Directory.Exists(questDataPath))
+                Directory.CreateDirectory(questDataPath);
+            
+            base.SaveInternal(questDataPath, ref extraSaveables);
         }
 
         /// <summary>
@@ -187,32 +194,32 @@ namespace S1API.Quests
         /// <summary>
         /// Starts the quest for the save file.
         /// </summary>
-        public void Begin() => _s1Quest?.Begin();
+        public void Begin() => S1Quest?.Begin();
         
         /// <summary>
         /// Cancels the quest for the save file.
         /// </summary>
-        public void Cancel() => _s1Quest?.Cancel();
+        public void Cancel() => S1Quest?.Cancel();
         
         /// <summary>
         /// Expires the quest for the save file.
         /// </summary>
-        public void Expire() => _s1Quest?.Expire();
+        public void Expire() => S1Quest?.Expire();
         
         /// <summary>
         /// Fails the quest for the save file.
         /// </summary>
-        public void Fail() => _s1Quest?.Fail();
+        public void Fail() => S1Quest?.Fail();
         
         /// <summary>
         /// Completes the quest for the save file.
         /// </summary>
-        public void Complete() => _s1Quest?.Complete();
+        public void Complete() => S1Quest?.Complete();
         
         /// <summary>
         /// Ends the quest for the save file.
         /// NOTE: This is done upon completion of the entries by default.
         /// </summary>
-        public void End() => _s1Quest?.End();
+        public void End() => S1Quest?.End();
     }
 }

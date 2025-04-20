@@ -4,6 +4,7 @@ using S1Economy = Il2CppScheduleOne.Economy;
 using S1Economy = ScheduleOne.Economy;
 #endif
 
+using System.Linq;
 using S1API.Internal.Abstraction;
 using S1API.Storages;
 using UnityEngine;
@@ -13,7 +14,7 @@ namespace S1API.DeadDrops
     /// <summary>
     /// Represents a dead drop in the scene.
     /// </summary>
-    public class DeadDropInstance : ISaveable
+    public class DeadDropInstance : IGUIDReference
     {
         /// <summary>
         /// INTERNAL: Stores a reference to the game dead drop instance.
@@ -33,15 +34,23 @@ namespace S1API.DeadDrops
             S1DeadDrop = deadDrop;
         
         /// <summary>
+        /// INTERNAL: Gets a dead drop from a GUID value.
+        /// </summary>
+        /// <param name="guid"></param>
+        /// <returns></returns>
+        internal static DeadDropInstance? GetFromGUID(string guid) =>
+            DeadDropManager.All.FirstOrDefault(deadDrop => deadDrop.GUID == guid);
+        
+        /// <summary>
         /// The unique identifier assigned for this dead drop.
         /// </summary>
         public string GUID => 
             S1DeadDrop.GUID.ToString();
-        
+
         /// <summary>
         /// The storage container associated with this dead drop.
         /// </summary>
-        public StorageInstance StorageInstance => 
+        public StorageInstance Storage => 
             _cachedStorage ??= new StorageInstance(S1DeadDrop.Storage);
         
         /// <summary>
