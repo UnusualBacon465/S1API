@@ -12,8 +12,6 @@ using S1Variables = Il2CppScheduleOne.Variables;
 using S1Vehicles = Il2CppScheduleOne.Vehicles;
 using S1Vision = Il2CppScheduleOne.Vision;
 using S1NPCs = Il2CppScheduleOne.NPCs;
-using S1Persistence = Il2CppScheduleOne.Persistence;
-using S1Datas = Il2CppScheduleOne.Persistence.Datas;
 using Il2CppSystem.Collections.Generic;
 #elif (MONO)
 using S1DevUtilities = ScheduleOne.DevUtilities;
@@ -35,8 +33,8 @@ using HarmonyLib;
 #endif
 
 using System;
-using MelonLoader;
-using S1API.Saveables;
+using System.IO;
+using S1API.Internal.Abstraction;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -48,47 +46,38 @@ namespace S1API.NPCs
     public abstract class NPC : Saveable
     {
         /// <summary>
-        /// The first name to assign to the NPC.
-        /// </summary>
-        protected abstract string FirstName { get; }
-        
-        /// <summary>
-        /// The last name to assign to the NPC.
-        /// </summary>
-        protected abstract string LastName { get; }
-        
-        /// <summary>
-        /// The unique identifier to give the NPC.
-        /// </summary>
-        protected abstract string ID { get; }
-        
-        /// <summary>
         /// A list of text responses you've added to your NPC.
         /// </summary>
         protected readonly System.Collections.Generic.List<Response> Responses = 
             new System.Collections.Generic.List<Response>();
         
-        internal S1NPCs.NPC S1NPC => _s1NPC ?? throw new InvalidOperationException("S1NPC not initialized");
-        private S1NPCs.NPC? _s1NPC;
+        internal readonly S1NPCs.NPC S1NPC;
 
-        private GameObject? _gameObject;
+        private readonly GameObject _gameObject;
         
-        internal override void InitializeInternal(GameObject gameObject, string guid = "")
+        /// <summary>
+        /// Base constructor for a new NPC.
+        /// Intended to be wrapped in your derived class constructor such as:
+        /// public class MyNPC : NPC ...
+        /// public MyNPC() : base(id, fname, lname) { ... }
+        /// </summary>
+        /// <param name="guid">The unique identifier for this NPC</param>
+        /// <param name="firstName"></param>
+        /// <param name="lastName"></param>
+        public NPC(string guid, string firstName, string lastName)
         {
-            MelonLogger.Msg("Our NPC is awake!");
-            _gameObject = gameObject;
+            _gameObject = new GameObject("NPC");
             
             // Deactivate game object til we're done
             _gameObject.SetActive(false);
             
             // Setup the base NPC class
-            _s1NPC = _gameObject.AddComponent<S1NPCs.NPC>();
-            S1NPC.FirstName = FirstName;
-            S1NPC.LastName = LastName;
-            S1NPC.ID = ID;
+            S1NPC = _gameObject.AddComponent<S1NPCs.NPC>();
+            S1NPC.FirstName = firstName;
+            S1NPC.LastName = lastName;
+            S1NPC.ID = guid;
             S1NPC.BakedGUID = Guid.NewGuid().ToString();
             S1NPC.MugshotSprite = S1DevUtilities.PlayerSingleton<S1ContactApps.ContactsApp>.Instance.AppIcon;
-            MelonLogger.Msg("Added S1NPC");
 
             // ReSharper disable once UseObjectOrCollectionInitializer
             S1NPC.ConversationCategories = new List<S1Messaging.EConversationCategory>();
@@ -101,14 +90,13 @@ namespace S1API.NPCs
             MethodInfo createConvoMethod = AccessTools.Method(typeof(S1NPCs.NPC), "CreateMessageConversation");
             createConvoMethod.Invoke(S1NPC, null);
 #endif 
-            MelonLogger.Msg("Setup Convo");
             
             // Add UnityEvents for NPCHealth
             S1NPC.Health = _gameObject.GetComponent<S1NPCs.NPCHealth>();
             S1NPC.Health.onDie = new UnityEvent();
             S1NPC.Health.onKnockedOut = new UnityEvent();
             S1NPC.Health.Invincible = true;
-            MelonLogger.Msg("Added Health");
+            S1NPC.Health.MaxHealth = 100f;
             
             // Awareness behaviour
             GameObject awarenessObject = new GameObject("NPCAwareness");
@@ -124,14 +112,12 @@ namespace S1API.NPCs
             S1NPC.awareness.onNoticedPlayerViolatingCurfew = new UnityEvent<S1PlayerScripts.Player>();
             S1NPC.awareness.onNoticedSuspiciousPlayer = new UnityEvent<S1PlayerScripts.Player>();
             S1NPC.awareness.Listener = _gameObject.AddComponent<S1Noise.Listener>();
-            MelonLogger.Msg("Added Awareness");
             
             // Response to actions like gunshots, drug deals, etc.
             GameObject responsesObject = new GameObject("NPCResponses");
             responsesObject.SetActive(false);
             responsesObject.transform.SetParent(_gameObject.transform);
             S1NPC.awareness.Responses = responsesObject.AddComponent<S1Responses.NPCResponses_Civilian>();
-            MelonLogger.Msg("Added behaviour responses");
             
             // Vision cone object and behaviour
             GameObject visionObject = new GameObject("VisionCone");
@@ -142,7 +128,6 @@ namespace S1API.NPCs
             
             // Suspicious ? icon in world space
             S1NPC.awareness.VisionCone.QuestionMarkPopup = _gameObject.AddComponent<S1WorkspacePopup.WorldspacePopup>();
-            MelonLogger.Msg("Added vision cone");
             
             // Interaction behaviour
 #if (IL2CPP)
@@ -151,7 +136,6 @@ namespace S1API.NPCs
             FieldInfo intObjField = AccessTools.Field(typeof(S1NPCs.NPC), "intObj");
             intObjField.SetValue(S1NPC, _gameObject.AddComponent<S1Interaction.InteractableObject>());
 #endif
-            MelonLogger.Msg("Added Interaction");
             
             // Relationship data
             S1NPC.RelationData = new S1Relation.NPCRelationData();
@@ -165,11 +149,9 @@ namespace S1API.NPCs
             }
 
             S1NPC.RelationData.onUnlocked += (Action<S1Relation.NPCRelationData.EUnlockType, bool>)OnUnlockAction;
-            MelonLogger.Msg("Added relation data");
 
             // Inventory behaviour
             S1NPCs.NPCInventory inventory = _gameObject.AddComponent<S1NPCs.NPCInventory>();
-            MelonLogger.Msg("Added inventory");
             
             // Pickpocket behaviour
             inventory.PickpocketIntObj = _gameObject.AddComponent<S1Interaction.InteractableObject>();
@@ -179,29 +161,24 @@ namespace S1API.NPCs
             
             // Register NPC in registry
             S1NPCs.NPCManager.NPCRegistry.Add(S1NPC);
-            MelonLogger.Msg("registered");
             
             
-            // MelonLogger.Msg("Spawning network object...");
             // NetworkObject networkObject = gameObject.AddComponent<NetworkObject>();
             // // networkObject.NetworkBehaviours = InstanceFinder.NetworkManager;
             // PropertyInfo networkBehavioursProperty = AccessTools.Property(typeof(NetworkObject), "NetworkBehaviours");
             // networkBehavioursProperty.SetValue(networkObject, new [] { this });
-            // MelonLogger.Msg("Custom NPC is awake!");
             
             // Enable our custom gameObjects so they can initialize
-            MelonLogger.Msg("setting active...");
             _gameObject.SetActive(true);
             visionObject.SetActive(true);
             responsesObject.SetActive(true);
             awarenessObject.SetActive(true);
-            
-            MelonLogger.Msg("NPC added successfully.");
-            
-            base.InitializeInternal(gameObject, guid);
         }
 
-        internal override void StartInternal()
+        /// <summary>
+        /// INTERNAL: Initializes the responses that have been added / loaded
+        /// </summary>
+        internal override void CreateInternal()
         {
             // Assign responses to our tracked responses
             foreach (S1Messaging.Response s1Response in S1NPC.MSGConversation.currentResponses)
@@ -210,8 +187,14 @@ namespace S1API.NPCs
                 Responses.Add(response);
                 OnResponseLoaded(response);
             }
+            
+            base.CreateInternal();
+        }
 
-            base.StartInternal();
+        internal override void SaveInternal(string folderPath, ref List<string> extraSaveables)
+        {
+            string npcPath = Path.Combine(folderPath, S1NPC.SaveFolderName);
+            base.SaveInternal(npcPath, ref extraSaveables);
         }
         
         /// <summary>
@@ -221,7 +204,7 @@ namespace S1API.NPCs
         /// <param name="message">The message you want the player to see. Unity rich text is allowed.</param>
         /// <param name="responses">Instances of <see cref="Response"/> to display.</param>
         /// <param name="responseDelay">The delay between when the message is sent and when the player can reply.</param>
-        /// <param name="network">Whether or not this should propagate to all players.</param>
+        /// <param name="network">Whether this should propagate to all players or not.</param>
         public void SendTextMessage(string message, Response[]? responses = null, float responseDelay = 1f, bool network = true)
         {
             S1NPC.SendTextMessage(message);
@@ -238,7 +221,6 @@ namespace S1API.NPCs
             {
                 Responses.Add(response);
                 responsesList.Add(response.S1Response);
-                MelonLogger.Msg(response.Label);
             }
             
             S1NPC.MSGConversation.ShowResponses(

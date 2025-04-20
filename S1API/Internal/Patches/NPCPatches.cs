@@ -14,7 +14,6 @@ using System.Linq;
 using HarmonyLib;
 using S1API.Internal.Utils;
 using S1API.NPCs;
-using UnityEngine;
 
 namespace S1API.Internal.Patches
 {
@@ -29,7 +28,7 @@ namespace S1API.Internal.Patches
         /// <summary>
         /// List of all custom NPCs currently created.
         /// </summary>
-        private static System.Collections.Generic.List<NPC> _npcs = new System.Collections.Generic.List<NPC>();
+        private static readonly System.Collections.Generic.List<NPC> NPCs = new System.Collections.Generic.List<NPC>();
         
         /// <summary>
         /// Patching performed for when game NPCs are loaded.
@@ -42,10 +41,8 @@ namespace S1API.Internal.Patches
         {
             foreach (Type type in ReflectionUtils.GetDerivedClasses<NPC>())
             {
-                GameObject gameObject = new GameObject(type.Name);
                 NPC customNPC = (NPC)Activator.CreateInstance(type);
-                customNPC.InitializeInternal(gameObject);
-                _npcs.Add(customNPC);
+                NPCs.Add(customNPC);
                 string npcPath = Path.Combine(mainPath, customNPC.S1NPC.SaveFolderName);
                 customNPC.LoadInternal(npcPath);
             }
@@ -58,21 +55,18 @@ namespace S1API.Internal.Patches
         [HarmonyPatch(typeof(S1NPCs.NPC), "Start")]
         [HarmonyPostfix]
         private static void NPCStart(S1NPCs.NPC __instance) => 
-            _npcs.FirstOrDefault(npc => npc.S1NPC == __instance)?.StartInternal();
+            NPCs.FirstOrDefault(npc => npc.S1NPC == __instance)?.CreateInternal();
 
         /// <summary>
         /// Patching performed for when an NPC calls to save data.
         /// </summary>
         /// <param name="__instance">Instance of the NPC</param>
-        /// <param name="parentFolderPath">Path to this NPCs folder.</param>
+        /// <param name="parentFolderPath">Path to the base NPC folder.</param>
         /// <param name="__result"></param>
         [HarmonyPatch(typeof(S1NPCs.NPC), "WriteData")]
         [HarmonyPostfix]
-        private static void NPCWriteData(S1NPCs.NPC __instance, string parentFolderPath, ref List<string> __result)
-        {
-            System.Collections.Generic.List<string> list = __result.ToArray().ToList();
-            _npcs.FirstOrDefault(npc => npc.S1NPC == __instance)?.SaveInternal(parentFolderPath, ref list);
-        }
+        private static void NPCWriteData(S1NPCs.NPC __instance, string parentFolderPath, ref List<string> __result) =>
+            NPCs.FirstOrDefault(npc => npc.S1NPC == __instance)?.SaveInternal(parentFolderPath, ref __result);
         
         /// <summary>
         /// Patching performed for when an NPC is destroyed.
@@ -82,12 +76,12 @@ namespace S1API.Internal.Patches
         [HarmonyPostfix]
         private static void NPCOnDestroy(S1NPCs.NPC __instance)
         {
-            _npcs.RemoveAll(npc => npc.S1NPC == __instance);
-            NPC? npc = _npcs.FirstOrDefault(npc => npc.S1NPC == __instance);
+            NPCs.RemoveAll(npc => npc.S1NPC == __instance);
+            NPC? npc = NPCs.FirstOrDefault(npc => npc.S1NPC == __instance);
             if (npc == null)
                 return;
             
-            _npcs.Remove(npc);
+            NPCs.Remove(npc);
         }
     }
 }

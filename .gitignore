@@ -4,4 +4,6 @@
 obj/
 bin/
 *.user
-*Assemblies/
+
+# Local assembly references
+ScheduleOneAssemblies/

@@ -1,23 +1,33 @@
-﻿using System;
+﻿#if (MONO)
 using System.Collections.Generic;
+#elif (IL2CPP)
+using Il2CppSystem.Collections.Generic;
+#endif
+
+using System;
 using System.IO;
 using System.Reflection;
-using MelonLoader;
 using Newtonsoft.Json;
-using UnityEngine;
+using S1API.Internal.Utils;
+using S1API.Saveables;
 
-namespace S1API.Saveables
+namespace S1API.Internal.Abstraction
 {
     /// <summary>
-    /// Generic wrapper for saveable classes.
+    /// INTERNAL: Generic wrapper for saveable classes.
     /// Intended for use within the API only.
     /// </summary>
-    public abstract class Saveable
+    public abstract class Saveable : Registerable, ISaveable
     {
-        internal virtual void InitializeInternal(GameObject gameObject, string guid = "") { }
+        /// <summary>
+        /// TODO
+        /// </summary>
+        void ISaveable.LoadInternal(string folderPath) => 
+            LoadInternal(folderPath);
         
-        internal virtual void StartInternal() => OnStarted();
-        
+        /// <summary>
+        /// TODO
+        /// </summary>
         internal virtual void LoadInternal(string folderPath)
         {
             FieldInfo[] saveableFields = GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
@@ -27,7 +37,6 @@ namespace S1API.Saveables
              if (saveableFieldAttribute == null)
                  continue;
 
-             MelonLogger.Msg($"Loading field {saveableField.Name}");
              string filename = saveableFieldAttribute.SaveName.EndsWith(".json")
                  ? saveableFieldAttribute.SaveName
                  : $"{saveableFieldAttribute.SaveName}.json";
@@ -36,19 +45,27 @@ namespace S1API.Saveables
              if (!File.Exists(saveDataPath))
                  continue;
 
-             MelonLogger.Msg($"reading json for field {saveableField.Name}");
              string json = File.ReadAllText(saveDataPath);
              Type type = saveableField.FieldType;
-             object? value = JsonConvert.DeserializeObject(json, type);
+             object? value = JsonConvert.DeserializeObject(json, type, ISaveable.SerializerSettings);
              saveableField.SetValue(this, value);
             }
 
             OnLoaded();
         }
-
-        internal virtual void SaveInternal(string path, ref List<string> extraSaveables)
+        
+        /// <summary>
+        /// TODO
+        /// </summary>
+        void ISaveable.SaveInternal(string folderPath, ref List<string> extraSaveables) => 
+            SaveInternal(folderPath, ref extraSaveables);
+        
+        /// <summary>
+        /// TODO
+        /// </summary>
+        internal virtual void SaveInternal(string folderPath, ref List<string> extraSaveables)
         {
-             FieldInfo[] saveableFields = GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+             FieldInfo[] saveableFields = ReflectionUtils.GetAllFields(GetType(), BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
              foreach (FieldInfo saveableField in saveableFields)
              {
                  SaveableField saveableFieldAttribute = saveableField.GetCustomAttribute<SaveableField>();
@@ -59,7 +76,7 @@ namespace S1API.Saveables
                      ? saveableFieldAttribute.SaveName
                      : $"{saveableFieldAttribute.SaveName}.json";
                  
-                 string saveDataPath = Path.Combine(path, saveFileName);
+                 string saveDataPath = Path.Combine(folderPath, saveFileName);
 
                  object value = saveableField.GetValue(this);
                  if (value == null)
@@ -72,7 +89,7 @@ namespace S1API.Saveables
                      extraSaveables.Add(saveFileName);
                      
                      // Write our data
-                     string data = JsonConvert.SerializeObject(value, Formatting.Indented);
+                     string data = JsonConvert.SerializeObject(value, Formatting.Indented, ISaveable.SerializerSettings);
                      File.WriteAllText(saveDataPath, data);
                  }
              }
@@ -80,8 +97,26 @@ namespace S1API.Saveables
              OnSaved();
         }
         
-        protected virtual void OnStarted() { }
+        /// <summary>
+        /// TODO
+        /// </summary>
+        void ISaveable.OnLoaded() => 
+            OnLoaded();
+
+        /// <summary>
+        /// TODO
+        /// </summary>
         protected virtual void OnLoaded() { }
+        
+        /// <summary>
+        /// TODO
+        /// </summary>
+        void ISaveable.OnSaved() => 
+            OnSaved();
+        
+        /// <summary>
+        /// TODO
+        /// </summary>
         protected virtual void OnSaved() { }
     }
 }

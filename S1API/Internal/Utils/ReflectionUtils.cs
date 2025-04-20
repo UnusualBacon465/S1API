@@ -3,13 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-#if (IL2CPP)
-// using Il2CppInterop.Runtime;
-// using Il2CppSystem;
-// using Il2CppSystem.Collections.Generic;
-#elif (MONO)
-#endif
-
 namespace S1API.Internal.Utils
 {
     /// <summary>
@@ -43,11 +36,11 @@ namespace S1API.Internal.Utils
         }
 
         /// <summary>
-        /// Gets all types by their name.
+        /// INTERNAL: Gets all types by their name.
         /// </summary>
         /// <param name="typeName">The name of the type.</param>
         /// <returns>The actual type identified by the name.</returns>
-        public static Type? GetTypeByName(string typeName)
+        internal static Type? GetTypeByName(string typeName)
         {
             Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
             foreach (Assembly assembly in assemblies)
@@ -57,6 +50,44 @@ namespace S1API.Internal.Utils
                     continue;
                 
                 return foundType;
+            }
+
+            return null;
+        }
+        
+        /// <summary>
+        /// INTERNAL: Recursively gets fields from a class down to the object type.
+        /// </summary>
+        /// <param name="type">The type you want to recursively search.</param>
+        /// <param name="bindingFlags">The binding flags to apply during the search.</param>
+        /// <returns></returns>
+        internal static FieldInfo[] GetAllFields(Type? type, BindingFlags bindingFlags)
+        {
+            List<FieldInfo> fieldInfos = new List<FieldInfo>();
+            while (type != null && type != typeof(object))
+            {
+                fieldInfos.AddRange(type.GetFields(bindingFlags));
+                type = type.BaseType;
+            }
+            return fieldInfos.ToArray();
+        }
+        
+        /// <summary>
+        /// INTERNAL: Recursively searches for a method by name from a class down to the object type.
+        /// </summary>
+        /// <param name="type">The type you want to recursively search.</param>
+        /// <param name="methodName">The name of the method you're searching for.</param>
+        /// <param name="bindingFlags">The binding flags to apply during the search.</param>
+        /// <returns></returns>
+        public static MethodInfo? GetMethod(Type? type, string methodName, BindingFlags bindingFlags)
+        {
+            while (type != null && type != typeof(object))
+            {
+                MethodInfo? method = type.GetMethod(methodName, bindingFlags);
+                if (method != null)
+                    return method;
+                
+                type = type.BaseType;
             }
 
             return null;
