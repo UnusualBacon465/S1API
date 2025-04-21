@@ -81,8 +81,7 @@ jobs:
           icon: https://raw.githubusercontent.com/KaBooMa/S1API/stable/Public/logo_compressed.png
           readme: https://raw.githubusercontent.com/KaBooMa/S1API/stable/Public/README.md
           deps: LavaGang-MelonLoader@0.7.0
-          path: ./artifacts/thunderstore
-          wrap: ./artifacts/thunderstore
+          path: artifacts/thunderstore
           categories: |
             mono
             il2cpp
