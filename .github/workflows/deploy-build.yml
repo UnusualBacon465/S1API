@@ -77,9 +77,9 @@ jobs:
           token: ${{ secrets.TS_TOKEN }}
           name: S1API
           version: ${{ steps.semantic-release.outputs.new_release_version }}
-          community: Schedule I
+          community: schedule-i
           icon: https://github.com/KaBooMa/S1API/blob/stable/Public/logo_compressed.png?raw=true
-          deps: LavaGang-MelonLoader-0.7.0
+          deps: LavaGang-MelonLoader@0.7.0
           path: ./artifacts/thunderstore
           categories: |
             mono
