@@ -75,7 +75,7 @@ jobs:
           namespace: KaBooMa
           description: S1API
           token: ${{ secrets.TS_TOKEN }}
-          name: s1api
+          name: S1API
           version: ${{ steps.semantic-release.outputs.new_release_version }}
           community: schedule-i
           icon: https://github.com/KaBooMa/S1API/blob/stable/Public/logo_compressed.png?raw=true
