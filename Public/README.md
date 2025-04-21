@@ -1,4 +1,4 @@
-![logo](https://github.com/KaBooMa/S1API/tree/stable/Public/logo.png)
+![logo](https://github.com/KaBooMa/S1API/blob/stable/Public/logo.png?raw=true)
 
 # A Schedule One Mono / Il2Cpp Cross Compatibility Layer
 S1API is an open source collaboration project to help standardize Schedule One modding processes.
