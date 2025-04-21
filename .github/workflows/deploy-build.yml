@@ -82,7 +82,4 @@ jobs:
           readme: https://raw.githubusercontent.com/KaBooMa/S1API/stable/Public/README.md
           deps: LavaGang-MelonLoader@0.7.0
           path: ./artifacts/thunderstore
-          categories: |
-            mono
-            il2cpp
-            libraries
+          categories: libraries
