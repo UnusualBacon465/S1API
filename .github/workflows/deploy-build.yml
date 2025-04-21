@@ -78,6 +78,7 @@ jobs:
           name: s1api
           version: ${{ steps.semantic-release.outputs.new_release_version }}
           community: schedule-i
+          icon: https://github.com/KaBooMa/S1API/blob/stable/Public/logo_compressed.png?raw=true
           deps: LavaGang-MelonLoader-0.7.0
           path: ./artifacts/thunderstore
           categories: |
