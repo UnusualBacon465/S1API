@@ -3,9 +3,10 @@ using S1Quests = Il2CppScheduleOne.Quests;
 #elif (MONO)
 using S1Quests = ScheduleOne.Quests;
 #endif
+
 using System;
+using S1API.Internal.Abstraction;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace S1API.Quests
 {
@@ -31,8 +32,8 @@ namespace S1API.Quests
         /// </summary>
         public event Action OnComplete
         {
-            add => S1QuestEntry.onComplete.AddListener((UnityAction)value.Invoke);
-            remove => S1QuestEntry.onComplete.RemoveListener((UnityAction)value.Invoke);
+            add => EventHelper.AddListener(value, S1QuestEntry.onComplete);
+            remove => EventHelper.RemoveListener(value, S1QuestEntry.onComplete);
         }
         
         /// <summary>
