@@ -22,20 +22,6 @@ namespace S1API.Products
         internal S1Product.ProductDefinition S1ProductDefinition => 
             CrossType.As<S1Product.ProductDefinition>(S1ItemDefinition);
         
-
-// Inside your ProductDefinition class:
-#if IL2CPP
-        /// <summary>
-        /// Gets the IL2CPP internal type name for this product.
-        /// </summary>
-        public string InternalTypeName => S1ProductDefinition.GetIl2CppType().FullName;
-#else
-        /// <summary>
-        /// Stub fallback for Mono.
-        /// </summary>
-        public string InternalTypeName => S1ProductDefinition.ToString();
-#endif
-
         /// <summary>
         /// INTERNAL: Creates a product definition from the in-game product definition.
         /// </summary>
