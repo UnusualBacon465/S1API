@@ -30,10 +30,10 @@ namespace S1API.Products
         /// </summary>
         public string InternalTypeName => S1ProductDefinition.GetIl2CppType().FullName;
 #else
-/// <summary>
-/// Stub fallback for Mono.
-/// </summary>
-public string InternalTypeName => "Mono";
+        /// <summary>
+        /// Stub fallback for Mono.
+        /// </summary>
+        public string InternalTypeName => S1ProductDefinition.ToString();
 #endif
 
         /// <summary>
