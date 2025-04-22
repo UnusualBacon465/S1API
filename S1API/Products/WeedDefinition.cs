@@ -21,12 +21,7 @@ namespace S1API.Products
         /// </summary>
         internal S1WeedDefinition S1WeedDefinition =>
             CrossType.As<S1WeedDefinition>(S1ItemDefinition);
-
-#if IL2CPP
-        public string InternalTypeName => S1WeedDefinition.GetIl2CppType().FullName;
-#else
-        public string InternalTypeName => S1WeedDefinition.ToString();
-#endif
+        
 
         /// <summary>
         /// Creates a new weed product definition.

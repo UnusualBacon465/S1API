@@ -21,12 +21,7 @@ namespace S1API.Products
         /// </summary>
         internal S1CocaineDefinition S1CocaineDefinition =>
             CrossType.As<S1CocaineDefinition>(S1ItemDefinition);
-
-#if IL2CPP
-        public string InternalTypeName => S1CocaineDefinition.GetIl2CppType().FullName;
-#else
-        public string InternalTypeName => S1CocaineDefinition.ToString();
-#endif
+        
 
         /// <summary>
         /// Creates a new cocaine product definition.

@@ -21,13 +21,7 @@ namespace S1API.Products
         /// </summary>
         internal S1MethDefinition S1MethDefinition =>
             CrossType.As<S1MethDefinition>(S1ItemDefinition);
-
-#if IL2CPP
-        public string InternalTypeName => S1MethDefinition.GetIl2CppType().FullName;
-#else
-        public string InternalTypeName => S1MethDefinition.ToString();
-#endif
-
+        
         /// <summary>
         /// Creates a new meth product definition.
         /// </summary>
