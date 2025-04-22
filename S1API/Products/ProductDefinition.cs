@@ -1,4 +1,6 @@
-﻿#if (IL2CPP)
+﻿#if IL2CPP
+using Il2CppInterop.Runtime.InteropTypes;
+
 using S1Product = Il2CppScheduleOne.Product;
 #elif (MONO)
 using S1Product = ScheduleOne.Product;
@@ -20,6 +22,20 @@ namespace S1API.Products
         internal S1Product.ProductDefinition S1ProductDefinition => 
             CrossType.As<S1Product.ProductDefinition>(S1ItemDefinition);
         
+
+// Inside your ProductDefinition class:
+#if IL2CPP
+        /// <summary>
+        /// Gets the IL2CPP internal type name for this product.
+        /// </summary>
+        public string InternalTypeName => S1ProductDefinition.GetIl2CppType().FullName;
+#else
+/// <summary>
+/// Stub fallback for Mono.
+/// </summary>
+public string InternalTypeName => "Mono";
+#endif
+
         /// <summary>
         /// INTERNAL: Creates a product definition from the in-game product definition.
         /// </summary>
