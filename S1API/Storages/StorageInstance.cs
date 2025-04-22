@@ -6,8 +6,8 @@ using S1Storage = ScheduleOne.Storage;
 
 using System;
 using System.Linq;
+using S1API.Internal.Abstraction;
 using S1API.Items;
-using UnityEngine.Events;
 
 namespace S1API.Storages
 {
@@ -48,14 +48,14 @@ namespace S1API.Storages
         /// <param name="itemInstance">The item instance you want to store.</param>
         public void AddItem(ItemInstance itemInstance) => 
             S1Storage.InsertItem(itemInstance.S1ItemInstance);
-        
+
         /// <summary>
         /// An action fired when the storage container is opened by the player.
         /// </summary>
         public event Action OnOpened
         {
-            add => S1Storage.onOpened.AddListener((UnityAction)value.Invoke);
-            remove => S1Storage.onOpened.RemoveListener((UnityAction)value.Invoke);
+            add => EventHelper.AddListener(value, S1Storage.onOpened);
+            remove => EventHelper.RemoveListener(value, S1Storage.onOpened);
         }
         
         /// <summary>
@@ -63,8 +63,8 @@ namespace S1API.Storages
         /// </summary>
         public event Action OnClosed
         {
-            add => S1Storage.onClosed.AddListener((UnityAction)value.Invoke);
-            remove => S1Storage.onClosed.RemoveListener((UnityAction)value.Invoke);
+            add => EventHelper.AddListener(value, S1Storage.onClosed);
+            remove => EventHelper.RemoveListener(value, S1Storage.onClosed);
         }
     }
 }
