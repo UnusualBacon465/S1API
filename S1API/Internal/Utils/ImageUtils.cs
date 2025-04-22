@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace S1API.Internal.Utils
 {
-    internal class ImageUtils
+    public static class ImageUtils
     {
         /// <summary>
         /// Loads an image from the specified file path and converts it into a Sprite object.
