@@ -28,6 +28,11 @@ namespace S1APILoader
             
 
             string s1APIModFile = Path.Combine(modsFolder, "S1API.dll");
+
+            // FIX: https://github.com/KaBooMa/S1API/issues/30
+            // Create the Mods directory.
+            // Thunderstore doesn't by default like MelonLoader in your base installation folder.
+            Directory.CreateDirectory(modsFolder);
             
             File.Copy(s1APIBuildFile, s1APIModFile, true);
             MelonLogger.Msg($"Successfully loaded S1API for {activeBuild}!");
