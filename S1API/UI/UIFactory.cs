@@ -7,17 +7,19 @@ using UnityEngine;
 using UnityEngine.UI;
 #endif
 
+using System;
 using UnityEngine.Events;
 using System.Collections.Generic;
 
 namespace S1API.UI
 {
     /// <summary>
-    /// Utility class for creating and managing UI elements in Unity projects.
+    /// Static utility class for dynamically generating and managing UI elements within Unity applications.
     /// </summary>
     /// <remarks>
-    /// Provides static methods to dynamically generate UI components such as panels, buttons, text blocks, and layouts.
-    /// Includes utilities for configuring and organizing UI elements in a hierarchy.
+    /// Contains methods for creating reusable and customizable UI components, such as panels, buttons, text elements, layouts,
+    /// and more. Designed to facilitate rapid development and organization of UI hierarchies, with options
+    /// for styling and behavior configuration.
     /// </remarks>
     public static class UIFactory
     {
@@ -28,8 +30,9 @@ namespace S1API.UI
         /// <param name="anchorMin">The minimum anchor point of the RectTransform. Defaults to (0.5, 0.5) if not specified.</param>
         /// <param name="anchorMax">The maximum anchor point of the RectTransform. Defaults to (0.5, 0.5) if not specified.</param>
         /// <param name="fullAnchor">Whether to stretch the panel across the entire parent RectTransform. Overrides anchorMin and anchorMax if true.</param>
-        /// <returns>The created GameObject representing the panel.</returns>
-        public static GameObject Panel(string name, Transform parent, Color bgColor, Vector2? anchorMin = null, Vector2? anchorMax = null, bool fullAnchor = false)
+        /// <returns>The GameObject representing the created UI panel.</returns>
+        public static GameObject Panel(string name, Transform parent, Color bgColor, Vector2? anchorMin = null,
+            Vector2? anchorMax = null, bool fullAnchor = false)
         {
             GameObject go = new GameObject(name);
             go.transform.SetParent(parent, false);
@@ -61,7 +64,8 @@ namespace S1API.UI
         /// <param name="anchor">The alignment of the text within its RectTransform. Defaults to `TextAnchor.UpperLeft`.</param>
         /// <param name="style">The font style of the text. Defaults to `FontStyle.Normal`.</param>
         /// <returns>The created Text component with the specified properties applied.</returns>
-        public static Text Text(string name, string content, Transform parent, int fontSize = 14, TextAnchor anchor = TextAnchor.UpperLeft, FontStyle style = FontStyle.Normal)
+        public static Text Text(string name, string content, Transform parent, int fontSize = 14,
+            TextAnchor anchor = TextAnchor.UpperLeft, FontStyle style = FontStyle.Normal)
         {
             GameObject go = new GameObject(name);
             go.transform.SetParent(parent, false);
@@ -79,15 +83,11 @@ namespace S1API.UI
             return txt;
         }
 
-        /// Creates a scrollable vertical list UI component with its child hierarchy configured for Unity UI.
-        /// The created hierarchy includes:
-        /// - A parent GameObject containing a ScrollRect component.
-        /// - A child "Viewport" GameObject for clipping and masking.
-        /// - A "Content" GameObject inside the viewport with a vertical layout and content size fitter.
+        /// Creates a scrollable vertical list UI component with a configured child hierarchy, allowing vertical scrolling of dynamically added items.
         /// <param name="name">The name of the scrollable list GameObject.</param>
         /// <param name="parent">The parent transform where the scrollable list will be added.</param>
         /// <param name="scrollRect">Outputs the ScrollRect component associated with the created scrollable list.</param>
-        /// <returns>Returns the RectTransform of the "Content" GameObject, which items can be added to.</returns>
+        /// <returns>Returns the RectTransform of the "Content" GameObject, allowing items to be added to the scrollable list.</returns>
         public static RectTransform ScrollableVerticalList(string name, Transform parent, out ScrollRect scrollRect)
         {
             var scrollGO = new GameObject(name);
@@ -143,18 +143,21 @@ namespace S1API.UI
             fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
         }
 
-        /// Creates a button with a label inside a parent UI element.
+        /// Creates a button with a label and specified dimensions inside a parent UI element.
         /// <param name="name">The name of the button GameObject.</param>
         /// <param name="label">The text to display on the button.</param>
         /// <param name="parent">The Transform to which the button will be attached.</param>
         /// <param name="bgColor">The background color of the button.</param>
+        /// <param name="Width">The width of the button.</param>
+        /// <param name="Height">The height of the button.</param>
         /// <returns>A tuple containing the button's GameObject, Button component, and Text component.</returns>
-        public static (GameObject, Button, Text) ButtonWithLabel(string name, string label, Transform parent, Color bgColor)
+        public static (GameObject, Button, Text) ButtonWithLabel(string name, string label, Transform parent,
+            Color bgColor, float Width, float Height)
         {
             GameObject go = new GameObject(name);
             go.transform.SetParent(parent, false);
             var rt = go.AddComponent<RectTransform>();
-            rt.sizeDelta = new Vector2(160f, 40f);
+            rt.sizeDelta = new Vector2(Height, Width);
 
             var img = go.AddComponent<Image>();
             img.color = bgColor;
@@ -186,8 +189,8 @@ namespace S1API.UI
         /// <summary>
         /// Sets an icon as a child of the specified parent transform with the given sprite.
         /// </summary>
-        /// <param name="sprite">The sprite to use for the icon.</param>
-        /// <param name="parent">The transform to set as the parent of the icon.</param>
+        /// <param name="sprite">The sprite to be used as the icon.</param>
+        /// <param name="parent">The transform that will act as the parent of the icon.</param>
         public static void SetIcon(Sprite sprite, Transform parent)
         {
             var icon = new GameObject("Icon");
@@ -208,24 +211,20 @@ namespace S1API.UI
         /// <param name="parent">The parent transform where the text block will be added.</param>
         /// <param name="title">The title text of the text block, displayed in bold.</param>
         /// <param name="subtitle">The subtitle text of the text block, displayed below the title.</param>
-        /// <param name="isCompleted">
-        /// A boolean indicating whether the text block represents a completed state.
-        /// If true, an additional label indicating "Already Delivered" will be added.
-        /// </param>
+        /// <param name="isCompleted">A boolean indicating whether the text block represents a completed state. If true, an additional label indicating "Already Delivered" will be added.</param>
         public static void CreateTextBlock(Transform parent, string title, string subtitle, bool isCompleted)
         {
             Text(parent.name + "Title", title, parent, 16, TextAnchor.MiddleLeft, FontStyle.Bold);
             Text(parent.name + "Subtitle", subtitle, parent, 14, TextAnchor.UpperLeft);
             if (isCompleted)
-                Text("CompletedLabel", "<color=#888888><i>Already Delivered</i></color>", parent, 12, TextAnchor.UpperLeft);
+                Text("CompletedLabel", "<color=#888888><i>Already Delivered</i></color>", parent, 12,
+                    TextAnchor.UpperLeft);
         }
 
-        /// <summary>
-        /// Adds a clickable button component to the specified game object and sets its interactions and event handling.
-        /// </summary>
+        /// Adds a button component to the specified game object, sets its target graphic, and configures its interaction settings.
         /// <param name="go">The game object to which the button component is added.</param>
         /// <param name="clickHandler">The UnityAction to invoke when the button is clicked.</param>
-        /// <param name="enabled">A boolean value indicating whether the button should be interactable.</param>
+        /// <param name="enabled">Determines whether the button is interactable.</param>
         public static void CreateRowButton(GameObject go, UnityAction clickHandler, bool enabled)
         {
             var btn = go.AddComponent<Button>();
@@ -244,7 +243,7 @@ namespace S1API.UI
                 GameObject.Destroy(child.gameObject);
         }
 
-        /// Configures a GameObject to use a VerticalLayoutGroup with the specified spacing and padding.
+        /// Configures a GameObject to use a VerticalLayoutGroup with specified spacing and padding.
         /// <param name="go">The GameObject to which a VerticalLayoutGroup will be added or configured.</param>
         /// <param name="spacing">The spacing between child objects within the VerticalLayoutGroup. Default is 10.</param>
         /// <param name="padding">The padding around the edges of the VerticalLayoutGroup. If null, a default RectOffset of (10, 10, 10, 10) will be used.</param>
@@ -255,15 +254,14 @@ namespace S1API.UI
             layout.padding = padding ?? new RectOffset(10, 10, 10, 10);
         }
 
-        /// <summary>
         /// Creates a quest row GameObject with a specific layout, including an icon panel and text panel.
-        /// </summary>
         /// <param name="name">The name for the row GameObject.</param>
         /// <param name="parent">The parent Transform to attach the row GameObject to.</param>
         /// <param name="iconPanel">An output parameter that receives the generated icon panel GameObject.</param>
         /// <param name="textPanel">An output parameter that receives the generated text panel GameObject.</param>
         /// <returns>The newly created quest row GameObject.</returns>
-        public static GameObject CreateQuestRow(string name, Transform parent, out GameObject iconPanel, out GameObject textPanel)
+        public static GameObject CreateQuestRow(string name, Transform parent, out GameObject iconPanel,
+            out GameObject textPanel)
         {
             // Create the main row object
             var row = new GameObject("Row_" + name);
@@ -314,12 +312,56 @@ namespace S1API.UI
             return row;
         }
 
+        /// Creates a top bar UI element with a title and an optional button.
+        /// <param name="name">The name of the GameObject representing the top bar.</param>
+        /// <param name="parent">The transform to which the top bar will be parented.</param>
+        /// <param name="title">The text content for the title displayed in the top bar.</param>
+        /// <param name="buttonWidth">The width of the button, if displayed.</param>
+        /// <param name="buttonHeight">The height of the button, if displayed.</param>
+        /// <param name="onRightButtonClick">An optional action to be invoked when the button is clicked. If null, the button will not be created.</param>
+        /// <param name="rightButtonText">The text to display on the optional button. Defaults to "Action" if not specified.</param>
+        /// <returns>The created GameObject representing the top bar.</returns>
+        public static GameObject TopBar(string name, Transform parent, string title,float buttonWidth,float buttonHeight,
+    Action onRightButtonClick = null,
+    string rightButtonText = "Action")
+{
+    var topBar = Panel(name, parent, new Color(0.15f, 0.15f, 0.15f),
+        new Vector2(0f, 0.85f), new Vector2(1f, 1f));
 
-        /// Binds an action to the accept button and updates its label text.
-        /// <param name="btn">The button to bind the action to.</param>
-        /// <param name="label">The text label of the button to update.</param>
-        /// <param name="text">The new text to display on the label.</param>
-        /// <param name="callback">The action to invoke when the button is clicked.</param>
+    var layout = topBar.AddComponent<HorizontalLayoutGroup>();
+    layout.padding = new RectOffset(75, 75, 30, 30);
+    layout.spacing = 20;
+    layout.childAlignment = TextAnchor.MiddleCenter;
+    layout.childForceExpandWidth = false;
+    layout.childForceExpandHeight = true;
+
+    // Title
+    var titleText = Text("TopBarTitle", title, topBar.transform, 26, TextAnchor.MiddleLeft, FontStyle.Bold);
+    var titleLayout = titleText.gameObject.AddComponent<LayoutElement>();
+    titleLayout.minWidth = 300;
+    titleLayout.flexibleWidth = 1;
+
+    // Button (if any)
+    if (onRightButtonClick != null)
+    {
+        var (btnGO, btn, label) = ButtonWithLabel("TopBarButton", rightButtonText, topBar.transform, new Color(0.25f, 0.5f, 1f), buttonWidth, buttonHeight);
+        ButtonUtils.AddListener(btn, onRightButtonClick);
+
+        var btnLayout = btnGO.AddComponent<LayoutElement>();
+        btnLayout.minWidth = buttonWidth;
+        btnLayout.preferredHeight = buttonHeight;
+        btnLayout.flexibleWidth = 0;
+    }
+
+    return topBar;
+}
+
+
+        /// Binds an action to a button and updates its label text.
+        /// <param name="btn">The button to which the action will be bound.</param>
+        /// <param name="label">The text label associated with the button.</param>
+        /// <param name="text">The text to set as the label of the button.</param>
+        /// <param name="callback">The action that will be executed when the button is clicked.</param>
         public static void BindAcceptButton(Button btn, Text label, string text, UnityAction callback)
         {
             label.text = text;
@@ -332,28 +374,27 @@ namespace S1API.UI
 /// <summary>
 /// Represents a handler that encapsulates a callback action to be invoked when a click event occurs.
 /// </summary>
+/// <remarks>
+/// This class provides a mechanism to handle and execute logic when a click event is triggered.
+/// It associates an action defined by a UnityAction delegate with the click event.
+/// </remarks>
 public class ClickHandler
 {
     /// <summary>
-    /// A private field that stores the UnityAction delegate to be invoked when a click event occurs.
+    /// A private field that stores the UnityAction delegate to be invoked during a specific click event.
     /// </summary>
     private readonly UnityAction _callback;
 
-    /// <summary>
-    /// Handles click events by invoking a specified callback action.
-    /// </summary>
+    /// Represents a handler that encapsulates a callback action to be invoked when a click event occurs.
     public ClickHandler(UnityAction callback)
     {
         _callback = callback;
     }
 
-    /// <summary>
-    /// Invokes the callback action associated with the click event.
-    /// </summary>
+    /// Invokes the callback action associated with a click event.
     /// <remarks>
-    /// This method triggers the Unity action passed during the initialization
-    /// of the ClickHandler object. It serves as the mechanism to handle click
-    /// events and execute the associated logic.
+    /// Executes the UnityAction delegate provided during the creation of the ClickHandler instance.
+    /// This method is used to process and handle click events associated with the handler.
     /// </remarks>
     public void OnClick()
     {
