@@ -243,7 +243,6 @@ namespace S1API.UI
         {
             if (parent == null)
             {
-                MelonLogger.Warning("[UIFactory] ClearChildren called with null parent.");
                 return;
             }
 
@@ -257,11 +256,10 @@ namespace S1API.UI
                         Object.Destroy(child.gameObject);
                 }
 
-                MelonLogger.Msg($"[UIFactory] Cleared {count} children from: {parent.name}");
             }
             catch (System.Exception e)
             {
-                MelonLogger.Error($"[UIFactory] Exception during ClearChildren: {e.Message}");
+                return;
             }
         }
 
