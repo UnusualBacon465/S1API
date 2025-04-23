@@ -8,6 +8,7 @@ using S1Product = ScheduleOne.Product;
 
 using S1API.Internal.Utils;
 using S1API.Items;
+using UnityEngine;
 
 namespace S1API.Products
 {
@@ -41,5 +42,14 @@ namespace S1API.Products
         /// <returns>An instance of the product.</returns>
         public override ItemInstance CreateInstance(int quantity = 1) => 
             new ProductInstance(CrossType.As<S1Product.ProductItemInstance>(S1ProductDefinition.GetDefaultInstance(quantity)));
+
+        /// <summary>
+        /// Gets the in-game icon associated with the product.
+        /// </summary>
+        public Sprite Icon
+        {
+            get { return S1ProductDefinition.Icon; }
+        }
+
     }
 }
