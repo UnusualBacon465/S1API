@@ -17,6 +17,8 @@ namespace S1API.Products
         /// A list of product definitions discovered on this save.
         /// </summary>
         public static ProductDefinition[] DiscoveredProducts => S1Product.ProductManager.DiscoveredProducts.ToArray()
-            .Select(productDefinition => new ProductDefinition(productDefinition)).ToArray();
+            .Select(productDefinition => ProductDefinitionWrapper.Wrap(new ProductDefinition(productDefinition)))
+            .ToArray();
+
     }
 }
