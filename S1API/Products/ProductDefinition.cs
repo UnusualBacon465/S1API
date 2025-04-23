@@ -1,4 +1,6 @@
-﻿#if (IL2CPP)
+﻿#if IL2CPP
+using Il2CppInterop.Runtime.InteropTypes;
+
 using S1Product = Il2CppScheduleOne.Product;
 #elif (MONO)
 using S1Product = ScheduleOne.Product;
