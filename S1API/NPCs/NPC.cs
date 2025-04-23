@@ -8,7 +8,8 @@ using S1Responses = Il2CppScheduleOne.NPCs.Responses;
 using S1PlayerScripts = Il2CppScheduleOne.PlayerScripts;
 using S1ContactApps = Il2CppScheduleOne.UI.Phone.ContactsApp;
 using S1WorkspacePopup = Il2CppScheduleOne.UI.WorldspacePopup;
-using S1Variables = Il2CppScheduleOne.Variables;
+using S1AvatarFramework = Il2CppScheduleOne.AvatarFramework;
+using S1Behaviour = Il2CppScheduleOne.NPCs.Behaviour;
 using S1Vehicles = Il2CppScheduleOne.Vehicles;
 using S1Vision = Il2CppScheduleOne.Vision;
 using S1NPCs = Il2CppScheduleOne.NPCs;
@@ -23,7 +24,8 @@ using S1Responses = ScheduleOne.NPCs.Responses;
 using S1PlayerScripts = ScheduleOne.PlayerScripts;
 using S1ContactApps = ScheduleOne.UI.Phone.ContactsApp;
 using S1WorkspacePopup = ScheduleOne.UI.WorldspacePopup;
-using S1Variables = ScheduleOne.Variables;
+using S1AvatarFramework = ScheduleOne.AvatarFramework;
+using S1Behaviour = ScheduleOne.NPCs.Behaviour;
 using S1Vehicles = ScheduleOne.Vehicles;
 using S1Vision = ScheduleOne.Vision;
 using S1NPCs = ScheduleOne.NPCs;
@@ -118,6 +120,26 @@ namespace S1API.NPCs
             S1NPC.awareness.onNoticedSuspiciousPlayer = new UnityEvent<S1PlayerScripts.Player>();
             S1NPC.awareness.Listener = _gameObject.AddComponent<S1Noise.Listener>();
             
+            /////// START BEHAVIOUR CODE ////////
+            // NPCBehaviours behaviour
+            GameObject behaviourObject = new GameObject("NPCBehaviour");
+            behaviourObject.SetActive(false);
+            behaviourObject.transform.SetParent(_gameObject.transform);
+            S1Behaviour.NPCBehaviour behaviour = behaviourObject.AddComponent<S1Behaviour.NPCBehaviour>();
+            
+            GameObject cowingBehaviourObject = new GameObject("CowingBehaviour");
+            cowingBehaviourObject.transform.SetParent(behaviourObject.transform);
+            S1Behaviour.CoweringBehaviour coweringBehaviour = cowingBehaviourObject.AddComponent<S1Behaviour.CoweringBehaviour>();
+            
+            GameObject fleeBehaviourObject = new GameObject("FleeBehaviour");
+            fleeBehaviourObject.transform.SetParent(behaviourObject.transform);
+            S1Behaviour.FleeBehaviour fleeBehaviour = fleeBehaviourObject.AddComponent<S1Behaviour.FleeBehaviour>();
+            
+            behaviour.CoweringBehaviour = coweringBehaviour;
+            behaviour.FleeBehaviour = fleeBehaviour;
+            S1NPC.behaviour = behaviour;
+            /////// END BEHAVIOUR CODE ////////
+            
             // Response to actions like gunshots, drug deals, etc.
             GameObject responsesObject = new GameObject("NPCResponses");
             responsesObject.SetActive(false);
@@ -129,7 +151,12 @@ namespace S1API.NPCs
             visionObject.SetActive(false);
             visionObject.transform.SetParent(_gameObject.transform);
             S1Vision.VisionCone visionCone = visionObject.AddComponent<S1Vision.VisionCone>();
+            visionCone.StatesOfInterest.Add(new S1Vision.VisionCone.StateContainer
+            {
+                state = S1PlayerScripts.PlayerVisualState.EVisualState.PettyCrime, RequiredNoticeTime = 0.1f
+            });
             S1NPC.awareness.VisionCone = visionCone;
+            
             
             // Suspicious ? icon in world space
             S1NPC.awareness.VisionCone.QuestionMarkPopup = _gameObject.AddComponent<S1WorkspacePopup.WorldspacePopup>();
@@ -145,15 +172,15 @@ namespace S1API.NPCs
             // Relationship data
             S1NPC.RelationData = new S1Relation.NPCRelationData();
 
-            void OnUnlockAction(S1Relation.NPCRelationData.EUnlockType unlockType, bool notify)
-            {
-                if (!string.IsNullOrEmpty(S1NPC.NPCUnlockedVariable))
-                {
-                    S1DevUtilities.NetworkSingleton<S1Variables.VariableDatabase>.Instance.SetVariableValue(S1NPC.NPCUnlockedVariable, true.ToString());
-                }
-            }
+            // void OnUnlockAction(S1Relation.NPCRelationData.EUnlockType unlockType, bool notify)
+            // {
+            //     if (!string.IsNullOrEmpty(S1NPC.NPCUnlockedVariable))
+            //     {
+            //         S1DevUtilities.NetworkSingleton<S1Variables.VariableDatabase>.Instance.SetVariableValue(S1NPC.NPCUnlockedVariable, true.ToString());
+            //     }
+            // }
 
-            S1NPC.RelationData.onUnlocked += (Action<S1Relation.NPCRelationData.EUnlockType, bool>)OnUnlockAction;
+            // S1NPC.RelationData.onUnlocked += (Action<S1Relation.NPCRelationData.EUnlockType, bool>)OnUnlockAction;
 
             // Inventory behaviour
             S1NPCs.NPCInventory inventory = _gameObject.AddComponent<S1NPCs.NPCInventory>();
@@ -162,10 +189,7 @@ namespace S1API.NPCs
             inventory.PickpocketIntObj = _gameObject.AddComponent<S1Interaction.InteractableObject>();
             
             // Defaulting to the local player for Avatar TODO: Change
-            S1NPC.Avatar = S1PlayerScripts.Player.Local.Avatar;
-            
-            // Register NPC in registry
-            S1NPCs.NPCManager.NPCRegistry.Add(S1NPC);
+            S1NPC.Avatar = S1AvatarFramework.MugshotGenerator.Instance.MugshotRig;
             
             
             // NetworkObject networkObject = gameObject.AddComponent<NetworkObject>();
@@ -178,6 +202,7 @@ namespace S1API.NPCs
             visionObject.SetActive(true);
             responsesObject.SetActive(true);
             awarenessObject.SetActive(true);
+            behaviourObject.SetActive(true);
         }
 
         /// <summary>
