@@ -145,6 +145,8 @@ namespace S1API.Quests
             poi.UIPrefab = uiPrefabObject;
 #endif
             S1Quest.PoIPrefab = poiPrefabObject;
+
+            S1Quest.onQuestEnd.AddListener((UnityAction<S1Quests.EQuestState>)OnQuestEnded);
         }
 
         /// <summary>
@@ -156,7 +158,7 @@ namespace S1API.Quests
             
             base.CreateInternal();
             
-            // Initialize the quest
+            // Initialize the quest 
             S1Quest.InitializeQuest(Title, Description, Array.Empty<S1Data.QuestEntryData>(), S1Quest?.StaticGUID);
             
             if (AutoBegin)
@@ -170,6 +172,17 @@ namespace S1API.Quests
                 Directory.CreateDirectory(questDataPath);
             
             base.SaveInternal(questDataPath, ref extraSaveables);
+        }
+
+        /// <summary>
+        /// INTERNAL: Called when the quest ends
+        /// </summary>
+        /// <param name="questState">The state it ended in.</param>
+        internal void OnQuestEnded(S1Quests.EQuestState questState)
+        {
+            // Cleanup our quest in the API manager as well as game quests list
+            S1Quests.Quest.Quests.Remove(S1Quest);
+            QuestManager.Quests.Remove(this);
         }
 
         /// <summary>
