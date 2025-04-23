@@ -53,6 +53,10 @@ namespace S1API.Internal.Patches
         [HarmonyPostfix]
         private static void QuestsLoaderLoad(S1Loaders.QuestsLoader __instance, string mainPath)
         {
+            // Make sure we have a quests directory (fresh saves don't at this point in runtime)
+            if (!Directory.Exists(mainPath))
+                return;
+            
             string[] questDirectories = Directory.GetDirectories(mainPath)
                 .Select(Path.GetFileName)
                 .Where(directory => directory.StartsWith("Quest_"))
