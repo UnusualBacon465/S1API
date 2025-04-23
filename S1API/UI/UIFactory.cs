@@ -321,15 +321,15 @@ namespace S1API.UI
         /// <param name="onRightButtonClick">An optional action to be invoked when the button is clicked. If null, the button will not be created.</param>
         /// <param name="rightButtonText">The text to display on the optional button. Defaults to "Action" if not specified.</param>
         /// <returns>The created GameObject representing the top bar.</returns>
-        public static GameObject TopBar(string name, Transform parent, string title,float buttonWidth,float buttonHeight,
+        public static GameObject TopBar(string name, Transform parent, string title,float buttonWidth,float buttonHeight,float topbarSize,int rectleft,int rectright,int recttop,int rectbottom,
     Action onRightButtonClick = null,
     string rightButtonText = "Action")
 {
     var topBar = Panel(name, parent, new Color(0.15f, 0.15f, 0.15f),
-        new Vector2(0f, 0.85f), new Vector2(1f, 1f));
+        new Vector2(0f, topbarSize), new Vector2(1f, 1f));
 
     var layout = topBar.AddComponent<HorizontalLayoutGroup>();
-    layout.padding = new RectOffset(75, 75, 30, 30);
+    layout.padding = new RectOffset(rectleft,rectright,recttop,rectbottom);;
     layout.spacing = 20;
     layout.childAlignment = TextAnchor.MiddleCenter;
     layout.childForceExpandWidth = false;
