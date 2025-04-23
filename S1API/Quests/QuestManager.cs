@@ -33,13 +33,5 @@ namespace S1API.Quests
             Quests.Add(quest);
             return quest;
         }
-        /// <summary>
-        /// Removes a quest from the active quest list.
-        /// </summary>
-        public static void RemoveQuest(Quest quest)
-        {
-            Quests.Remove(quest);
-        }
-
     }
 }
