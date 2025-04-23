@@ -16,7 +16,7 @@ namespace S1API.GameTime
         /// <summary>
         /// Action called when the day passes in-game.
         /// </summary>
-        public static readonly Action OnDayPass = delegate { };
+        public static Action OnDayPass = delegate { };
         
         /// <summary>
         /// The current in-game day.

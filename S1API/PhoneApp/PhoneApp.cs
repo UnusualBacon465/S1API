@@ -148,7 +148,7 @@ namespace S1API.PhoneApp
                 AppCreated = true;
             }
 
-            AppPanel.SetActive(false);
+            AppPanel.SetActive(true);
 
             if (!IconModified)
             {

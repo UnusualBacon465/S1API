@@ -26,11 +26,11 @@ namespace S1API.Internal.Patches
         /// <param name="mode">The loading mode used by the SceneManager.</param>
         static void Postfix(Scene scene, LoadSceneMode mode)
         {
-            if (_loaded || scene.name != "Main") return;
-            _loaded = true;
+            if (scene.name != "Main") return;
 
-            var phoneApps = ReflectionUtils.GetDerivedClasses<PhoneApp.PhoneApp>();
-            foreach (var type in phoneApps)
+            // Re-register all PhoneApps every time the Main scene loads
+            var phoneApp = ReflectionUtils.GetDerivedClasses<PhoneApp.PhoneApp>();
+            foreach (var type in phoneApp)
             {
                 if (type.GetConstructor(Type.EmptyTypes) == null) continue;
 
