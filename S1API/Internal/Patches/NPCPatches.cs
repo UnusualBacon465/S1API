@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using HarmonyLib;
 using S1API.Internal.Utils;
 using S1API.NPCs;
@@ -28,7 +29,7 @@ namespace S1API.Internal.Patches
         /// <summary>
         /// List of all custom NPCs currently created.
         /// </summary>
-        private static readonly System.Collections.Generic.List<NPC> NPCs = new System.Collections.Generic.List<NPC>();
+        internal static readonly System.Collections.Generic.List<NPC> NPCs = new System.Collections.Generic.List<NPC>();
         
         /// <summary>
         /// Patching performed for when game NPCs are loaded.
@@ -41,13 +42,18 @@ namespace S1API.Internal.Patches
         {
             foreach (Type type in ReflectionUtils.GetDerivedClasses<NPC>())
             {
-                NPC customNPC = (NPC)Activator.CreateInstance(type);
+                NPC customNPC = (NPC)Activator.CreateInstance(type, true);
                 NPCs.Add(customNPC);
+
+                // We skip any S1API NPCs, as they are base NPC wrappers.
+                if (type.Assembly == Assembly.GetExecutingAssembly())
+                    continue;
+                
                 string npcPath = Path.Combine(mainPath, customNPC.S1NPC.SaveFolderName);
                 customNPC.LoadInternal(npcPath);
             }
         }
-        
+
         /// <summary>
         /// Patching performed for when a single NPC starts (including modded in NPCs).
         /// </summary>
@@ -56,6 +62,7 @@ namespace S1API.Internal.Patches
         [HarmonyPostfix]
         private static void NPCStart(S1NPCs.NPC __instance) => 
             NPCs.FirstOrDefault(npc => npc.S1NPC == __instance)?.CreateInternal();
+        
 
         /// <summary>
         /// Patching performed for when an NPC calls to save data.
