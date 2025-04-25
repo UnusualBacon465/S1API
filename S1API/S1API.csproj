@@ -17,6 +17,7 @@
         <Configurations>Mono;Il2Cpp</Configurations>
         <Platforms>AnyCPU</Platforms>
         <RootNamespace>S1API</RootNamespace>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
 
     <!-- IL2CPP Specific Deps -->
