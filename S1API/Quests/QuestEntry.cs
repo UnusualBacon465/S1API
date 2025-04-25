@@ -29,7 +29,7 @@ namespace S1API.Quests
         /// <summary>
         /// The current state of this quest entry.
         /// </summary>
-        public QuestState State => (QuestState)(int)S1QuestEntry.state;
+        public QuestState State => (QuestState)(int)S1QuestEntry.State;
 
         /// <summary>
         /// An action called once a quest has been completed.
