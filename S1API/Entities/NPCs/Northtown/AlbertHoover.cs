@@ -2,11 +2,10 @@
 using Il2CppScheduleOne.NPCs;
 #else
 using ScheduleOne.NPCs;
-#endif 
-
+#endif
 using System.Linq;
 
-namespace S1API.NPCs
+namespace S1API.Entities.NPCs.Northtown
 {
     public class AlbertHoover : NPC
     {
