@@ -1,4 +1,4 @@
-﻿#if IL2CPP
+﻿#if IL2CPPMELON || IL2CPPBEPINEX
 using UnityEngine;
 using UnityEngine.UI;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
@@ -9,8 +9,6 @@ using UnityEngine.UI;
 
 using System;
 using UnityEngine.Events;
-using System.Collections.Generic;
-using MelonLoader;
 using Object = UnityEngine.Object;
 
 namespace S1API.UI
@@ -290,8 +288,8 @@ namespace S1API.UI
             rowRT.sizeDelta = new Vector2(0f, 90f); // Let layout handle width
             row.AddComponent<LayoutElement>().minHeight = 50f;
             row.AddComponent<Outline>().effectColor = new Color(0, 0, 0, 0.2f); // or Image line separator below
-            
-            
+
+
             var line = UIFactory.Panel("Separator", row.transform, new Color(1,1,1,0.05f));
             line.GetComponent<RectTransform>().sizeDelta = new Vector2(300f, 1f);
 

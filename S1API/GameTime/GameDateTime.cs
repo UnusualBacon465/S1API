@@ -1,7 +1,7 @@
 ﻿// TODO: Implement GameDateTime wrapper
-// #if (IL2CPP)
+// #if (IL2CPPMELON || IL2CPPBEPINEX)
 // using S1GameTime = Il2CppScheduleOne.GameTime;
-// #elif (MONO)
+// #elif (MONOMELON || MONOBEPINEX)
 // using S1GameTime = ScheduleOne.GameTime;
 // #endif
 //
