@@ -17,14 +17,29 @@ namespace S1API.Logging
         private readonly ManualLogSource _loggerInstance;
 #endif
 
+        /// <summary>
+        /// Default constructor for <see cref="Log"/> instance
+        /// </summary>
+        /// <param name="sourceName">The source name to use for logging</param>
         public Log(string sourceName)
         {
 #if MONOMELON || IL2CPPMELON
             _loggerInstance = new MelonLogger.Instancer(sourceName);
 #else
-            _loggerInstance = new ManualLogSource(sourceName);
+            _loggerInstance = Logger.CreateLogSource(sourceName);
 #endif
         }
+
+#if MONOBEPINEX || IL2CPPBEPINEX
+        /// <summary>
+        /// Default constructor for <see cref="Log"/> instance when BepInEx is enabled
+        /// </summary>
+        /// <param name="loggerInstance">Existing <see cref="ManualLogSource"/> instance to use</param>
+        public Log(ManualLogSource loggerInstance)
+        {
+            _loggerInstance = loggerInstance;
+        }
+#endif
 
         /// <summary>
         /// Logs a message with Info level
