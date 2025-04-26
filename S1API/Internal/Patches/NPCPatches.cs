@@ -13,8 +13,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using HarmonyLib;
+using S1API.Entities;
 using S1API.Internal.Utils;
-using S1API.NPCs;
 
 namespace S1API.Internal.Patches
 {

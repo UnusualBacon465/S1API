@@ -1,14 +1,12 @@
-using System.Collections.Generic;
-
 #if IL2CPP
 using Il2CppSystem.Collections.Generic;
 using static Il2CppScheduleOne.Console;
-
 #else
 using static ScheduleOne.Console;
+using System.Collections.Generic;
 #endif
 
-namespace S1API.Utils
+namespace S1API.Console
 {
     public static class ConsoleHelper
     {

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace S1API.Entities
+namespace S1API.Entities.Interfaces
 {
     /// <summary>
     /// Represents an entity within the game world.

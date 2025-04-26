@@ -5,7 +5,7 @@ using S1Messaging = ScheduleOne.Messaging;
 #endif
 using System;
 
-namespace S1API.NPCs
+namespace S1API.Messaging
 {
     /// <summary>
     /// Represents a message response displayed for the player.

@@ -29,21 +29,22 @@ using S1Behaviour = ScheduleOne.NPCs.Behaviour;
 using S1Vehicles = ScheduleOne.Vehicles;
 using S1Vision = ScheduleOne.Vision;
 using S1NPCs = ScheduleOne.NPCs;
+using HarmonyLib;
 using System.Collections.Generic;
 using System.Reflection;
-using HarmonyLib;
 #endif
 
 using System;
 using System.IO;
 using System.Linq;
-using S1API.Entities;
+using S1API.Entities.Interfaces;
 using S1API.Internal.Abstraction;
 using S1API.Map;
+using S1API.Messaging;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace S1API.NPCs
+namespace S1API.Entities
 {
     /// <summary>
     /// An abstract class intended to be derived from for creating custom NPCs in the game.

@@ -1,15 +1,12 @@
 ﻿#if IL2CPP
-using UnityEngine;
-using UnityEngine.UI;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
-#else
-using UnityEngine;
-using UnityEngine.UI;
 #endif
 
 using System;
+using S1API.Internal.Utils;
+using UnityEngine;
 using UnityEngine.Events;
-using System.Collections.Generic;
+using UnityEngine.UI;
 
 namespace S1API.UI
 {
@@ -322,39 +319,39 @@ namespace S1API.UI
         /// <param name="rightButtonText">The text to display on the optional button. Defaults to "Action" if not specified.</param>
         /// <returns>The created GameObject representing the top bar.</returns>
         public static GameObject TopBar(string name, Transform parent, string title,float buttonWidth,float buttonHeight,float topbarSize,int rectleft,int rectright,int recttop,int rectbottom,
-    Action onRightButtonClick = null,
-    string rightButtonText = "Action")
-{
-    var topBar = Panel(name, parent, new Color(0.15f, 0.15f, 0.15f),
-        new Vector2(0f, topbarSize), new Vector2(1f, 1f));
+            Action onRightButtonClick = null,
+            string rightButtonText = "Action")
+        {
+            var topBar = Panel(name, parent, new Color(0.15f, 0.15f, 0.15f),
+                new Vector2(0f, topbarSize), new Vector2(1f, 1f));
 
-    var layout = topBar.AddComponent<HorizontalLayoutGroup>();
-    layout.padding = new RectOffset(rectleft,rectright,recttop,rectbottom);;
-    layout.spacing = 20;
-    layout.childAlignment = TextAnchor.MiddleCenter;
-    layout.childForceExpandWidth = false;
-    layout.childForceExpandHeight = true;
+            var layout = topBar.AddComponent<HorizontalLayoutGroup>();
+            layout.padding = new RectOffset(rectleft,rectright,recttop,rectbottom);;
+            layout.spacing = 20;
+            layout.childAlignment = TextAnchor.MiddleCenter;
+            layout.childForceExpandWidth = false;
+            layout.childForceExpandHeight = true;
 
-    // Title
-    var titleText = Text("TopBarTitle", title, topBar.transform, 26, TextAnchor.MiddleLeft, FontStyle.Bold);
-    var titleLayout = titleText.gameObject.AddComponent<LayoutElement>();
-    titleLayout.minWidth = 300;
-    titleLayout.flexibleWidth = 1;
+            // Title
+            var titleText = Text("TopBarTitle", title, topBar.transform, 26, TextAnchor.MiddleLeft, FontStyle.Bold);
+            var titleLayout = titleText.gameObject.AddComponent<LayoutElement>();
+            titleLayout.minWidth = 300;
+            titleLayout.flexibleWidth = 1;
 
-    // Button (if any)
-    if (onRightButtonClick != null)
-    {
-        var (btnGO, btn, label) = ButtonWithLabel("TopBarButton", rightButtonText, topBar.transform, new Color(0.25f, 0.5f, 1f), buttonWidth, buttonHeight);
-        ButtonUtils.AddListener(btn, onRightButtonClick);
+            // Button (if any)
+            if (onRightButtonClick != null)
+            {
+                var (btnGO, btn, label) = ButtonWithLabel("TopBarButton", rightButtonText, topBar.transform, new Color(0.25f, 0.5f, 1f), buttonWidth, buttonHeight);
+                ButtonUtils.AddListener(btn, onRightButtonClick);
 
-        var btnLayout = btnGO.AddComponent<LayoutElement>();
-        btnLayout.minWidth = buttonWidth;
-        btnLayout.preferredHeight = buttonHeight;
-        btnLayout.flexibleWidth = 0;
-    }
+                var btnLayout = btnGO.AddComponent<LayoutElement>();
+                btnLayout.minWidth = buttonWidth;
+                btnLayout.preferredHeight = buttonHeight;
+                btnLayout.flexibleWidth = 0;
+            }
 
-    return topBar;
-}
+            return topBar;
+        }
 
 
         /// Binds an action to a button and updates its label text.
@@ -369,35 +366,35 @@ namespace S1API.UI
             btn.onClick.AddListener(callback);
         }
     }
-}
 
-/// <summary>
-/// Represents a handler that encapsulates a callback action to be invoked when a click event occurs.
-/// </summary>
-/// <remarks>
-/// This class provides a mechanism to handle and execute logic when a click event is triggered.
-/// It associates an action defined by a UnityAction delegate with the click event.
-/// </remarks>
-public class ClickHandler
-{
     /// <summary>
-    /// A private field that stores the UnityAction delegate to be invoked during a specific click event.
-    /// </summary>
-    private readonly UnityAction _callback;
-
     /// Represents a handler that encapsulates a callback action to be invoked when a click event occurs.
-    public ClickHandler(UnityAction callback)
-    {
-        _callback = callback;
-    }
-
-    /// Invokes the callback action associated with a click event.
+    /// </summary>
     /// <remarks>
-    /// Executes the UnityAction delegate provided during the creation of the ClickHandler instance.
-    /// This method is used to process and handle click events associated with the handler.
+    /// This class provides a mechanism to handle and execute logic when a click event is triggered.
+    /// It associates an action defined by a UnityAction delegate with the click event.
     /// </remarks>
-    public void OnClick()
+    public class ClickHandler
     {
-        _callback.Invoke();
+        /// <summary>
+        /// A private field that stores the UnityAction delegate to be invoked during a specific click event.
+        /// </summary>
+        private readonly UnityAction _callback;
+
+        /// Represents a handler that encapsulates a callback action to be invoked when a click event occurs.
+        public ClickHandler(UnityAction callback)
+        {
+            _callback = callback;
+        }
+
+        /// Invokes the callback action associated with a click event.
+        /// <remarks>
+        /// Executes the UnityAction delegate provided during the creation of the ClickHandler instance.
+        /// This method is used to process and handle click events associated with the handler.
+        /// </remarks>
+        public void OnClick()
+        {
+            _callback.Invoke();
+        }
     }
 }

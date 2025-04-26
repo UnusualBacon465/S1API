@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace S1API.Entities
+namespace S1API.Entities.Interfaces
 {
     /// <summary>
     /// Represents an entity that has health associated.

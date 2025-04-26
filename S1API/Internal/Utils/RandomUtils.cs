@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
-using UnityEngine;
 
-namespace S1API.Utils
+namespace S1API.Internal.Utils
 {
     /// <summary>
     /// A utility class providing random selection functionality for lists and numeric ranges.
