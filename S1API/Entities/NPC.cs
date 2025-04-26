@@ -29,14 +29,14 @@ using S1Behaviour = ScheduleOne.NPCs.Behaviour;
 using S1Vehicles = ScheduleOne.Vehicles;
 using S1Vision = ScheduleOne.Vision;
 using S1NPCs = ScheduleOne.NPCs;
-using HarmonyLib;
 using System.Collections.Generic;
-using System.Reflection;
 #endif
 
 using System;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using HarmonyLib;
 using S1API.Entities.Interfaces;
 using S1API.Internal.Abstraction;
 using S1API.Map;
