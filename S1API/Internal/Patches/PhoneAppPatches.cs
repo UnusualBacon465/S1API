@@ -3,11 +3,12 @@ using HarmonyLib;
 using UnityEngine.SceneManagement;
 using S1API.Internal.Utils;
 using S1API.Internal.Abstraction;
+using S1API.Logging;
 using S1API.PhoneApp;
 
 namespace S1API.Internal.Patches
-{   
-#if IL2CPP
+{
+#if IL2CPPMELON || IL2CPPBEPINEX
     [HarmonyPatch(typeof(SceneManager), nameof(SceneManager.Internal_SceneLoaded))]
 #else
     [HarmonyPatch(typeof(SceneManager), "Internal_SceneLoaded", new Type[] { typeof(Scene), typeof(LoadSceneMode) })]
@@ -15,6 +16,8 @@ namespace S1API.Internal.Patches
 #endif
     internal static class PhoneAppPatches
     {
+        private static readonly Log _loggerInstance = new Log("PhoneAppPatches");
+
         private static bool _loaded = false;
 
         /// <summary>
@@ -41,7 +44,7 @@ namespace S1API.Internal.Patches
                 }
                 catch (System.Exception e)
                 {
-                    MelonLoader.MelonLogger.Warning($"[PhoneApp] Failed to register {type.FullName}: {e.Message}");
+                    _loggerInstance.Warning($"[PhoneApp] Failed to register {type.FullName}: {e.Message}");
                 }
             }
         }

@@ -1,19 +1,25 @@
-﻿#if IL2CPP
+﻿#if IL2CPPMELON || IL2CPPBEPINEX
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
-#elif MONO
+#elif MONOMELON || MONOBEPINEX
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 #endif
 
+using FishNet;
 using System.Collections;
 using System.IO;
+#if MONOMELON || IL2CPPMELON
 using MelonLoader;
-using Object = UnityEngine.Object;
 using MelonLoader.Utils;
+#elif MONOBEPINEX || IL2CPPBEPINEX
+using BepInEx.Logging;
+#endif
+using Object = UnityEngine.Object;
 using S1API.Internal.Abstraction;
+using S1API.Logging;
 
 namespace S1API.PhoneApp
 {
@@ -27,7 +33,7 @@ namespace S1API.PhoneApp
     /// </remarks>
     public abstract class PhoneApp : Registerable
     {
-        protected static readonly MelonLogger.Instance LoggerInstance = new MelonLogger.Instance("PhoneApp");
+        protected static readonly Log LoggerInstance = new Log("PhoneApp");
 
         /// <summary>
         /// The player object in the scene.
@@ -80,7 +86,10 @@ namespace S1API.PhoneApp
         /// </summary>
         protected override void OnCreated()
         {
-            MelonCoroutines.Start(InitApp());
+            // @TODO: Find out if this actually is the proper way of starting a coroutine
+            //        for both BepInEx and MelonLoader
+            //        Old code: MelonCoroutines.Start(InitApp());
+            InstanceFinder.TimeManager.StartCoroutine(InitApp());
         }
 
         /// <summary>
@@ -197,14 +206,14 @@ namespace S1API.PhoneApp
             GameObject parent = GameObject.Find("Player_Local/CameraContainer/Camera/OverlayCamera/GameplayMenu/Phone/phone/HomeScreen/AppIcons/");
             if (parent == null)
             {
-                LoggerInstance?.Error("AppIcons not found.");
+                LoggerInstance.Error("AppIcons not found.");
                 return false;
             }
 
             Transform lastIcon = parent.transform.childCount > 0 ? parent.transform.GetChild(parent.transform.childCount - 1) : null;
             if (lastIcon == null)
             {
-                LoggerInstance?.Error("No icon found to clone.");
+                LoggerInstance.Error("No icon found to clone.");
                 return false;
             }
 
@@ -235,7 +244,11 @@ namespace S1API.PhoneApp
                 return false;
             }
 
+#if MONOMELON || IL2CPPMELON
             string path = Path.Combine(MelonEnvironment.ModsDirectory, filename);
+#elif MONOBEPINEX || IL2CPPBEPINEX
+            string path = Path.Combine(BepInEx.Paths.PluginPath, filename);
+#endif
             if (!File.Exists(path))
             {
                 LoggerInstance?.Error("Icon file not found: " + path);

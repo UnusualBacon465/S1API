@@ -1,8 +1,8 @@
-﻿#if (IL2CPP)
+﻿#if (IL2CPPMELON || IL2CPPBEPINEX)
 using S1Loaders = Il2CppScheduleOne.Persistence.Loaders;
 using S1NPCs = Il2CppScheduleOne.NPCs;
 using Il2CppSystem.Collections.Generic;
-#elif (MONO)
+#elif (MONOMELON || MONOBEPINEX)
 using S1Loaders = ScheduleOne.Persistence.Loaders;
 using S1NPCs = ScheduleOne.NPCs;
 using System.Collections.Generic;
