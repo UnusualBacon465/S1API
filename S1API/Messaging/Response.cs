@@ -1,11 +1,11 @@
-﻿#if (IL2CPP)
+#if (IL2CPPMELON || IL2CPPBEPINEX)
 using S1Messaging = Il2CppScheduleOne.Messaging;
-#elif (MONO)
+#elif (MONOMELON || MONOBEPINEX)
 using S1Messaging = ScheduleOne.Messaging;
 #endif
 using System;
 
-namespace S1API.NPCs
+namespace S1API.Messaging
 {
     /// <summary>
     /// Represents a message response displayed for the player.

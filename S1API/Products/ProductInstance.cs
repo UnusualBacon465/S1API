@@ -1,6 +1,6 @@
-﻿#if (IL2CPP)
+﻿#if (IL2CPPMELON || IL2CPPBEPINEX)
 using S1Product = Il2CppScheduleOne.Product;
-#elif (MONO)
+#elif (MONOMELON || MONOBEPINEX)
 using S1Product = ScheduleOne.Product;
 #endif
 

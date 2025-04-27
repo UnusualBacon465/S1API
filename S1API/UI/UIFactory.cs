@@ -1,17 +1,12 @@
-﻿#if IL2CPP
-using UnityEngine;
-using UnityEngine.UI;
+﻿#if (IL2CPPMELON || IL2CPPBEPINEX)
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
-#else
-using UnityEngine;
-using UnityEngine.UI;
 #endif
 
 using System;
+using S1API.Internal.Utils;
+using UnityEngine;
 using UnityEngine.Events;
-using System.Collections.Generic;
-using MelonLoader;
-using Object = UnityEngine.Object;
+using UnityEngine.UI;
 
 namespace S1API.UI
 {
@@ -241,33 +236,15 @@ namespace S1API.UI
         /// <param name="parent">The transform whose child objects will be destroyed.</param>
         public static void ClearChildren(Transform parent)
         {
-            if (parent == null)
-            {
-                return;
-            }
-
-            try
-            {
-                int count = parent.childCount;
-                for (int i = count - 1; i >= 0; i--)
-                {
-                    var child = parent.GetChild(i);
-                    if (child != null)
-                        Object.Destroy(child.gameObject);
-                }
-
-            }
-            catch (System.Exception e)
-            {
-                return;
-            }
+            foreach (Transform child in parent)
+                GameObject.Destroy(child.gameObject);
         }
 
         /// Configures a GameObject to use a VerticalLayoutGroup with specified spacing and padding.
         /// <param name="go">The GameObject to which a VerticalLayoutGroup will be added or configured.</param>
         /// <param name="spacing">The spacing between child objects within the VerticalLayoutGroup. Default is 10.</param>
         /// <param name="padding">The padding around the edges of the VerticalLayoutGroup. If null, a default RectOffset of (10, 10, 10, 10) will be used.</param>
-        public static void VerticalLayoutOnGO(GameObject go, int spacing = 10, RectOffset padding = null)
+        public static void VerticalLayoutOnGO(GameObject go, int spacing = 10, RectOffset? padding = null)
         {
             var layout = go.AddComponent<VerticalLayoutGroup>();
             layout.spacing = spacing;
@@ -340,41 +317,57 @@ namespace S1API.UI
         /// <param name="buttonHeight">The height of the button, if displayed.</param>
         /// <param name="onRightButtonClick">An optional action to be invoked when the button is clicked. If null, the button will not be created.</param>
         /// <param name="rightButtonText">The text to display on the optional button. Defaults to "Action" if not specified.</param>
+        /// <param name="topBarSize">The size of the top bar.</param>
+        /// <param name="rectLeft">The left position of the bar.</param>
+        /// <param name="rectRight">The right position of the bar.</param>
+        /// <param name="rectTop">The top position of the bar.</param>
+        /// <param name="rectBottom">The bottom position of the bar.</param>
         /// <returns>The created GameObject representing the top bar.</returns>
-        public static GameObject TopBar(string name, Transform parent, string title,float buttonWidth,float buttonHeight,float topbarSize,int rectleft,int rectright,int recttop,int rectbottom,
-    Action onRightButtonClick = null,
-    string rightButtonText = "Action")
-{
-    var topBar = Panel(name, parent, new Color(0.15f, 0.15f, 0.15f),
-        new Vector2(0f, topbarSize), new Vector2(1f, 1f));
+        public static GameObject TopBar(
+            string name, 
+            Transform parent, 
+            string title,
+            float buttonWidth,
+            float buttonHeight,
+            float topBarSize,
+            int rectLeft,
+            int rectRight,
+            int rectTop,
+            int rectBottom,
+            Action? onRightButtonClick = null,
+            string rightButtonText = "Action"
+            )
+        {
+            var topBar = Panel(name, parent, new Color(0.15f, 0.15f, 0.15f),
+                new Vector2(0f, topBarSize), new Vector2(1f, 1f));
 
-    var layout = topBar.AddComponent<HorizontalLayoutGroup>();
-    layout.padding = new RectOffset(rectleft,rectright,recttop,rectbottom);;
-    layout.spacing = 20;
-    layout.childAlignment = TextAnchor.MiddleCenter;
-    layout.childForceExpandWidth = false;
-    layout.childForceExpandHeight = true;
+            var layout = topBar.AddComponent<HorizontalLayoutGroup>();
+            layout.padding = new RectOffset(rectLeft,rectRight,rectTop,rectBottom);;
+            layout.spacing = 20;
+            layout.childAlignment = TextAnchor.MiddleCenter;
+            layout.childForceExpandWidth = false;
+            layout.childForceExpandHeight = true;
 
-    // Title
-    var titleText = Text("TopBarTitle", title, topBar.transform, 26, TextAnchor.MiddleLeft, FontStyle.Bold);
-    var titleLayout = titleText.gameObject.AddComponent<LayoutElement>();
-    titleLayout.minWidth = 300;
-    titleLayout.flexibleWidth = 1;
+            // Title
+            var titleText = Text("TopBarTitle", title, topBar.transform, 26, TextAnchor.MiddleLeft, FontStyle.Bold);
+            var titleLayout = titleText.gameObject.AddComponent<LayoutElement>();
+            titleLayout.minWidth = 300;
+            titleLayout.flexibleWidth = 1;
 
-    // Button (if any)
-    if (onRightButtonClick != null)
-    {
-        var (btnGO, btn, label) = ButtonWithLabel("TopBarButton", rightButtonText, topBar.transform, new Color(0.25f, 0.5f, 1f), buttonWidth, buttonHeight);
-        ButtonUtils.AddListener(btn, onRightButtonClick);
+            if (onRightButtonClick == null) 
+                return topBar;
+            
+            // Create the button element if we have an Action to invoke
+            var (btnGO, btn, label) = ButtonWithLabel("TopBarButton", rightButtonText, topBar.transform, new Color(0.25f, 0.5f, 1f), buttonWidth, buttonHeight);
+            ButtonUtils.AddListener(btn, onRightButtonClick);
 
-        var btnLayout = btnGO.AddComponent<LayoutElement>();
-        btnLayout.minWidth = buttonWidth;
-        btnLayout.preferredHeight = buttonHeight;
-        btnLayout.flexibleWidth = 0;
-    }
+            var btnLayout = btnGO.AddComponent<LayoutElement>();
+            btnLayout.minWidth = buttonWidth;
+            btnLayout.preferredHeight = buttonHeight;
+            btnLayout.flexibleWidth = 0;
 
-    return topBar;
-}
+            return topBar;
+        }
 
 
         /// Binds an action to a button and updates its label text.
@@ -389,35 +382,35 @@ namespace S1API.UI
             btn.onClick.AddListener(callback);
         }
     }
-}
 
-/// <summary>
-/// Represents a handler that encapsulates a callback action to be invoked when a click event occurs.
-/// </summary>
-/// <remarks>
-/// This class provides a mechanism to handle and execute logic when a click event is triggered.
-/// It associates an action defined by a UnityAction delegate with the click event.
-/// </remarks>
-public class ClickHandler
-{
     /// <summary>
-    /// A private field that stores the UnityAction delegate to be invoked during a specific click event.
-    /// </summary>
-    private readonly UnityAction _callback;
-
     /// Represents a handler that encapsulates a callback action to be invoked when a click event occurs.
-    public ClickHandler(UnityAction callback)
-    {
-        _callback = callback;
-    }
-
-    /// Invokes the callback action associated with a click event.
+    /// </summary>
     /// <remarks>
-    /// Executes the UnityAction delegate provided during the creation of the ClickHandler instance.
-    /// This method is used to process and handle click events associated with the handler.
+    /// This class provides a mechanism to handle and execute logic when a click event is triggered.
+    /// It associates an action defined by a UnityAction delegate with the click event.
     /// </remarks>
-    public void OnClick()
+    public class ClickHandler
     {
-        _callback.Invoke();
+        /// <summary>
+        /// A private field that stores the UnityAction delegate to be invoked during a specific click event.
+        /// </summary>
+        private readonly UnityAction _callback;
+
+        /// Represents a handler that encapsulates a callback action to be invoked when a click event occurs.
+        public ClickHandler(UnityAction callback)
+        {
+            _callback = callback;
+        }
+
+        /// Invokes the callback action associated with a click event.
+        /// <remarks>
+        /// Executes the UnityAction delegate provided during the creation of the ClickHandler instance.
+        /// This method is used to process and handle click events associated with the handler.
+        /// </remarks>
+        public void OnClick()
+        {
+            _callback.Invoke();
+        }
     }
 }
