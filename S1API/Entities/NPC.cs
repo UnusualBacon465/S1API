@@ -49,7 +49,7 @@ namespace S1API.Entities
     /// <summary>
     /// An abstract class intended to be derived from for creating custom NPCs in the game.
     /// </summary>
-    public abstract class NPC : Saveable, ILivingEntity
+    public abstract class NPC : Saveable, IEntity, IHealth
     {
         // Protected members intended to be used by modders.
         // Intended to be used from within the class / derived classes ONLY.
@@ -205,7 +205,23 @@ namespace S1API.Entities
         /// Not intended for use by modders!
         /// </summary>
         public GameObject gameObject { get; }
+
+        /// <summary>
+        /// The world position of the NPC.
+        /// </summary>
+        public Vector3 Position
+        {
+            get => gameObject.transform.position;
+            set => S1NPC.Movement.Warp(value);
+        }
         
+        /// <summary>
+        /// The transform of the NPC.
+        /// Please do not set the properties of this transform.
+        /// </summary>
+        public Transform Transform =>
+            gameObject.transform;
+
         /// <summary>
         /// List of all NPCs within the base game and modded.
         /// </summary>
@@ -394,7 +410,7 @@ namespace S1API.Entities
         /// <param name="amount">The amount of damage to deal.</param>
         public void Damage(int amount)
         {
-            if (amount >= 0)
+            if (amount <= 0)
                 return;
             
             S1NPC.Health.TakeDamage(amount, true);

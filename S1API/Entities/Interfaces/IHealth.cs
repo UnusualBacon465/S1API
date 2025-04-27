@@ -5,7 +5,7 @@ namespace S1API.Entities.Interfaces
     /// <summary>
     /// Represents an entity that has health associated.
     /// </summary>
-    public interface ILivingEntity : IEntity
+    public interface IHealth
     {
         /// <summary>
         /// The current health of the entity.
