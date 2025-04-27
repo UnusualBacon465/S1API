@@ -64,7 +64,7 @@ namespace S1API.Internal.Patches
         [HarmonyPatch(typeof(S1NPCs.NPC), "Start")]
         [HarmonyPostfix]
         private static void NPCStart(S1NPCs.NPC __instance) => 
-            NPCs.FirstOrDefault(npc => npc.S1NPC == __instance)?.CreateInternal();
+            NPCs.FirstOrDefault(npc => npc.IsCustomNPC && npc.S1NPC == __instance)?.CreateInternal();
         
 
         /// <summary>

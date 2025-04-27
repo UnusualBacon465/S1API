@@ -13,6 +13,6 @@ namespace S1API.Entities.NPCs.PoliceOfficers
     /// </summary>
     public class OfficerCooper : NPC
     {
-        internal OfficerCooper() : base(NPCManager.NPCRegistry.ToArray().First(n => n.ID == "officer_cooper")) { }
+        internal OfficerCooper() : base(NPCManager.NPCRegistry.ToArray().First(n => n.ID == "officercooper")) { }
     }
 }
