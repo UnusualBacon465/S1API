@@ -26,9 +26,18 @@ using HarmonyLib;
 namespace S1API
 {
     [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
-    public class S1API : BaseUnityPlugin
+    public class S1API : 
+#if MONOBEPINEX
+        BaseUnityPlugin
+#elif IL2CPPBEPINEX
+        BasePlugin
+#endif
     {
+#if MONOBEPINEX
         private void Awake()
+#elif IL2CPPBEPINEX
+        public override void Load()
+#endif
         {
             new Harmony("com.S1API").PatchAll();
         }
