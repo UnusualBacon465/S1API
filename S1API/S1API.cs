@@ -1,4 +1,4 @@
-﻿#if MONOMELON || IL2CPPMELON
+﻿#if (MONOMELON || IL2CPPMELON)
 using MelonLoader;
 
 [assembly: MelonInfo(typeof(S1API.S1API), "S1API", "{VERSION_NUMBER}", "KaBooMa")]
@@ -12,7 +12,7 @@ namespace S1API
     {
     }
 }
-#elif MONOBEPINEX || IL2CPPBEPINEX
+#elif (MONOBEPINEX || IL2CPPBEPINEX)
 using BepInEx;
 using BepInEx.Unity.Mono;
 
@@ -29,5 +29,4 @@ namespace S1API
         }
     }
 }
-
 #endif

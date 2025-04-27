@@ -7,7 +7,7 @@ using S1API.PhoneApp;
 
 namespace S1API.Internal.Patches
 {   
-#if IL2CPP
+#if (IL2CPPMELON || IL2CPPBEPINEX)
     [HarmonyPatch(typeof(SceneManager), nameof(SceneManager.Internal_SceneLoaded))]
 #else
     [HarmonyPatch(typeof(SceneManager), "Internal_SceneLoaded", new Type[] { typeof(Scene), typeof(LoadSceneMode) })]

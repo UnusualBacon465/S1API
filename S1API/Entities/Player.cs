@@ -1,4 +1,4 @@
-﻿#if IL2CPP
+﻿#if (IL2CPPMELON || IL2CPPBEPINEX)
 using S1PlayerScripts = Il2CppScheduleOne.PlayerScripts;
 using S1Health = Il2CppScheduleOne.PlayerScripts.Health;
 #else
@@ -11,7 +11,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using HarmonyLib;
-using MelonLoader;
 using S1API.Entities.Interfaces;
 using S1API.Internal.Abstraction;
 using UnityEngine;

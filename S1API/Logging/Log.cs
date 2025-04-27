@@ -1,5 +1,5 @@
-﻿#if MONOMELON || IL2CPPMELON
-using MelonLoader
+﻿#if (MONOMELON || IL2CPPMELON)
+using MelonLoader;
 #else
 using BepInEx.Logging;
 #endif
@@ -11,7 +11,7 @@ namespace S1API.Logging
     /// </summary>
     public class Log
     {
-#if MONOMELON || IL2CPPMELON
+#if (MONOMELON || IL2CPPMELON)
         private readonly MelonLogger.Instance _loggerInstance;
 #else
         private readonly ManualLogSource _loggerInstance;
@@ -23,14 +23,14 @@ namespace S1API.Logging
         /// <param name="sourceName">The source name to use for logging</param>
         public Log(string sourceName)
         {
-#if MONOMELON || IL2CPPMELON
-            _loggerInstance = new MelonLogger.Instancer(sourceName);
+#if (MONOMELON || IL2CPPMELON)
+            _loggerInstance = new MelonLogger.Instance(sourceName);
 #else
             _loggerInstance = Logger.CreateLogSource(sourceName);
 #endif
         }
 
-#if MONOBEPINEX || IL2CPPBEPINEX
+#if (MONOBEPINEX || IL2CPPBEPINEX)
         /// <summary>
         /// Default constructor for <see cref="Log"/> instance when BepInEx is enabled
         /// </summary>
@@ -47,7 +47,7 @@ namespace S1API.Logging
         /// <param name="message">Message to log</param>
         public void Msg(string message)
         {
-#if MONOMELON || IL2CPPMELON
+#if (MONOMELON || IL2CPPMELON)
             _loggerInstance.Msg(message);
 #else
             _loggerInstance.LogInfo(message);
@@ -60,7 +60,7 @@ namespace S1API.Logging
         /// <param name="message">Message to log</param>
         public void Warning(string message)
         {
-#if MONOMELON || IL2CPPMELON
+#if (MONOMELON || IL2CPPMELON)
             _loggerInstance.Warning(message);
 #else
             _loggerInstance.LogWarning(message);
@@ -73,7 +73,7 @@ namespace S1API.Logging
         /// <param name="message">Message to log</param>
         public void Error(string message)
         {
-#if MONOMELON || IL2CPPMELON
+#if (MONOMELON || IL2CPPMELON)
             _loggerInstance.Error(message);
 #else
             _loggerInstance.LogError(message);
@@ -86,7 +86,7 @@ namespace S1API.Logging
         /// <param name="message">Message to log</param>
         public void BigError(string message)
         {
-#if MONOMELON || IL2CPPMELON
+#if (MONOMELON || IL2CPPMELON)
             _loggerInstance.BigError(message);
 #else
             _loggerInstance.LogFatal(message);

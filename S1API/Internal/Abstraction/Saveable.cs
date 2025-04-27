@@ -1,6 +1,6 @@
 ﻿#if (MONOMELON || MONOBEPINEX)
 using System.Collections.Generic;
-#elif (IL2CPP)
+#elif (IL2CPPMELON || IL2CPPBEPINEX)
 using Il2CppSystem.Collections.Generic;
 #endif
 
