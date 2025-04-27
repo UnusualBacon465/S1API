@@ -1,11 +1,11 @@
-﻿using System.Collections;
+﻿using FishNet;
+using System.Collections;
 using System.IO;
-using MelonLoader;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
-using MelonLoader.Utils;
 using S1API.Internal.Abstraction;
+using S1API.Logging;
 
 namespace S1API.PhoneApp
 {
@@ -22,7 +22,7 @@ namespace S1API.PhoneApp
         /// <summary>
         /// INTERNAL: A dedicated logger for all custom phone apps.
         /// </summary>
-        protected static readonly MelonLogger.Instance LoggerInstance = new MelonLogger.Instance("PhoneApp");
+        protected static readonly Log LoggerInstance = new Log("PhoneApp");
 
         /// <summary>
         /// The player object in the scene.
@@ -54,7 +54,7 @@ namespace S1API.PhoneApp
         /// The title shown at the top of the app UI.
         /// </summary>
         protected abstract string AppTitle { get; }
-        
+
         /// <summary>
         /// The label shown under the app icon on the home screen.
         /// </summary>
@@ -76,7 +76,10 @@ namespace S1API.PhoneApp
         /// </summary>
         protected override void OnCreated()
         {
-            MelonCoroutines.Start(InitApp());
+            // @TODO: Find out if this actually is the proper way of starting a coroutine
+            //        for both BepInEx and MelonLoader
+            //        Old code: MelonCoroutines.Start(InitApp());
+            InstanceFinder.TimeManager.StartCoroutine(InitApp());
         }
 
         /// <summary>
@@ -209,7 +212,7 @@ namespace S1API.PhoneApp
 
             Transform labelTransform = iconObj.transform.Find("Label");
             Text? label = labelTransform?.GetComponent<Text>();
-            if (label != null) 
+            if (label != null)
                 label.text = labelText;
 
             return ChangeAppIconImage(iconObj, fileName);
@@ -232,7 +235,11 @@ namespace S1API.PhoneApp
                 return false;
             }
 
+#if MONOMELON || IL2CPPMELON
             string path = Path.Combine(MelonEnvironment.ModsDirectory, filename);
+#elif MONOBEPINEX || IL2CPPBEPINEX
+            string path = Path.Combine(BepInEx.Paths.PluginPath, filename);
+#endif
             if (!File.Exists(path))
             {
                 LoggerInstance?.Error("Icon file not found: " + path);
