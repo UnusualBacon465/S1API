@@ -1,18 +1,20 @@
 ﻿using System.IO;
+using Il2CppScheduleOne.UI.Phone;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 using S1API.Internal.Abstraction;
 using S1API.Internal.Patches;
-#if (IL2CPPMELON || MONOMELON)
-using MelonLoader;
-using MelonLoader.Utils;
-#endif
-
-#if (IL2CPPBEPINEX || IL2CPPMONO)
+#if IL2CPPMELON
 using Il2CppScheduleOne.UI.Phone;
-#elif (MONOBEPINEX || MONOMELON)
+using MelonLoader.Utils;
+#elif IL2CPPBEPINEX 
+using Il2CppScheduleOne.UI.Phone;
+#elif MONOBEPINEX
 using ScheduleOne.UI.Phone;
+#elif MONOMELON
+using ScheduleOne.UI.Phone;
+using MelonLoader.Utils;
 #endif
 namespace S1API.PhoneApp
 {

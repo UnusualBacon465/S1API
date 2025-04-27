@@ -15,60 +15,45 @@ using ScheduleOne.UI.Phone;
 namespace S1API.Internal.Patches
 {
     /// <summary>
-    /// Patches related to PhoneApp system initialization and UI injection.
+    /// A Harmony patch for the Start method of the HomeScreen class, facilitating the registration and initialization of PhoneApps.
     /// </summary>
-    public class HomeScreen_Start
+    [HarmonyPatch(typeof(HomeScreen), "Start")]
+    internal static class HomeScreen_Start_Patch
     {
+        /// <summary>
+        /// A logging instance used for handling log messages pertaining to PhoneApp registration
+        /// and operations. Provides methods to log messages with different severity levels such
+        /// as Info, Warning, Error, and Fatal.
+        /// </summary>
         private static readonly Log Logger = new Log("PhoneApp");
 
         /// <summary>
-        /// Patches SceneManager scene loading to register all PhoneApps after Main scene loads.
+        /// Executes after the HomeScreen's Start method to handle the registration
+        /// and initialization of PhoneApps.
         /// </summary>
-#if (IL2CPPMELON || IL2CPPBEPINEX)
-        [HarmonyPatch(typeof(SceneManager), nameof(SceneManager.Internal_SceneLoaded))]
-#else
-        [HarmonyPatch(typeof(SceneManager), "Internal_SceneLoaded", new Type[] { typeof(Scene), typeof(LoadSceneMode) })]
-#endif
-        internal static class PhoneAppPatches
+        /// <param name="__instance">The HomeScreen instance being targeted in the patch.</param>
+        static void Postfix(HomeScreen __instance)
         {
-            static void Postfix(Scene scene, LoadSceneMode mode)
+            if (__instance == null)
+                return;
+
+            // Re-register all PhoneApps
+            var phoneApps = ReflectionUtils.GetDerivedClasses<PhoneApp.PhoneApp>();
+            foreach (var type in phoneApps)
             {
-                if (scene.name != "Main")
-                    return;
+                if (type.GetConstructor(Type.EmptyTypes) == null)
+                    continue;
 
-                var phoneApps = ReflectionUtils.GetDerivedClasses<PhoneApp.PhoneApp>();
-                foreach (var type in phoneApps)
+                try
                 {
-                    if (type.GetConstructor(Type.EmptyTypes) == null) continue;
-
-                    try
-                    {
-                        var instance = (PhoneApp.PhoneApp)Activator.CreateInstance(type)!;
-                        ((IRegisterable)instance).CreateInternal();
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.Error($"Failed to create instance of {type.Name}: {e}");
-                    }
+                    var instance = (PhoneApp.PhoneApp)Activator.CreateInstance(type)!;
+                    ((IRegisterable)instance).CreateInternal();
+                    instance.SpawnUI(__instance);
+                    instance.SpawnIcon(__instance);
                 }
-            }
-        }
-
-        /// <summary>
-        /// Patches HomeScreen.Start to spawn registered PhoneApp UIs and icons.
-        /// </summary>
-        [HarmonyPatch(typeof(HomeScreen), "Start")]
-        internal static class HomeScreen_Start_Patch
-        {
-            static void Postfix(HomeScreen __instance)
-            {
-                if (__instance == null)
-                    return;
-
-                foreach (var app in PhoneAppRegistry.RegisteredApps)
+                catch (Exception e)
                 {
-                    app.SpawnUI(__instance);
-                    app.SpawnIcon(__instance);
+                    Logger.Warning($"[PhoneApp] Failed to register {type.FullName}: {e.Message}");
                 }
             }
         }
