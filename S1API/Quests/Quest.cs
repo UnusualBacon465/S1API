@@ -90,7 +90,7 @@ namespace S1API.Quests
 #if (MONOMELON || MONOBEPINEX)
             FieldInfo autoInitField = AccessTools.Field(typeof(S1Quests.Quest), "autoInitialize");
             autoInitField.SetValue(S1Quest, false);
-#elif (IL2CPP)
+#elif (IL2CPPMELON || IL2CPPBEPINEX)
             S1Quest.autoInitialize = false;
 #endif
             
@@ -141,7 +141,7 @@ namespace S1API.Quests
 #if (MONOMELON || MONOBEPINEX)
             FieldInfo uiPrefabField = AccessTools.Field(typeof(S1Map.POI), "UIPrefab");
             uiPrefabField.SetValue(poi, uiPrefabObject);
-#elif (IL2CPP)
+#elif (IL2CPPMELON || IL2CPPBEPINEX)
             poi.UIPrefab = uiPrefabObject;
 #endif
             S1Quest.PoIPrefab = poiPrefabObject;

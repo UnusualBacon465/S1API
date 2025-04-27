@@ -1,4 +1,4 @@
-﻿#if (IL2CPP)
+﻿#if (IL2CPPMELON || IL2CPPBEPINEX)
 using S1DevUtilities = Il2CppScheduleOne.DevUtilities;
 using S1Interaction = Il2CppScheduleOne.Interaction;
 using S1Messaging = Il2CppScheduleOne.Messaging;
@@ -14,7 +14,7 @@ using S1Vehicles = Il2CppScheduleOne.Vehicles;
 using S1Vision = Il2CppScheduleOne.Vision;
 using S1NPCs = Il2CppScheduleOne.NPCs;
 using Il2CppSystem.Collections.Generic;
-#elif (MONO)
+#elif (MONOMELON || MONOBEPINEX)
 using S1DevUtilities = ScheduleOne.DevUtilities;
 using S1Interaction = ScheduleOne.Interaction;
 using S1Messaging = ScheduleOne.Messaging;
@@ -95,9 +95,9 @@ namespace S1API.Entities
             S1NPC.ConversationCategories.Add(S1Messaging.EConversationCategory.Customer);
             
             // Create our MessageConversation
-#if (IL2CPP)
+#if (IL2CPPMELON || IL2CPPBEPINEX)
             S1NPC.CreateMessageConversation();
-#elif (MONO)
+#elif (MONOMELON || MONOBEPINEX)
             MethodInfo createConvoMethod = AccessTools.Method(typeof(S1NPCs.NPC), "CreateMessageConversation");
             createConvoMethod.Invoke(S1NPC, null);
 #endif 
@@ -162,9 +162,9 @@ namespace S1API.Entities
             S1NPC.awareness.VisionCone.QuestionMarkPopup = gameObject.AddComponent<S1WorkspacePopup.WorldspacePopup>();
             
             // Interaction behaviour
-#if (IL2CPP)
+#if (IL2CPPMELON || IL2CPPBEPINEX)
             S1NPC.intObj = gameObject.AddComponent<S1Interaction.InteractableObject>();
-#elif (MONO)
+#elif (MONOMELON || MONOBEPINEX)
             FieldInfo intObjField = AccessTools.Field(typeof(S1NPCs.NPC), "intObj");
             intObjField.SetValue(S1NPC, gameObject.AddComponent<S1Interaction.InteractableObject>());
 #endif
