@@ -1,15 +1,18 @@
 ﻿using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
-using MelonLoader;
 using Object = UnityEngine.Object;
-using MelonLoader.Utils;
 using S1API.Internal.Abstraction;
 using S1API.Internal.Patches;
 #if IL2CPPBEPINEX || IL2CPPMELON 
+using MelonLoader;
+using MelonLoader.Utils;
 using Il2CppScheduleOne.UI.Phone;
 #else
 using ScheduleOne.UI.Phone;
+using MelonLoader;
+using MelonLoader.Utils;
+using Il2CppScheduleOne.UI.Phone;
 #endif
 namespace S1API.PhoneApp
 {
