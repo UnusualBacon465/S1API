@@ -59,8 +59,8 @@ namespace S1API.Internal.Patches
             
             string[] questDirectories = Directory.GetDirectories(mainPath)
                 .Select(Path.GetFileName)
-                .Where(directory => directory.StartsWith("Quest_"))
-                .ToArray();
+                .Where(directory => directory != null && directory.StartsWith("Quest_"))
+                .ToArray()!;
 
             foreach (string questDirectory in questDirectories)
             {

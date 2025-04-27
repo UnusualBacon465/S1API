@@ -5,6 +5,9 @@ using MelonLoader;
 
 namespace S1API
 {
+    /// <summary>
+    /// Not currently utilized by S1API.
+    /// </summary>
     public class S1API : MelonMod
     {
     }

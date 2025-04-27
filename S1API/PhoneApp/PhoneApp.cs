@@ -1,25 +1,11 @@
-﻿#if IL2CPPMELON || IL2CPPBEPINEX
-using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.Events;
-#elif MONOMELON || MONOBEPINEX
-using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.Events;
-#endif
-
-using FishNet;
-using System.Collections;
+﻿using System.Collections;
 using System.IO;
-#if MONOMELON || IL2CPPMELON
 using MelonLoader;
-using MelonLoader.Utils;
-#elif MONOBEPINEX || IL2CPPBEPINEX
-using BepInEx.Logging;
-#endif
+using UnityEngine;
+using UnityEngine.UI;
 using Object = UnityEngine.Object;
+using MelonLoader.Utils;
 using S1API.Internal.Abstraction;
-using S1API.Logging;
 
 namespace S1API.PhoneApp
 {
@@ -33,27 +19,31 @@ namespace S1API.PhoneApp
     /// </remarks>
     public abstract class PhoneApp : Registerable
     {
-        protected static readonly Log LoggerInstance = new Log("PhoneApp");
+        /// <summary>
+        /// INTERNAL: A dedicated logger for all custom phone apps.
+        /// </summary>
+        protected static readonly MelonLogger.Instance LoggerInstance = new MelonLogger.Instance("PhoneApp");
 
         /// <summary>
         /// The player object in the scene.
         /// </summary>
-        protected GameObject Player;
+        private GameObject? _player;
 
         /// <summary>
         /// The in-game UI panel representing the app.
         /// </summary>
-        protected GameObject AppPanel;
+        private GameObject? _appPanel;
 
+        // TODO (@omar-akermi): Can you look into if this is still needed pls?
         /// <summary>
         /// Whether the app was successfully created.
         /// </summary>
-        protected bool AppCreated;
+        private bool _appCreated;
 
         /// <summary>
         /// Whether the app icon was already modified.
         /// </summary>
-        protected bool IconModified;
+        private bool _iconModified;
 
         /// <summary>
         /// Unique GameObject name of the app (e.g. "SilkroadApp").
@@ -64,7 +54,7 @@ namespace S1API.PhoneApp
         /// The title shown at the top of the app UI.
         /// </summary>
         protected abstract string AppTitle { get; }
-
+        
         /// <summary>
         /// The label shown under the app icon on the home screen.
         /// </summary>
@@ -86,10 +76,7 @@ namespace S1API.PhoneApp
         /// </summary>
         protected override void OnCreated()
         {
-            // @TODO: Find out if this actually is the proper way of starting a coroutine
-            //        for both BepInEx and MelonLoader
-            //        Old code: MelonCoroutines.Start(InitApp());
-            InstanceFinder.TimeManager.StartCoroutine(InitApp());
+            MelonCoroutines.Start(InitApp());
         }
 
         /// <summary>
@@ -97,14 +84,14 @@ namespace S1API.PhoneApp
         /// </summary>
         protected override void OnDestroyed()
         {
-            if (AppPanel != null)
+            if (_appPanel != null)
             {
-                Object.Destroy(AppPanel);
-                AppPanel = null;
+                Object.Destroy(_appPanel);
+                _appPanel = null;
             }
 
-            AppCreated = false;
-            IconModified = false;
+            _appCreated = false;
+            _iconModified = false;
         }
 
         /// <summary>
@@ -114,8 +101,8 @@ namespace S1API.PhoneApp
         {
             yield return new WaitForSeconds(5f);
 
-            Player = GameObject.Find("Player_Local");
-            if (Player == null)
+            _player = GameObject.Find("Player_Local");
+            if (_player == null)
             {
                 LoggerInstance.Error("Player_Local not found.");
                 yield break;
@@ -131,8 +118,8 @@ namespace S1API.PhoneApp
             Transform existingApp = appsCanvas.transform.Find(AppName);
             if (existingApp != null)
             {
-                AppPanel = existingApp.gameObject;
-                SetupExistingAppPanel(AppPanel);
+                _appPanel = existingApp.gameObject;
+                SetupExistingAppPanel(_appPanel);
             }
             else
             {
@@ -143,10 +130,10 @@ namespace S1API.PhoneApp
                     yield break;
                 }
 
-                AppPanel = Object.Instantiate(templateApp.gameObject, appsCanvas.transform);
-                AppPanel.name = AppName;
+                _appPanel = Object.Instantiate(templateApp.gameObject, appsCanvas.transform);
+                _appPanel.name = AppName;
 
-                Transform containerTransform = AppPanel.transform.Find("Container");
+                Transform containerTransform = _appPanel.transform.Find("Container");
                 if (containerTransform != null)
                 {
                     GameObject container = containerTransform.gameObject;
@@ -154,14 +141,14 @@ namespace S1API.PhoneApp
                     OnCreatedUI(container);
                 }
 
-                AppCreated = true;
+                _appCreated = true;
             }
 
-            AppPanel.SetActive(true);
+            _appPanel.SetActive(true);
 
-            if (!IconModified)
+            if (!_iconModified)
             {
-                IconModified = ModifyAppIcon(IconLabel, IconFileName);
+                _iconModified = ModifyAppIcon(IconLabel, IconFileName);
             }
         }
 
@@ -182,7 +169,7 @@ namespace S1API.PhoneApp
                 }
             }
 
-            AppCreated = true;
+            _appCreated = true;
         }
 
         private void ClearContainer(GameObject container)
@@ -206,14 +193,14 @@ namespace S1API.PhoneApp
             GameObject parent = GameObject.Find("Player_Local/CameraContainer/Camera/OverlayCamera/GameplayMenu/Phone/phone/HomeScreen/AppIcons/");
             if (parent == null)
             {
-                LoggerInstance.Error("AppIcons not found.");
+                LoggerInstance?.Error("AppIcons not found.");
                 return false;
             }
 
-            Transform lastIcon = parent.transform.childCount > 0 ? parent.transform.GetChild(parent.transform.childCount - 1) : null;
+            Transform? lastIcon = parent.transform.childCount > 0 ? parent.transform.GetChild(parent.transform.childCount - 1) : null;
             if (lastIcon == null)
             {
-                LoggerInstance.Error("No icon found to clone.");
+                LoggerInstance?.Error("No icon found to clone.");
                 return false;
             }
 
@@ -221,8 +208,9 @@ namespace S1API.PhoneApp
             iconObj.name = AppName;
 
             Transform labelTransform = iconObj.transform.Find("Label");
-            Text label = labelTransform?.GetComponent<Text>();
-            if (label != null) label.text = labelText;
+            Text? label = labelTransform?.GetComponent<Text>();
+            if (label != null) 
+                label.text = labelText;
 
             return ChangeAppIconImage(iconObj, fileName);
         }
@@ -237,18 +225,14 @@ namespace S1API.PhoneApp
         private bool ChangeAppIconImage(GameObject iconObj, string filename)
         {
             Transform imageTransform = iconObj.transform.Find("Mask/Image");
-            Image image = imageTransform?.GetComponent<Image>();
+            Image? image = imageTransform?.GetComponent<Image>();
             if (image == null)
             {
                 LoggerInstance?.Error("Image component not found in icon.");
                 return false;
             }
 
-#if MONOMELON || IL2CPPMELON
             string path = Path.Combine(MelonEnvironment.ModsDirectory, filename);
-#elif MONOBEPINEX || IL2CPPBEPINEX
-            string path = Path.Combine(BepInEx.Paths.PluginPath, filename);
-#endif
             if (!File.Exists(path))
             {
                 LoggerInstance?.Error("Icon file not found: " + path);

@@ -11,9 +11,10 @@ using System.Collections.Generic;
 using System;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using HarmonyLib;
+using S1API.Entities;
 using S1API.Internal.Utils;
-using S1API.NPCs;
 
 namespace S1API.Internal.Patches
 {
@@ -23,13 +24,6 @@ namespace S1API.Internal.Patches
     [HarmonyPatch]
     internal class NPCPatches
     {
-        
-        // ReSharper disable once RedundantNameQualifier
-        /// <summary>
-        /// List of all custom NPCs currently created.
-        /// </summary>
-        private static readonly System.Collections.Generic.List<NPC> NPCs = new System.Collections.Generic.List<NPC>();
-        
         /// <summary>
         /// Patching performed for when game NPCs are loaded.
         /// </summary>
@@ -41,13 +35,19 @@ namespace S1API.Internal.Patches
         {
             foreach (Type type in ReflectionUtils.GetDerivedClasses<NPC>())
             {
-                NPC customNPC = (NPC)Activator.CreateInstance(type);
-                NPCs.Add(customNPC);
+                NPC? customNPC = (NPC)Activator.CreateInstance(type, true)!;
+                if (customNPC == null)
+                    throw new Exception($"Unable to create instance of {type.FullName}!");
+
+                // We skip any S1API NPCs, as they are base NPC wrappers.
+                if (type.Assembly == Assembly.GetExecutingAssembly())
+                    continue;
+                
                 string npcPath = Path.Combine(mainPath, customNPC.S1NPC.SaveFolderName);
                 customNPC.LoadInternal(npcPath);
             }
         }
-        
+
         /// <summary>
         /// Patching performed for when a single NPC starts (including modded in NPCs).
         /// </summary>
@@ -55,7 +55,8 @@ namespace S1API.Internal.Patches
         [HarmonyPatch(typeof(S1NPCs.NPC), "Start")]
         [HarmonyPostfix]
         private static void NPCStart(S1NPCs.NPC __instance) => 
-            NPCs.FirstOrDefault(npc => npc.S1NPC == __instance)?.CreateInternal();
+            NPC.All.FirstOrDefault(npc => npc.IsCustomNPC && npc.S1NPC == __instance)?.CreateInternal();
+        
 
         /// <summary>
         /// Patching performed for when an NPC calls to save data.
@@ -66,7 +67,7 @@ namespace S1API.Internal.Patches
         [HarmonyPatch(typeof(S1NPCs.NPC), "WriteData")]
         [HarmonyPostfix]
         private static void NPCWriteData(S1NPCs.NPC __instance, string parentFolderPath, ref List<string> __result) =>
-            NPCs.FirstOrDefault(npc => npc.S1NPC == __instance)?.SaveInternal(parentFolderPath, ref __result);
+            NPC.All.FirstOrDefault(npc => npc.IsCustomNPC && npc.S1NPC == __instance)?.SaveInternal(parentFolderPath, ref __result);
         
         /// <summary>
         /// Patching performed for when an NPC is destroyed.
@@ -74,14 +75,7 @@ namespace S1API.Internal.Patches
         /// <param name="__instance">Instance of the NPC</param>
         [HarmonyPatch(typeof(S1NPCs.NPC), "OnDestroy")]
         [HarmonyPostfix]
-        private static void NPCOnDestroy(S1NPCs.NPC __instance)
-        {
-            NPCs.RemoveAll(npc => npc.S1NPC == __instance);
-            NPC? npc = NPCs.FirstOrDefault(npc => npc.S1NPC == __instance);
-            if (npc == null)
-                return;
-            
-            NPCs.Remove(npc);
-        }
+        private static void NPCOnDestroy(S1NPCs.NPC __instance) =>
+            NPC.All.Remove(NPC.All.First(npc => npc.S1NPC == __instance));
     }
 }
