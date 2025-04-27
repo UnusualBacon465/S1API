@@ -7,6 +7,9 @@ namespace S1API.Entities.Interfaces
     /// </summary>
     public interface IEntity
     {
+        /// <summary>
+        /// INTERNAL: Tracking of the GameObject associated with this entity.
+        /// </summary>
         GameObject gameObject { get; }
         
         /// <summary>

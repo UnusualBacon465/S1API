@@ -42,7 +42,10 @@ namespace S1API.Internal.Patches
         {
             foreach (Type type in ReflectionUtils.GetDerivedClasses<NPC>())
             {
-                NPC customNPC = (NPC)Activator.CreateInstance(type, true);
+                NPC? customNPC = (NPC)Activator.CreateInstance(type, true)!;
+                if (customNPC == null)
+                    throw new Exception($"Unable to create instance of {type.FullName}!");
+                
                 NPCs.Add(customNPC);
 
                 // We skip any S1API NPCs, as they are base NPC wrappers.
@@ -73,7 +76,7 @@ namespace S1API.Internal.Patches
         [HarmonyPatch(typeof(S1NPCs.NPC), "WriteData")]
         [HarmonyPostfix]
         private static void NPCWriteData(S1NPCs.NPC __instance, string parentFolderPath, ref List<string> __result) =>
-            NPCs.FirstOrDefault(npc => npc.S1NPC == __instance)?.SaveInternal(parentFolderPath, ref __result);
+            NPCs.FirstOrDefault(npc => npc.IsCustomNPC && npc.S1NPC == __instance)?.SaveInternal(parentFolderPath, ref __result);
         
         /// <summary>
         /// Patching performed for when an NPC is destroyed.

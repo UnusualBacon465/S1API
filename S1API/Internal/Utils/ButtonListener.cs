@@ -5,6 +5,10 @@ using UnityEngine.UI;
 
 namespace S1API.Internal.Utils
 {
+    /// <summary>
+    /// Utility class for managing UI Buttons.
+    /// TODO (@omar-akermi): Is this intended to be internal instead of public??
+    /// </summary>
     public static class ButtonUtils
     {
         /// <summary>
@@ -37,7 +41,7 @@ namespace S1API.Internal.Utils
         /// <summary>
         /// Enables the button and optionally updates the label.
         /// </summary>
-        public static void Enable(Button button, Text label = null, string text = null)
+        public static void Enable(Button button, Text? label = null, string? text = null)
         {
             if (button != null) button.interactable = true;
             if (label != null && !string.IsNullOrEmpty(text)) label.text = text;
@@ -46,7 +50,7 @@ namespace S1API.Internal.Utils
         /// <summary>
         /// Disables the button and optionally updates the label.
         /// </summary>
-        public static void Disable(Button button, Text label = null, string text = null)
+        public static void Disable(Button button, Text? label = null, string? text = null)
         {
             if (button != null) button.interactable = false;
             if (label != null && !string.IsNullOrEmpty(text)) label.text = text;

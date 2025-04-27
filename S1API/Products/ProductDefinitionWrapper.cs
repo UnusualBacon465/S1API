@@ -7,9 +7,12 @@ using S1Product = ScheduleOne.Product;
 
 namespace S1API.Products
 {
-    public static class ProductDefinitionWrapper
+    /// <summary>
+    /// INTERNAL: A wrapper class for converting a product definition to its proper dedicated class.
+    /// </summary>
+    internal static class ProductDefinitionWrapper
     {
-        public static ProductDefinition Wrap(ProductDefinition def)
+        internal static ProductDefinition Wrap(ProductDefinition def)
         {
             var item = def.S1ItemDefinition;
             if (CrossType.Is<S1Product.WeedDefinition>(item, out var weed))

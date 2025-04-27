@@ -8,6 +8,9 @@ using System.Collections.Generic;
 
 namespace S1API.Console
 {
+    /// <summary>
+    /// This class provides easy access to the in-game console system.
+    /// </summary>
     public static class ConsoleHelper
     {
         /// <summary>

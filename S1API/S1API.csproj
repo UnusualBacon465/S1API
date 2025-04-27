@@ -7,7 +7,6 @@
     
     <!-- General properties -->
     <PropertyGroup>
-        <TargetFramework>netstandard2.1</TargetFramework>
         <Authors>KaBooMa</Authors>
         <PackageId>S1API</PackageId>
         <Description>A Schedule One Mono / Il2Cpp Cross Compatibility Layer</Description>
@@ -18,6 +17,14 @@
         <Platforms>AnyCPU</Platforms>
         <RootNamespace>S1API</RootNamespace>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    </PropertyGroup>
+    
+    <PropertyGroup Condition="'$(Configuration)' == 'Mono'">
+        <TargetFramework>netstandard2.1</TargetFramework>
+    </PropertyGroup>
+    
+    <PropertyGroup Condition="'$(Configuration)' == 'Il2Cpp'">
+        <TargetFramework>net6.0</TargetFramework>
     </PropertyGroup>
 
     <!-- IL2CPP Specific Deps -->

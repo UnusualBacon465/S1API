@@ -1,10 +1,3 @@
-# NPC List
-Current list of NPCs in the game.
-Includes which class is associated with the NPC.
-
-**Last Updated: (v0.3.4f8)**
-
----
 **manny_oakfield**
 ScheduleOne.NPCs.CharacterClasses.Fixer
 ---

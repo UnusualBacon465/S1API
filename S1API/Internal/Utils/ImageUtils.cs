@@ -7,6 +7,10 @@ using UnityEngine;
 
 namespace S1API.Internal.Utils
 {
+    /// <summary>
+    /// A utility class to assist with loading images into the game.
+    /// Useful for icons such as on phone apps, custom NPCs, quests, etc.
+    /// </summary>
     public static class ImageUtils
     {
         /// <summary>
@@ -16,7 +20,7 @@ namespace S1API.Internal.Utils
         /// <returns>
         /// A Sprite object representing the loaded image, or null if the image could not be loaded or the file does not exist.
         /// </returns>
-        public static Sprite LoadImage(string fileName)
+        public static Sprite? LoadImage(string fileName)
         {
             string fullPath = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) ?? string.Empty, fileName);
             if (!File.Exists(fullPath))

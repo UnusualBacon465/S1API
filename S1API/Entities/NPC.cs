@@ -76,7 +76,7 @@ namespace S1API.Entities
             Sprite? icon = null
             )
         {
-            _isCustomNPC = true;
+            IsCustomNPC = true;
             gameObject = new GameObject();
             
             // Deactivate game object til we're done
@@ -201,6 +201,12 @@ namespace S1API.Entities
         #region Public Members
         
         /// <summary>
+        /// INTERNAL: Tracking for the GameObject associated with this NPC.
+        /// Not intended for use by modders!
+        /// </summary>
+        public GameObject gameObject { get; }
+        
+        /// <summary>
         /// List of all NPCs within the base game and modded.
         /// </summary>
         public static readonly System.Collections.Generic.List<NPC> All = new System.Collections.Generic.List<NPC>();
@@ -308,7 +314,7 @@ namespace S1API.Entities
         /// </summary>
         public float PanicDuration
         {
-            get => (float)_panicField.GetValue(S1NPC);
+            get => (float)_panicField.GetValue(S1NPC)!;
             set => _panicField.SetValue(S1NPC, value);
         }
 
@@ -333,7 +339,7 @@ namespace S1API.Entities
         /// </summary>
         public bool RequiresRegionUnlocked
         {
-            get => (bool)_requiresRegionUnlockedField.GetValue(S1NPC);
+            get => (bool)_requiresRegionUnlockedField.GetValue(S1NPC)!;
             set => _panicField.SetValue(S1NPC, value);
         }
         
@@ -566,7 +572,7 @@ namespace S1API.Entities
         {
             S1NPC = npc;
             gameObject = npc.gameObject;
-            _isCustomNPC = false;
+            IsCustomNPC = false;
             All.Add(this);
         }
 
@@ -597,8 +603,7 @@ namespace S1API.Entities
         // Please do not attempt to use these members!
         #region Private Members
         
-        public GameObject gameObject { get; }
-        private readonly bool _isCustomNPC;
+        internal readonly bool IsCustomNPC;
         
         private readonly FieldInfo _panicField = AccessTools.Field(typeof(S1NPCs.NPC), "PANIC_DURATION");
         private readonly FieldInfo _requiresRegionUnlockedField = AccessTools.Field(typeof(S1NPCs.NPC), "RequiresRegionUnlocked");

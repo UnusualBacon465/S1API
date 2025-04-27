@@ -15,6 +15,7 @@ namespace S1API.Internal.Patches
 #endif
     internal static class PhoneAppPatches
     {
+        // TODO (@omar-akermi): Can you look into if this is still needed pls?
         private static bool _loaded = false;
 
         /// <summary>

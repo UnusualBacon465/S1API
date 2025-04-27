@@ -244,7 +244,7 @@ namespace S1API.UI
         /// <param name="go">The GameObject to which a VerticalLayoutGroup will be added or configured.</param>
         /// <param name="spacing">The spacing between child objects within the VerticalLayoutGroup. Default is 10.</param>
         /// <param name="padding">The padding around the edges of the VerticalLayoutGroup. If null, a default RectOffset of (10, 10, 10, 10) will be used.</param>
-        public static void VerticalLayoutOnGO(GameObject go, int spacing = 10, RectOffset padding = null)
+        public static void VerticalLayoutOnGO(GameObject go, int spacing = 10, RectOffset? padding = null)
         {
             var layout = go.AddComponent<VerticalLayoutGroup>();
             layout.spacing = spacing;
@@ -317,16 +317,32 @@ namespace S1API.UI
         /// <param name="buttonHeight">The height of the button, if displayed.</param>
         /// <param name="onRightButtonClick">An optional action to be invoked when the button is clicked. If null, the button will not be created.</param>
         /// <param name="rightButtonText">The text to display on the optional button. Defaults to "Action" if not specified.</param>
+        /// <param name="topBarSize">The size of the top bar.</param>
+        /// <param name="rectLeft">The left position of the bar.</param>
+        /// <param name="rectRight">The right position of the bar.</param>
+        /// <param name="rectTop">The top position of the bar.</param>
+        /// <param name="rectBottom">The bottom position of the bar.</param>
         /// <returns>The created GameObject representing the top bar.</returns>
-        public static GameObject TopBar(string name, Transform parent, string title,float buttonWidth,float buttonHeight,float topbarSize,int rectleft,int rectright,int recttop,int rectbottom,
-            Action onRightButtonClick = null,
-            string rightButtonText = "Action")
+        public static GameObject TopBar(
+            string name, 
+            Transform parent, 
+            string title,
+            float buttonWidth,
+            float buttonHeight,
+            float topBarSize,
+            int rectLeft,
+            int rectRight,
+            int rectTop,
+            int rectBottom,
+            Action? onRightButtonClick = null,
+            string rightButtonText = "Action"
+            )
         {
             var topBar = Panel(name, parent, new Color(0.15f, 0.15f, 0.15f),
-                new Vector2(0f, topbarSize), new Vector2(1f, 1f));
+                new Vector2(0f, topBarSize), new Vector2(1f, 1f));
 
             var layout = topBar.AddComponent<HorizontalLayoutGroup>();
-            layout.padding = new RectOffset(rectleft,rectright,recttop,rectbottom);;
+            layout.padding = new RectOffset(rectLeft,rectRight,rectTop,rectBottom);;
             layout.spacing = 20;
             layout.childAlignment = TextAnchor.MiddleCenter;
             layout.childForceExpandWidth = false;
@@ -338,17 +354,17 @@ namespace S1API.UI
             titleLayout.minWidth = 300;
             titleLayout.flexibleWidth = 1;
 
-            // Button (if any)
-            if (onRightButtonClick != null)
-            {
-                var (btnGO, btn, label) = ButtonWithLabel("TopBarButton", rightButtonText, topBar.transform, new Color(0.25f, 0.5f, 1f), buttonWidth, buttonHeight);
-                ButtonUtils.AddListener(btn, onRightButtonClick);
+            if (onRightButtonClick == null) 
+                return topBar;
+            
+            // Create the button element if we have an Action to invoke
+            var (btnGO, btn, label) = ButtonWithLabel("TopBarButton", rightButtonText, topBar.transform, new Color(0.25f, 0.5f, 1f), buttonWidth, buttonHeight);
+            ButtonUtils.AddListener(btn, onRightButtonClick);
 
-                var btnLayout = btnGO.AddComponent<LayoutElement>();
-                btnLayout.minWidth = buttonWidth;
-                btnLayout.preferredHeight = buttonHeight;
-                btnLayout.flexibleWidth = 0;
-            }
+            var btnLayout = btnGO.AddComponent<LayoutElement>();
+            btnLayout.minWidth = buttonWidth;
+            btnLayout.preferredHeight = buttonHeight;
+            btnLayout.flexibleWidth = 0;
 
             return topBar;
         }

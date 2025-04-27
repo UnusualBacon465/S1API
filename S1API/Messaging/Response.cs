@@ -1,4 +1,4 @@
-﻿#if (IL2CPP)
+#if (IL2CPP)
 using S1Messaging = Il2CppScheduleOne.Messaging;
 #elif (MONO)
 using S1Messaging = ScheduleOne.Messaging;
