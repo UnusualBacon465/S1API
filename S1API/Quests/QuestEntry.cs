@@ -1,6 +1,6 @@
-﻿#if (IL2CPP)
+﻿#if (IL2CPPMELON || IL2CPPBEPINEX)
 using S1Quests = Il2CppScheduleOne.Quests;
-#elif (MONO)
+#elif (MONOMELON || MONOBEPINEX)
 using S1Quests = ScheduleOne.Quests;
 #endif
 

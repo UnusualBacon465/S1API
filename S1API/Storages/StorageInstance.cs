@@ -1,6 +1,6 @@
-﻿#if (IL2CPP)
+﻿#if (IL2CPPMELON || IL2CPPBEPINEX)
 using S1Storage = Il2CppScheduleOne.Storage;
-#elif (MONO)
+#elif (MONOMELON || MONOBEPINEX)
 using S1Storage = ScheduleOne.Storage;
 #endif
 
