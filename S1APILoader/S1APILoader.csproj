@@ -6,7 +6,7 @@
     <Import Project="../local.build.props" Condition="Exists('../local.build.props')" />
 
     <PropertyGroup>
-        <TargetFramework>netstandard2.1</TargetFramework>
+        <TargetFrameworks>netstandard2.1;net6.0</TargetFrameworks>
         <Nullable>enable</Nullable>
         <Configurations>Il2CppMelon;MonoBepInEx;MonoMelon;Il2CppBepInEx</Configurations>
         <Platforms>AnyCPU</Platforms>
