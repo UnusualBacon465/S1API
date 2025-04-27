@@ -14,8 +14,11 @@ namespace S1API
 }
 #elif (IL2CPPBEPINEX || MONOBEPINEX)
 using BepInEx;
+
 #if MONOBEPINEX
 using BepInEx.Unity.Mono;
+#elif IL2CPPBEPINEX
+using BepInEx.Unity.IL2CPP;
 #endif
 
 using HarmonyLib;
