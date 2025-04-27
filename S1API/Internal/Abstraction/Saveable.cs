@@ -1,4 +1,4 @@
-﻿#if (MONO)
+﻿#if (MONOMELON || MONOBEPINEX)
 using System.Collections.Generic;
 #elif (IL2CPP)
 using Il2CppSystem.Collections.Generic;

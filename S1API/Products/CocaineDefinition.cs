@@ -1,7 +1,7 @@
-#if IL2CPP
+#if IL2CPPMELON || IL2CPPBEPINEX
 using Il2CppScheduleOne.Product;
 using S1CocaineDefinition = Il2CppScheduleOne.Product.CocaineDefinition;
-#elif MONO
+#elif MONOMELON || MONOBEPINEX
 using ScheduleOne.Product;
 using S1CocaineDefinition = ScheduleOne.Product.CocaineDefinition;
 #endif

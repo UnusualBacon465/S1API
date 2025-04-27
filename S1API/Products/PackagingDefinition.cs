@@ -1,7 +1,7 @@
-﻿#if (IL2CPP)
+﻿#if (IL2CPPMELON || IL2CPPBEPINEX)
 using S1Packaging = Il2CppScheduleOne.Product.Packaging;
 using S1ItemFramework = Il2CppScheduleOne.ItemFramework;
-#elif (MONO)
+#elif (MONOMELON || MONOBEPINEX)
 using S1Packaging = ScheduleOne.Product.Packaging;
 using S1ItemFramework = ScheduleOne.ItemFramework;
 #endif

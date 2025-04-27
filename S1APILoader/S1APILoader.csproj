@@ -8,7 +8,7 @@
     <PropertyGroup>
         <TargetFramework>netstandard2.1</TargetFramework>
         <Nullable>enable</Nullable>
-        <Configurations>Mono;Il2Cpp</Configurations>
+        <Configurations>Il2CppMelon;MonoBepInEx;MonoMelon;Il2CppBepInEx</Configurations>
         <Platforms>AnyCPU</Platforms>
         <RootNamespace>S1APILoader</RootNamespace>
     </PropertyGroup>
