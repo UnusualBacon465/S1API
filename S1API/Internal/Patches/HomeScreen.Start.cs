@@ -4,6 +4,8 @@ using UnityEngine.SceneManagement;
 using S1API.Internal.Utils;
 using S1API.Internal.Abstraction;
 using S1API.PhoneApp;
+using S1API.Logging;
+
 #if (IL2CPPMELON || IL2CPPBEPINEX)
 using Il2CppScheduleOne.UI.Phone;
 #else
@@ -13,17 +15,47 @@ using ScheduleOne.UI.Phone;
 namespace S1API.Internal.Patches
 {
     /// <summary>
-    /// The <c>HomeScreen_Start</c> class contains functionality that patches the
-    /// HomeScreen's Start method using the Harmony library within the Il2CppScheduleOne UI.Phone namespace.
-    /// This class is part of the S1API.Internal.Patches namespace, enabling modification or extension
-    /// of the behavior of the HomeScreen component's Start method.
+    /// Patches related to PhoneApp system initialization and UI injection.
     /// </summary>
     public class HomeScreen_Start
     {
+        private static readonly Log Logger = new Log("PhoneApp");
+
         /// <summary>
-        /// Represents a patch class for modifying the behavior of the Start method in the HomeScreen class.
-        /// This class is implemented as part of the Harmony patching mechanism to apply modifications
-        /// or inject additional logic during the execution of the Start method.
+        /// Patches SceneManager scene loading to register all PhoneApps after Main scene loads.
+        /// </summary>
+#if (IL2CPPMELON || IL2CPPBEPINEX)
+        [HarmonyPatch(typeof(SceneManager), nameof(SceneManager.Internal_SceneLoaded))]
+#else
+        [HarmonyPatch(typeof(SceneManager), "Internal_SceneLoaded", new Type[] { typeof(Scene), typeof(LoadSceneMode) })]
+#endif
+        internal static class PhoneAppPatches
+        {
+            static void Postfix(Scene scene, LoadSceneMode mode)
+            {
+                if (scene.name != "Main")
+                    return;
+
+                var phoneApps = ReflectionUtils.GetDerivedClasses<PhoneApp.PhoneApp>();
+                foreach (var type in phoneApps)
+                {
+                    if (type.GetConstructor(Type.EmptyTypes) == null) continue;
+
+                    try
+                    {
+                        var instance = (PhoneApp.PhoneApp)Activator.CreateInstance(type)!;
+                        ((IRegisterable)instance).CreateInternal();
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Error($"Failed to create instance of {type.Name}: {e}");
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Patches HomeScreen.Start to spawn registered PhoneApp UIs and icons.
         /// </summary>
         [HarmonyPatch(typeof(HomeScreen), "Start")]
         internal static class HomeScreen_Start_Patch
@@ -40,6 +72,5 @@ namespace S1API.Internal.Patches
                 }
             }
         }
-
     }
 }
