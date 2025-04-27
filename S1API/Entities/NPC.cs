@@ -58,7 +58,7 @@ namespace S1API.Entities
         /// <summary>
         /// A list of text responses you've added to your NPC.
         /// </summary>
-        protected readonly List<Response> Responses = new List<Response>();
+        protected readonly System.Collections.Generic.List<Response> Responses = new System.Collections.Generic.List<Response>();
         
         /// <summary>
         /// Base constructor for a new NPC.
@@ -591,7 +591,7 @@ namespace S1API.Entities
             
             base.CreateInternal();
         }
-
+        
         internal override void SaveInternal(string folderPath, ref List<string> extraSaveables)
         {
             string npcPath = Path.Combine(folderPath, S1NPC.SaveFolderName);
