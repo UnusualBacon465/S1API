@@ -76,6 +76,6 @@ namespace S1API.Internal.Patches
         [HarmonyPatch(typeof(S1NPCs.NPC), "OnDestroy")]
         [HarmonyPostfix]
         private static void NPCOnDestroy(S1NPCs.NPC __instance) =>
-            NPC.All.RemoveAll(npc => npc.S1NPC == __instance);
+            NPC.All.Remove(NPC.All.First(npc => npc.S1NPC == __instance));
     }
 }
