@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace S1API.PhoneApp
+namespace S1API.Internal.Patches
 {
     /// <summary>
     /// Provides functionality for managing the registration of custom phone applications.
@@ -22,13 +22,13 @@ namespace S1API.PhoneApp
         /// It serves as a central repository for all in-game phone applications, enabling other systems to access and manage
         /// these registered apps efficiently.
         /// </remarks>
-        public static readonly List<PhoneApp> RegisteredApps = new();
+        public static readonly List<PhoneApp.PhoneApp> RegisteredApps = new List<PhoneApp.PhoneApp>();
 
         /// <summary>
         /// Registers a specified phone app into the phone application registry.
         /// </summary>
         /// <param name="app">The PhoneApp instance to be registered.</param>
-        public static void Register(PhoneApp app)
+        public static void Register(PhoneApp.PhoneApp app)
         {
             RegisteredApps.Add(app);
         }

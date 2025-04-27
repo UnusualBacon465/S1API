@@ -5,7 +5,12 @@ using MelonLoader;
 using Object = UnityEngine.Object;
 using MelonLoader.Utils;
 using S1API.Internal.Abstraction;
-
+using S1API.Internal.Patches;
+#if IL2CPPBEPINEX || IL2CPPMELON 
+using Il2CppScheduleOne.UI.Phone;
+#else
+using ScheduleOne.UI.Phone;
+#endif
 namespace S1API.PhoneApp
 {
     /// <summary>
@@ -21,7 +26,7 @@ namespace S1API.PhoneApp
         /// Logger instance used for logging messages, warnings, or errors
         /// related to the functionality of in-game phone applications.
         /// </summary>
-        protected static readonly MelonLogger.Instance LoggerInstance = new MelonLogger.Instance("PhoneApp");
+        protected static readonly Logging.Log Logger = new Logging.Log("PhoneApp");
 
         /// <summary>
         /// Represents the panel associated with the phone app's UI.
@@ -132,13 +137,12 @@ namespace S1API.PhoneApp
         /// clears its content, and then invokes the implementation-specific OnCreatedUI method
         /// for further customization of the UI panel.
         /// </summary>
-        internal void SpawnUI()
+        internal void SpawnUI(HomeScreen homeScreenInstance)
         {
-            GameObject appsCanvas =
-                GameObject.Find("Player_Local/CameraContainer/Camera/OverlayCamera/GameplayMenu/Phone/phone/AppsCanvas");
+                GameObject? appsCanvas = homeScreenInstance.transform.parent.Find("AppsCanvas")?.gameObject;
             if (appsCanvas == null)
             {
-                LoggerInstance.Error("AppsCanvas not found.");
+                Logger.Error("AppsCanvas not found.");
                 return;
             }
 
@@ -153,7 +157,7 @@ namespace S1API.PhoneApp
                 Transform templateApp = appsCanvas.transform.Find("ProductManagerApp");
                 if (templateApp == null)
                 {
-                    LoggerInstance.Error("Template ProductManagerApp not found.");
+                    Logger.Error("Template ProductManagerApp not found.");
                     return;
                 }
 
@@ -178,35 +182,39 @@ namespace S1API.PhoneApp
         /// Creates or modifies the application icon displayed on the in-game phone's home screen.
         /// This method clones an existing icon, updates its label, and changes its image based on the provided file name.
         /// </summary>
-        internal void SpawnIcon()
+        internal void SpawnIcon(HomeScreen homeScreenInstance)
         {
             if (_iconModified)
                 return;
 
-            GameObject parent = GameObject.Find("Player_Local/CameraContainer/Camera/OverlayCamera/GameplayMenu/Phone/phone/HomeScreen/AppIcons/");
-            if (parent == null)
+            GameObject? appIcons = homeScreenInstance.transform.Find("AppIcons")?.gameObject;
+            if (appIcons == null)
             {
-                LoggerInstance.Error("AppIcons not found.");
+                Logger.Error("AppIcons not found under HomeScreen.");
                 return;
             }
 
-            Transform? lastIcon = parent.transform.childCount > 0 ? parent.transform.GetChild(parent.transform.childCount - 1) : null;
+            // Find the LAST icon (the one most recently added)
+            Transform? lastIcon = appIcons.transform.childCount > 0 ? appIcons.transform.GetChild(appIcons.transform.childCount - 1) : null;
             if (lastIcon == null)
             {
-                LoggerInstance.Error("No icon found to clone.");
+                Logger.Error("No icons found in AppIcons.");
                 return;
             }
 
             GameObject iconObj = lastIcon.gameObject;
-            iconObj.name = AppName;
+            iconObj.name = AppName; // Rename it now
 
+            // Update label
             Transform labelTransform = iconObj.transform.Find("Label");
             Text? label = labelTransform?.GetComponent<Text>();
             if (label != null)
                 label.text = IconLabel;
 
+            // Update image
             _iconModified = ChangeAppIconImage(iconObj, IconFileName);
         }
+
 
         /// <summary>
         /// Configures an existing app panel by clearing and rebuilding its UI elements if necessary.
@@ -253,14 +261,14 @@ namespace S1API.PhoneApp
             Image? image = imageTransform?.GetComponent<Image>();
             if (image == null)
             {
-                LoggerInstance.Error("Image component not found in icon.");
+                Logger.Error("Image component not found in icon.");
                 return false;
             }
 
             string path = Path.Combine(MelonEnvironment.ModsDirectory, filename);
             if (!File.Exists(path))
             {
-                LoggerInstance.Error("Icon file not found: " + path);
+                Logger.Error("Icon file not found: " + path);
                 return false;
             }
 
@@ -277,7 +285,7 @@ namespace S1API.PhoneApp
             }
             catch (System.Exception e)
             {
-                LoggerInstance.Error("Failed to load image: " + e.Message);
+                Logger.Error("Failed to load image: " + e.Message);
             }
 
             return false;

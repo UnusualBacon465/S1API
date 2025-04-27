@@ -3,6 +3,7 @@ using HarmonyLib;
 using UnityEngine.SceneManagement;
 using S1API.Internal.Utils;
 using S1API.Internal.Abstraction;
+using S1API.Logging;
 using S1API.PhoneApp;
 
 namespace S1API.Internal.Patches
@@ -15,8 +16,7 @@ namespace S1API.Internal.Patches
 #endif
     internal static class PhoneAppPatches
     {
-        // TODO (@omar-akermi): Can you look into if this is still needed pls?
-        private static bool _loaded = false;
+        private static readonly Log Logger = new Log("PhoneApp");
 
         /// <summary>
         /// Executes logic after the Unity SceneManager completes loading a scene.
@@ -27,11 +27,12 @@ namespace S1API.Internal.Patches
         /// <param name="mode">The loading mode used by the SceneManager.</param>
         static void Postfix(Scene scene, LoadSceneMode mode)
         {
-            if (scene.name != "Main") return;
-
-            // Re-register all PhoneApps every time the Main scene loads
-            var phoneApp = ReflectionUtils.GetDerivedClasses<PhoneApp.PhoneApp>();
-            foreach (var type in phoneApp)
+            if (scene.name != "Main")
+            {
+                return;
+            }
+            var phoneApps = ReflectionUtils.GetDerivedClasses<PhoneApp.PhoneApp>();
+            foreach (var type in phoneApps)
             {
                 if (type.GetConstructor(Type.EmptyTypes) == null) continue;
 
@@ -40,11 +41,12 @@ namespace S1API.Internal.Patches
                     var instance = (PhoneApp.PhoneApp)Activator.CreateInstance(type)!;
                     ((IRegisterable)instance).CreateInternal();
                 }
-                catch (System.Exception e)
+                catch (Exception e)
                 {
-                    MelonLoader.MelonLogger.Warning($"[PhoneApp] Failed to register {type.FullName}: {e.Message}");
+                    Logger.Error($"Failed to create instance of {type.Name}: {e}");
                 }
             }
         }
+
     }
 }
