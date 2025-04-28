@@ -24,8 +24,8 @@ namespace S1APILoader
             
             MelonLogger.Msg($"Loading S1API for {activeBuild}...");
             
-            string s1APIActiveBuildFile = Path.Combine(modsFolder, $"S1API.{activeBuild}.dll");
-            string s1APIInactiveBuildFile = Path.Combine(modsFolder, $"S1API.{inactiveBuild}.dll");
+            string s1APIActiveBuildFile = Path.Combine(modsFolder, $"S1API.{activeBuild}.MelonLoader.dll");
+            string s1APIInactiveBuildFile = Path.Combine(modsFolder, $"S1API.{inactiveBuild}.MelonLoader.dll");
 
             string disabledActiveBuildFile = $"{s1APIActiveBuildFile}.disabled";
             if (File.Exists(disabledActiveBuildFile))
