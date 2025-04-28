@@ -18,7 +18,11 @@ namespace S1API.Property
         public static List<PropertyWrapper> GetAllProperties()
         {
             var list = new List<PropertyWrapper>();
+            #if IL2CPPMELON || IL2CPPBEPINEX
             foreach (var prop in Il2CppScheduleOne.Property.Property.Properties)
+#else
+            foreach (var prop in ScheduleOne.Property.Property.Properties)
+                #endif
             {
                 list.Add(new PropertyWrapper(prop));
             }
@@ -32,7 +36,11 @@ namespace S1API.Property
         public static List<PropertyWrapper> GetOwnedProperties()
         {
             var list = new List<PropertyWrapper>();
+#if IL2CPPMELON || IL2CPPBEPINEX
             foreach (var prop in Il2CppScheduleOne.Property.Property.OwnedProperties)
+#elif MONOMELON || MONOBEPINEX
+            foreach (var prop in ScheduleOne.Property.Property.OwnedProperties)
+#endif
             {
                 list.Add(new PropertyWrapper(prop));
             }
@@ -48,7 +56,11 @@ namespace S1API.Property
         /// </returns>
         public static PropertyWrapper FindPropertyByName(string name)
         {
+#if IL2CPPMELON || IL2CPPBEPINEX
             foreach (var prop in Il2CppScheduleOne.Property.Property.Properties)
+#elif MONOMELON || MONOBEPINEX
+            foreach (var prop in ScheduleOne.Property.Property.Properties)
+#endif
             {
                 if (prop.PropertyName == name)
                 {

@@ -16,14 +16,22 @@ namespace S1API.Property
         /// and is leveraged across multiple overriden members to delegate
         /// operations to the actual property instance.
         /// </summary>
+        #if IL2CPPBEPINEX || IL2CPPMELON
         internal readonly Il2CppScheduleOne.Property.Property InnerProperty;
-
+        #else
+        internal readonly ScheduleOne.Property.Property InnerProperty;
+        #endif
         /// <summary>
         /// A wrapper class that extends the functionality of <see cref="BaseProperty"/>
         /// and acts as a bridge to interact with an inner property implementation
         /// from the Il2CppScheduleOne.Property namespace.
         /// </summary>
+#if IL2CPPBEPINEX || IL2CPPMELON
         public PropertyWrapper(Il2CppScheduleOne.Property.Property property)
+
+        #else
+        public PropertyWrapper(ScheduleOne.Property.Property property)
+#endif
         {
             InnerProperty = property;
         }
