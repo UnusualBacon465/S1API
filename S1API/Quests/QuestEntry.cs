@@ -26,6 +26,10 @@ namespace S1API.Quests
         /// <param name="questEntry"></param>
         internal QuestEntry(S1Quests.QuestEntry questEntry) => 
             S1QuestEntry = questEntry;
+        /// <summary>
+        /// The current state of this quest entry.
+        /// </summary>
+        public QuestState State => (QuestState)(int)S1QuestEntry.State;
 
         /// <summary>
         /// An action called once a quest has been completed.
