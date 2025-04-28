@@ -20,13 +20,13 @@
       <PackageReference Include="LavaGang.MelonLoader" Version="0.7.0" />
     </ItemGroup>
 
-    <Target Name="PostBuildIl2Cpp" AfterTargets="Build" Condition=" '$(AutomateLocalDeployment)' == 'true' and '$(Configuration)' == 'Il2Cpp' ">
+    <Target Name="PostBuildIl2Cpp" AfterTargets="Build" Condition=" '$(AutomateLocalDeployment)' == 'true' and '$(Configuration)' == 'Il2CppMelon' ">
         <Message Text="Deploying S1APILoader to local Il2Cpp plugins folder" Importance="high"/>
-        <Copy SourceFiles=".\bin\Il2Cpp\netstandard2.1\S1APILoader.dll" DestinationFolder="$(LocalIl2CppDeploymentPath)\Plugins"/>
+        <Copy SourceFiles=".\bin\Il2CppMelon\netstandard2.1\S1APILoader.dll" DestinationFolder="$(LocalIl2CppDeploymentPath)\Plugins"/>
     </Target>
 
-    <Target Name="PostBuildMono" AfterTargets="Build" Condition=" '$(AutomateLocalDeployment)' == 'true' and '$(Configuration)' == 'Mono' ">
+    <Target Name="PostBuildMono" AfterTargets="Build" Condition=" '$(AutomateLocalDeployment)' == 'true' and '$(Configuration)' == 'MonoMelon' ">
         <Message Text="Deploying S1APILoader to local Mono plugins folder" Importance="high"/>
-        <Copy SourceFiles=".\bin\Mono\netstandard2.1\S1APILoader.dll" DestinationFolder="$(LocalMonoDeploymentPath)\Plugins"/>
+        <Copy SourceFiles=".\bin\MonoMelon\netstandard2.1\S1APILoader.dll" DestinationFolder="$(LocalMonoDeploymentPath)\Plugins"/>
     </Target>
 </Project>
