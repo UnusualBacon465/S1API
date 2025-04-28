@@ -56,7 +56,6 @@ jobs:
           sed -i "s/{VERSION_NUMBER}/${{ steps.semantic-release.outputs.new_release_version }}/" ./S1API/S1API.cs
           sed -i "s/{VERSION_NUMBER}/${{ steps.semantic-release.outputs.new_release_version }}/" ./S1APILoader/S1APILoader.cs
 
-# TODO (@MaxtorCoder): Temporarily disabling until BepInEx is building properly locally.
       - name: Run .NET build for MonoBepInEx
         run: dotnet build ./S1API.sln -c MonoBepInEx -f netstandard2.1
 
@@ -73,7 +72,7 @@ jobs:
         run: |
           mkdir -p ./artifacts/thunderstore/Plugins/S1API
           cp ./S1APILoader/bin/MonoMelon/netstandard2.1/S1APILoader.dll ./artifacts/thunderstore/Plugins/S1APILoader.MelonLoader.dll
-#          cp ./S1APILoader/bin/MonoBepInEx/netstandard2.1/S1APILoader.dll ./artifacts/thunderstore/Plugins/S1APILoader.BepInEx.dll
+          cp ./S1APILoader/bin/MonoBepInEx/netstandard2.1/S1APILoader.dll ./artifacts/thunderstore/Plugins/S1APILoader.BepInEx.dll
           cp ./S1API/bin/Il2CppMelon/net6.0/S1API.dll ./artifacts/thunderstore/Plugins/S1API/S1API.Il2Cpp.MelonLoader.dll
           cp ./S1API/bin/MonoMelon/netstandard2.1/S1API.dll ./artifacts/thunderstore/Plugins/S1API/S1API.Mono.MelonLoader.dll
           cp ./S1API/bin/Il2CppMelon/net6.0/S1API.dll ./artifacts/thunderstore/Plugins/S1API/S1API.Il2Cpp.BepInEx.dll

@@ -28,7 +28,6 @@ jobs:
       - name: Restore .NET Dependencies
         run: dotnet restore
 
-# TODO (@MaxtorCoder): Temporarily disabling until BepInEx is building properly locally.
       - name: Run .NET build for MonoBepInEx
         run: dotnet build ./S1API.sln -c MonoBepInEx -f netstandard2.1
 
