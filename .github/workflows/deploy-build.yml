@@ -68,7 +68,7 @@ jobs:
 
       - name: Run .NET build for Il2CppMelon
         run: dotnet build ./S1API.sln -c Il2CppMelon -f net6.0
-
+        
       - name: Build artifact zip for Thunderstore
         run: |
           mkdir -p ./artifacts/thunderstore/Plugins/S1API
