@@ -68,14 +68,15 @@ jobs:
 
       - name: Run .NET build for Il2CppMelon
         run: dotnet build ./S1API.sln -c Il2CppMelon -f net6.0
-
+        
       - name: Build artifact zip for Thunderstore
         run: |
-          mkdir -p ./artifacts/thunderstore/Plugins/S1API
+          mkdir -p ./artifacts/thunderstore/Plugins
+          mkdir -p ./artifacts/thunderstore/Mods
           cp ./S1APILoader/bin/MonoMelon/netstandard2.1/S1APILoader.dll ./artifacts/thunderstore/Plugins/S1APILoader.dll
-#          cp ./S1APILoader/bin/MonoBepInEx/netstandard2.1/S1APILoader.dll ./artifacts/thunderstore/Plugins/S1APILoader.BepInEx.dll
           cp ./S1API/bin/Il2CppMelon/net6.0/S1API.dll ./artifacts/thunderstore/Mods/S1API.Il2Cpp.MelonLoader.dll
           cp ./S1API/bin/MonoMelon/netstandard2.1/S1API.dll ./artifacts/thunderstore/Mods/S1API.Mono.MelonLoader.dll
+#          cp ./S1APILoader/bin/MonoBepInEx/netstandard2.1/S1APILoader.dll ./artifacts/thunderstore/Plugins/S1APILoader.BepInEx.dll
 #          cp ./S1API/bin/Il2CppMelon/net6.0/S1API.dll ./artifacts/thunderstore/Plugins/S1API/S1API.Il2Cpp.BepInEx.dll
 #          cp ./S1API/bin/MonoMelon/netstandard2.1/S1API.dll ./artifacts/thunderstore/Plugins/S1API/S1API.Mono.BepInEx.dll
           
@@ -99,7 +100,7 @@ jobs:
             libraries
             
       - name: Pack NuGet package
-        run: dotnet pack ./S1API/S1API.csproj -c Mono --no-build --output ./nupkg /p:PackageVersion=${{ steps.semantic-release.outputs.new_release_version }}
+        run: dotnet pack ./S1API/S1API.csproj -c MonoMelon --output ./nupkg /p:PackageVersion=${{ steps.semantic-release.outputs.new_release_version }}
         
       - name: Push to NuGet Gallery
         run: dotnet nuget push ./nupkg/*.nupkg --api-key ${{ secrets.NUGET_TOKEN }} --source https://api.nuget.org/v3/index.json
