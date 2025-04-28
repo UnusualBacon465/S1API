@@ -4,9 +4,14 @@ using S1ScriptableObjects = Il2CppScheduleOne.ScriptableObjects;
 using S1ScriptableObjects = ScheduleOne.ScriptableObjects;
 #endif
 
-using HarmonyLib;
-using S1API.Entities;
+#if (MONOMELON || MONOBEPINEX)
+using System.Collections.Generic;
+#elif (IL2CPPMELON || IL2CPPBEPINEX)
+using Il2CppSystem.Collections.Generic;
+#endif
+
 using System;
+using S1API.Entities;
 using S1API.Internal.Utils;
 using UnityEngine;
 
@@ -30,7 +35,7 @@ namespace S1API.PhoneCalls
         /// <summary>
         /// A list of all stage entries added to this phone call.
         /// </summary>
-        protected CallStageEntry[] StageEntries = Array.Empty<CallStageEntry>();
+        protected readonly List<CallStageEntry> StageEntries = new List<CallStageEntry>();
 
         /// <summary>
         /// INTERNAL: Public constructor used for instancing a new <see cref="S1ScriptableObjects.PhoneCallData"/>
@@ -109,13 +114,13 @@ namespace S1API.PhoneCalls
             {
                 Text = text
             };
-            S1PhoneCallData.Stages.AddItem(originalStage);
+            S1PhoneCallData.Stages = S1PhoneCallData.Stages.AddItemToArray(originalStage);
 
             CallStageEntry callStageEntry = new CallStageEntry(originalStage)
             {
                 Text = text
             };
-            StageEntries.AddItem(callStageEntry);
+            StageEntries.Add(callStageEntry);
 
             return callStageEntry;
         }

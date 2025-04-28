@@ -8,10 +8,16 @@ using S1Quests = ScheduleOne.Quests;
 using S1Variables = ScheduleOne.Variables;
 #endif
 
-using HarmonyLib;
+#if (MONOMELON || MONOBEPINEX)
+using System.Collections.Generic;
+#elif (IL2CPPMELON || IL2CPPBEPINEX)
+using Il2CppSystem.Collections.Generic;
+#endif
+
 using System;
 
 using S1API.Conditions;
+using S1API.Internal.Utils;
 using S1API.PhoneCalls.Constants;
 
 namespace S1API.PhoneCalls
@@ -31,13 +37,13 @@ namespace S1API.PhoneCalls
         /// <summary>
         /// @TODO: Docs
         /// </summary>
-        protected readonly SystemTriggerEntry[] StartTriggerEntries = Array.Empty<SystemTriggerEntry>();
+        protected readonly List<SystemTriggerEntry> StartTriggerEntries = new List<SystemTriggerEntry>();
 
         // ReSharper disable once MemberCanBePrivate.Global
         /// <summary>
         /// @TODO: Docs
         /// </summary>
-        protected readonly SystemTriggerEntry[] DoneTriggerEntries = Array.Empty<SystemTriggerEntry>();
+        protected readonly List<SystemTriggerEntry> DoneTriggerEntries = new List<SystemTriggerEntry>();
 
         /// <summary>
         /// INTERNAL: Creates a stage entry from an in-game stage instance.
@@ -68,12 +74,12 @@ namespace S1API.PhoneCalls
             switch (triggerType)
             {
                 case SystemTriggerType.StartTrigger:
-                    S1Stage.OnStartTriggers.AddItem(originalTrigger);
-                    StartTriggerEntries.AddItem(systemTriggerEntry);
+                    S1Stage.OnStartTriggers = S1Stage.OnStartTriggers.AddItemToArray(originalTrigger);
+                    StartTriggerEntries.Add(systemTriggerEntry);
                     break;
                 case SystemTriggerType.DoneTrigger:
-                    S1Stage.OnDoneTriggers.AddItem(originalTrigger);
-                    DoneTriggerEntries.AddItem(systemTriggerEntry);
+                    S1Stage.OnDoneTriggers = S1Stage.OnDoneTriggers.AddItemToArray(originalTrigger);
+                    DoneTriggerEntries.Add(systemTriggerEntry);
                     break;
             }
 

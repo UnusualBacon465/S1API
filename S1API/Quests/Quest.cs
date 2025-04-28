@@ -15,13 +15,13 @@ using S1Contacts = ScheduleOne.UI.Phone.ContactsApp;
 #if (MONOMELON || MONOBEPINEX)
 using System.Reflection;
 using System.Collections.Generic;
+using HarmonyLib;
 #elif (IL2CPPMELON || IL2CPPBEPINEX)
 using Il2CppSystem.Collections.Generic;
 #endif
 
 using System;
 using System.IO;
-using HarmonyLib;
 using S1API.Internal.Abstraction;
 using S1API.Internal.Utils;
 using S1API.Quests.Constants;
@@ -63,7 +63,7 @@ namespace S1API.Quests
         /// <summary>
         /// A list of all quest entries added to this quest.
         /// </summary>
-        protected readonly QuestEntry[] QuestEntries = Array.Empty<QuestEntry>();
+        protected readonly List<QuestEntry> QuestEntries = new List<QuestEntry>();
 
         [SaveableField("QuestData")]
         private readonly QuestData _questData;
@@ -220,7 +220,7 @@ namespace S1API.Quests
                 Title = title,
                 POIPosition = poiPosition ?? Vector3.zero
             };
-            QuestEntries.AddItem(questEntry);
+            QuestEntries.Add(questEntry);
 
             return questEntry;
         }

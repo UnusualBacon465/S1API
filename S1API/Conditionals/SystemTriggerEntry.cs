@@ -8,7 +8,6 @@ using S1Variables = ScheduleOne.Variables;
 using static ScheduleOne.Quests.QuestManager;
 #endif
 
-using HarmonyLib;
 using System;
 using S1API.Internal.Abstraction;
 using S1API.Internal.Utils;
@@ -83,10 +82,10 @@ namespace S1API.Conditions
             switch (evaluation)
             {
                 case EvaluationType.PassOnTrue:
-                    S1SystemTrigger.onEvaluateTrueVariableSetters.AddItem(variableSetter);
+                    S1SystemTrigger.onEvaluateTrueVariableSetters = S1SystemTrigger.onEvaluateTrueVariableSetters.AddItemToArray(variableSetter);
                     break;
                 case EvaluationType.PassOnFalse:
-                    S1SystemTrigger.onEvaluateFalseVariableSetters.AddItem(variableSetter);
+                    S1SystemTrigger.onEvaluateFalseVariableSetters = S1SystemTrigger.onEvaluateFalseVariableSetters.AddItemToArray(variableSetter);
                     break;
             }
         }
@@ -122,10 +121,10 @@ namespace S1API.Conditions
             switch (evaluation)
             {
                 case EvaluationType.PassOnTrue:
-                    S1SystemTrigger.onEvaluateTrueQuestSetters.AddItem(questStateSetter);
+                    S1SystemTrigger.onEvaluateTrueQuestSetters = S1SystemTrigger.onEvaluateTrueQuestSetters.AddItemToArray(questStateSetter);
                     break;
                 case EvaluationType.PassOnFalse:
-                    S1SystemTrigger.onEvaluateFalseQuestSetters.AddItem(questStateSetter);
+                    S1SystemTrigger.onEvaluateFalseQuestSetters = S1SystemTrigger.onEvaluateFalseQuestSetters.AddItemToArray(questStateSetter);
                     break;
             }
         }
