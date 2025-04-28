@@ -1,4 +1,5 @@
-﻿#if IL2CPP
+﻿#if (IL2CPPMELON || IL2CPPBEPINEX)
+
 using UnityEngine;
 using UnityEngine.UI;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
@@ -10,7 +11,7 @@ using UnityEngine.UI;
 using System;
 using UnityEngine.Events;
 using System.Collections.Generic;
-using MelonLoader;
+
 using Object = UnityEngine.Object;
 
 namespace S1API.UI
