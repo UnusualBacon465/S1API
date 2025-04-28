@@ -1,17 +1,17 @@
-﻿#if (IL2CPPMELON || IL2CPPBEPINEX)
+﻿#if (IL2CPPMELON)
 using S1ScriptableObjects = Il2CppScheduleOne.ScriptableObjects;
 using S1Quests = Il2CppScheduleOne.Quests;
 using S1Variables = Il2CppScheduleOne.Variables;
-#elif (MONOMELON || MONOBEPINEX)
+#elif (MONOMELON || MONOBEPINEX || IL2CPPBEPINEX)
 using S1ScriptableObjects = ScheduleOne.ScriptableObjects;
 using S1Quests = ScheduleOne.Quests;
 using S1Variables = ScheduleOne.Variables;
 #endif
 
+using HarmonyLib;
 using System;
 
 using S1API.Conditions;
-using S1API.Internal.Utils;
 using S1API.PhoneCalls.Constants;
 
 namespace S1API.PhoneCalls
@@ -31,13 +31,13 @@ namespace S1API.PhoneCalls
         /// <summary>
         /// @TODO: Docs
         /// </summary>
-        protected SystemTriggerEntry[] StartTriggerEntries = Array.Empty<SystemTriggerEntry>();
+        protected readonly SystemTriggerEntry[] StartTriggerEntries = Array.Empty<SystemTriggerEntry>();
 
         // ReSharper disable once MemberCanBePrivate.Global
         /// <summary>
         /// @TODO: Docs
         /// </summary>
-        protected SystemTriggerEntry[] DoneTriggerEntries = Array.Empty<SystemTriggerEntry>();
+        protected readonly SystemTriggerEntry[] DoneTriggerEntries = Array.Empty<SystemTriggerEntry>();
 
         /// <summary>
         /// INTERNAL: Creates a stage entry from an in-game stage instance.
@@ -68,12 +68,12 @@ namespace S1API.PhoneCalls
             switch (triggerType)
             {
                 case SystemTriggerType.StartTrigger:
-                    ArrayUtils.Add(ref S1Stage.OnStartTriggers, originalTrigger);
-                    ArrayUtils.Add(ref StartTriggerEntries, systemTriggerEntry);
+                    S1Stage.OnStartTriggers.AddItem(originalTrigger);
+                    StartTriggerEntries.AddItem(systemTriggerEntry);
                     break;
                 case SystemTriggerType.DoneTrigger:
-                    ArrayUtils.Add(ref S1Stage.OnDoneTriggers, originalTrigger);
-                    ArrayUtils.Add(ref DoneTriggerEntries, systemTriggerEntry);
+                    S1Stage.OnDoneTriggers.AddItem(originalTrigger);
+                    DoneTriggerEntries.AddItem(systemTriggerEntry);
                     break;
             }
 

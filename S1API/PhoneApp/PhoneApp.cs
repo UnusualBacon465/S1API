@@ -4,12 +4,11 @@ using UnityEngine.UI;
 using Object = UnityEngine.Object;
 using S1API.Internal.Abstraction;
 using S1API.Internal.Patches;
+
 #if IL2CPPMELON
 using Il2CppScheduleOne.UI.Phone;
 using MelonLoader.Utils;
-#elif IL2CPPBEPINEX 
-using Il2CppScheduleOne.UI.Phone;
-#elif MONOBEPINEX
+#elif MONOBEPINEX || IL2CPPBEPINEX
 using ScheduleOne.UI.Phone;
 #elif MONOMELON
 using ScheduleOne.UI.Phone;
@@ -143,7 +142,7 @@ namespace S1API.PhoneApp
         /// </summary>
         internal void SpawnUI(HomeScreen homeScreenInstance)
         {
-                GameObject? appsCanvas = homeScreenInstance.transform.parent.Find("AppsCanvas")?.gameObject;
+            GameObject? appsCanvas = homeScreenInstance.transform.parent.Find("AppsCanvas")?.gameObject;
             if (appsCanvas == null)
             {
                 Logger.Error("AppsCanvas not found.");

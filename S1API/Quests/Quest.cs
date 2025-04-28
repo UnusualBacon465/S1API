@@ -1,18 +1,22 @@
-﻿#if (IL2CPPMELON || IL2CPPBEPINEX)
+﻿#if (IL2CPPMELON)
 using S1Quests = Il2CppScheduleOne.Quests;
 using S1Dev = Il2CppScheduleOne.DevUtilities;
 using S1Map = Il2CppScheduleOne.Map;
 using S1Data = Il2CppScheduleOne.Persistence.Datas;
 using S1Contacts = Il2CppScheduleOne.UI.Phone.ContactsApp;
-using Il2CppSystem.Collections.Generic;
-#elif (MONOMELON || MONOBEPINEX)
+#elif (MONOMELON || MONOBEPINEX || IL2CPPBEPINEX)
 using S1Quests = ScheduleOne.Quests;
 using S1Dev = ScheduleOne.DevUtilities;
 using S1Map = ScheduleOne.Map;
 using S1Data = ScheduleOne.Persistence.Datas;
 using S1Contacts = ScheduleOne.UI.Phone.ContactsApp;
+#endif
+
+#if (MONOMELON || MONOBEPINEX)
 using System.Reflection;
 using System.Collections.Generic;
+#elif (IL2CPPMELON || IL2CPPBEPINEX)
+using Il2CppSystem.Collections.Generic;
 #endif
 
 using System;

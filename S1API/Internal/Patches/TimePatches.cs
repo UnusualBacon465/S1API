@@ -1,6 +1,6 @@
-﻿#if (IL2CPPMELON || IL2CPPBEPINEX)
+﻿#if (IL2CPPMELON)
 using S1GameTime = Il2CppScheduleOne.GameTime;
-#elif (MONOMELON || MONOBEPINEX)
+#elif (MONOMELON || MONOBEPINEX || IL2CPPBEPINEX)
 using S1GameTime = ScheduleOne.GameTime;
 #endif
 

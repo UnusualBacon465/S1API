@@ -1,6 +1,6 @@
-﻿#if (IL2CPPMELON || IL2CPPBEPINEX)
+﻿#if (IL2CPPMELON)
 using S1CallerID = Il2CppScheduleOne.ScriptableObjects.CallerID;
-#elif (MONOMELON || MONOBEPINEX)
+#elif (MONOMELON || MONOBEPINEX || IL2CPPBEPINEX)
 using S1CallerID = ScheduleOne.ScriptableObjects.CallerID;
 #endif
 

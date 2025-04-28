@@ -1,9 +1,10 @@
-﻿#if (IL2CPPMELON || IL2CPPBEPINEX)
+﻿#if (IL2CPPMELON)
 using S1ScriptableObjects = Il2CppScheduleOne.ScriptableObjects;
-#elif (MONOMELON || MONOBEPINEX)
+#elif (MONOMELON || MONOBEPINEX || IL2CPPBEPINEX)
 using S1ScriptableObjects = ScheduleOne.ScriptableObjects;
 #endif
 
+using HarmonyLib;
 using S1API.Entities;
 using System;
 using S1API.Internal.Utils;
@@ -108,13 +109,13 @@ namespace S1API.PhoneCalls
             {
                 Text = text
             };
-            ArrayUtils.Add(ref S1PhoneCallData.Stages, originalStage);
+            S1PhoneCallData.Stages.AddItem(originalStage);
 
             CallStageEntry callStageEntry = new CallStageEntry(originalStage)
             {
                 Text = text
             };
-            ArrayUtils.Add(ref StageEntries, callStageEntry);
+            StageEntries.AddItem(callStageEntry);
 
             return callStageEntry;
         }

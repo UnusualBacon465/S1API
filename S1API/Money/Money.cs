@@ -1,4 +1,4 @@
-#if (IL2CPPMELON || IL2CPPBEPINEX)
+#if (IL2CPPMELON)
 using Il2CppScheduleOne;
 using S1ItemFramework = Il2CppScheduleOne.ItemFramework;
 using S1MoneyFramework = Il2CppScheduleOne.Money;
@@ -6,7 +6,6 @@ using S1MoneyFramework = Il2CppScheduleOne.Money;
 using ScheduleOne;
 using S1ItemFramework = ScheduleOne.ItemFramework;
 using S1MoneyFramework = ScheduleOne.Money;
-
 #endif
 
 using S1API.Internal.Utils;
@@ -113,7 +112,7 @@ namespace S1API.Money
         /// <returns>A newly created instance of cash with the specified balance.</returns>
         public static CashInstance CreateCashInstance(float amount)
         {
-#if (IL2CPPMELON || IL2CPPBEPINEX)
+#if (IL2CPPMELON)
             var cashItem = Registry.GetItem<Il2CppScheduleOne.ItemFramework.CashDefinition>("cash");
             var instance = CrossType.As<Il2CppScheduleOne.ItemFramework.ItemInstance>(cashItem.GetDefaultInstance(1));
             var cashInstance = new CashInstance(instance);
