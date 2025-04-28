@@ -19,12 +19,12 @@ namespace S1API.Internal.Utils
         {
             List<Type> derivedClasses = new List<Type>();
             Assembly[] applicableAssemblies = AppDomain.CurrentDomain.GetAssemblies()
-                .Where(assembly => !assembly.FullName.StartsWith("System") &&
-                        !assembly.FullName.StartsWith("Unity") &&
-                        !assembly.FullName.StartsWith("Il2Cpp") &&
-                        !assembly.FullName.StartsWith("mscorlib") &&
-                        !assembly.FullName.StartsWith("Mono.") &&
-                        !assembly.FullName.StartsWith("netstandard"))
+                .Where(assembly => !assembly.FullName!.StartsWith("System") &&
+                        !assembly.FullName!.StartsWith("Unity") &&
+                        !assembly.FullName!.StartsWith("Il2Cpp") &&
+                        !assembly.FullName!.StartsWith("mscorlib") &&
+                        !assembly.FullName!.StartsWith("Mono.") &&
+                        !assembly.FullName!.StartsWith("netstandard"))
                 .ToArray();
             foreach (Assembly assembly in applicableAssemblies)
                 derivedClasses.AddRange(assembly.GetTypes()

@@ -29,7 +29,10 @@ namespace S1API.Quests
         /// <returns></returns>
         public static Quest CreateQuest(Type questType, string? guid = null)
         {
-            Quest quest = (Quest)Activator.CreateInstance(questType);
+            Quest? quest = (Quest)Activator.CreateInstance(questType)!;
+            if (quest == null)
+                throw new Exception($"Unable to create quest instance of {questType.FullName}!");
+            
             Quests.Add(quest);
             return quest;
         }

@@ -1,11 +1,11 @@
-﻿#if (IL2CPP)
+﻿#if (IL2CPPMELON || IL2CPPBEPINEX)
 using S1Quests = Il2CppScheduleOne.Quests;
 using S1Dev = Il2CppScheduleOne.DevUtilities;
 using S1Map = Il2CppScheduleOne.Map;
 using S1Data = Il2CppScheduleOne.Persistence.Datas;
 using S1Contacts = Il2CppScheduleOne.UI.Phone.ContactsApp;
 using Il2CppSystem.Collections.Generic;
-#elif (MONO)
+#elif (MONOMELON || MONOBEPINEX)
 using S1Quests = ScheduleOne.Quests;
 using S1Dev = ScheduleOne.DevUtilities;
 using S1Map = ScheduleOne.Map;
@@ -87,10 +87,10 @@ namespace S1API.Quests
             S1Quest.onTrackChange = new UnityEvent<bool>();
             S1Quest.TrackOnBegin = true;
             S1Quest.AutoCompleteOnAllEntriesComplete = true;
-#if (MONO)
+#if (MONOMELON || MONOBEPINEX)
             FieldInfo autoInitField = AccessTools.Field(typeof(S1Quests.Quest), "autoInitialize");
             autoInitField.SetValue(S1Quest, false);
-#elif (IL2CPP)
+#elif (IL2CPPMELON || IL2CPPBEPINEX)
             S1Quest.autoInitialize = false;
 #endif
             
@@ -138,10 +138,10 @@ namespace S1API.Quests
             poiPrefabObject.transform.SetParent(_gameObject.transform);
             S1Map.POI poi = poiPrefabObject.AddComponent<S1Map.POI>();
             poi.DefaultMainText = "Did it work?";
-#if (MONO)
+#if (MONOMELON || MONOBEPINEX)
             FieldInfo uiPrefabField = AccessTools.Field(typeof(S1Map.POI), "UIPrefab");
             uiPrefabField.SetValue(poi, uiPrefabObject);
-#elif (IL2CPP)
+#elif (IL2CPPMELON || IL2CPPBEPINEX)
             poi.UIPrefab = uiPrefabObject;
 #endif
             S1Quest.PoIPrefab = poiPrefabObject;

@@ -1,6 +1,6 @@
-﻿#if (MONO)
+﻿#if (MONOMELON || MONOBEPINEX)
 using System.Collections.Generic;
-#elif (IL2CPP)
+#elif (IL2CPPMELON || IL2CPPBEPINEX)
 using Il2CppSystem.Collections.Generic;
 #endif
 
@@ -33,7 +33,7 @@ namespace S1API.Internal.Abstraction
             FieldInfo[] saveableFields = GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
             foreach (FieldInfo saveableField in saveableFields)
             {
-             SaveableField saveableFieldAttribute = saveableField.GetCustomAttribute<SaveableField>();
+             SaveableField? saveableFieldAttribute = saveableField.GetCustomAttribute<SaveableField>();
              if (saveableFieldAttribute == null)
                  continue;
 
@@ -68,7 +68,7 @@ namespace S1API.Internal.Abstraction
              FieldInfo[] saveableFields = ReflectionUtils.GetAllFields(GetType(), BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
              foreach (FieldInfo saveableField in saveableFields)
              {
-                 SaveableField saveableFieldAttribute = saveableField.GetCustomAttribute<SaveableField>();
+                 SaveableField? saveableFieldAttribute = saveableField.GetCustomAttribute<SaveableField>();
                  if (saveableFieldAttribute == null)
                      continue;
 
@@ -78,7 +78,7 @@ namespace S1API.Internal.Abstraction
                  
                  string saveDataPath = Path.Combine(folderPath, saveFileName);
 
-                 object value = saveableField.GetValue(this);
+                 object? value = saveableField.GetValue(this);
                  if (value == null)
                      // Remove the save if the field is null
                      File.Delete(saveDataPath);

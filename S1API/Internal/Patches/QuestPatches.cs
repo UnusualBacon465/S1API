@@ -1,9 +1,9 @@
-﻿#if (IL2CPP)
+﻿#if (IL2CPPMELON || IL2CPPBEPINEX)
 using S1Loaders = Il2CppScheduleOne.Persistence.Loaders;
 using S1Datas = Il2CppScheduleOne.Persistence.Datas;
 using S1Quests = Il2CppScheduleOne.Quests;
 using Il2CppSystem.Collections.Generic;
-#elif (MONO)
+#elif (MONOMELON || MONOBEPINEX)
 using S1Loaders = ScheduleOne.Persistence.Loaders;
 using S1Datas = ScheduleOne.Persistence.Datas;
 using S1Quests = ScheduleOne.Quests;
@@ -59,8 +59,8 @@ namespace S1API.Internal.Patches
             
             string[] questDirectories = Directory.GetDirectories(mainPath)
                 .Select(Path.GetFileName)
-                .Where(directory => directory.StartsWith("Quest_"))
-                .ToArray();
+                .Where(directory => directory != null && directory.StartsWith("Quest_"))
+                .ToArray()!;
 
             foreach (string questDirectory in questDirectories)
             {
