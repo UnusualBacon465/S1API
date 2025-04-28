@@ -73,9 +73,9 @@ jobs:
         run: |
           mkdir -p ./artifacts/thunderstore/Plugins/S1API
           cp ./S1APILoader/bin/MonoMelon/netstandard2.1/S1APILoader.dll ./artifacts/thunderstore/Plugins/S1APILoader.dll
-#          cp ./S1APILoader/bin/MonoBepInEx/netstandard2.1/S1APILoader.dll ./artifacts/thunderstore/Plugins/S1APILoader.BepInEx.dll
           cp ./S1API/bin/Il2CppMelon/net6.0/S1API.dll ./artifacts/thunderstore/Mods/S1API.Il2Cpp.MelonLoader.dll
           cp ./S1API/bin/MonoMelon/netstandard2.1/S1API.dll ./artifacts/thunderstore/Mods/S1API.Mono.MelonLoader.dll
+#          cp ./S1APILoader/bin/MonoBepInEx/netstandard2.1/S1APILoader.dll ./artifacts/thunderstore/Plugins/S1APILoader.BepInEx.dll
 #          cp ./S1API/bin/Il2CppMelon/net6.0/S1API.dll ./artifacts/thunderstore/Plugins/S1API/S1API.Il2Cpp.BepInEx.dll
 #          cp ./S1API/bin/MonoMelon/netstandard2.1/S1API.dll ./artifacts/thunderstore/Plugins/S1API/S1API.Mono.BepInEx.dll
           
