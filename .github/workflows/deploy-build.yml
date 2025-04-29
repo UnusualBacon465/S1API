@@ -71,7 +71,8 @@ jobs:
         
       - name: Build artifact zip for Thunderstore
         run: |
-          mkdir -p ./artifacts/thunderstore/Plugins/S1API
+          mkdir -p ./artifacts/thunderstore/Plugins
+          mkdir -p ./artifacts/thunderstore/Mods
           cp ./S1APILoader/bin/MonoMelon/netstandard2.1/S1APILoader.dll ./artifacts/thunderstore/Plugins/S1APILoader.MelonLoader.dll
           cp ./S1APILoader/bin/MonoBepInEx/netstandard2.1/S1APILoader.dll ./artifacts/thunderstore/Plugins/S1APILoader.BepInEx.dll
           cp ./S1API/bin/Il2CppMelon/net6.0/S1API.dll ./artifacts/thunderstore/Mods/S1API.Il2Cpp.MelonLoader.dll
