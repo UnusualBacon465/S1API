@@ -1,4 +1,4 @@
-﻿#if (IL2CPPMELON || IL2CPPBEPINEX)
+﻿#if (IL2CPPMELON)
 using S1PlayerScripts = Il2CppScheduleOne.PlayerScripts;
 using S1Health = Il2CppScheduleOne.PlayerScripts.Health;
 #else
@@ -28,17 +28,17 @@ namespace S1API.Entities
         /// Hence, why we're doing it this way :).
         /// </summary>
         private const float InvincibleHealth = 1000000000f;
-        
+
         /// <summary>
         /// The standard MAX_HEALTH of a player.
         /// </summary>
         private const float MortalHealth = 100f;
-        
+
         /// <summary>
         /// All players currently in the game.
         /// </summary>
         public static readonly List<Player> All = new List<Player>();
-        
+
         /// <summary>
         /// INTERNAL: Tracking of the S1 instance of the player.
         /// </summary>
@@ -87,7 +87,7 @@ namespace S1API.Entities
             get => ((IEntity)this).gameObject.transform.position;
             set => ((IEntity)this).gameObject.transform.position = value;
         }
-        
+
         /// <summary>
         /// The transform of the player.
         /// Please do not set the properties of the Transform.
@@ -137,7 +137,7 @@ namespace S1API.Entities
                 S1Player.Health.SetHealth(MaxHealth);
             }
         }
-        
+
         /// <summary>
         /// Revives the player.
         /// </summary>
@@ -152,7 +152,7 @@ namespace S1API.Entities
         {
             if (amount <= 0)
                 return;
-            
+
             S1Player.Health.TakeDamage(amount);
         }
 
@@ -164,7 +164,7 @@ namespace S1API.Entities
         {
             if (amount <= 0)
                 return;
-            
+
             S1Player.Health.SetHealth(CurrentHealth + amount);
         }
 
@@ -182,7 +182,7 @@ namespace S1API.Entities
             add => EventHelper.AddListener(value, S1Player.Health.onDie);
             remove => EventHelper.RemoveListener(value, S1Player.Health.onDie);
         }
-        
+
         /// <summary>
         /// INTERNAL: Field access for the MAX_HEALTH const.
         /// </summary>
