@@ -6,7 +6,7 @@ using S1API.Internal.Abstraction;
 using S1API.PhoneApp;
 using S1API.Logging;
 
-#if (IL2CPPMELON || IL2CPPBEPINEX)
+#if (IL2CPPMELON)
 using Il2CppScheduleOne.UI.Phone;
 #else
 using ScheduleOne.UI.Phone;
@@ -41,6 +41,8 @@ namespace S1API.Internal.Patches
             var phoneApps = ReflectionUtils.GetDerivedClasses<PhoneApp.PhoneApp>();
             foreach (var type in phoneApps)
             {
+                Logger.Msg($"Found phone app: {type.FullName}");
+
                 if (type.GetConstructor(Type.EmptyTypes) == null)
                     continue;
 
