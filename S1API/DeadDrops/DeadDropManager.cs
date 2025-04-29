@@ -1,6 +1,6 @@
-﻿#if (IL2CPPMELON)
+﻿#if (IL2CPPMELON || IL2CPPBEPINEX)
 using S1Economy = Il2CppScheduleOne.Economy;
-#elif (MONOMELON || MONOBEPINEX || IL2CPPBEPINEX)
+#elif (MONOMELON || MONOBEPINEX)
 using S1Economy = ScheduleOne.Economy;
 #endif
 

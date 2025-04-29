@@ -1,4 +1,4 @@
-﻿#if (IL2CPPMELON)
+﻿#if (IL2CPPMELON || IL2CPPBEPINEX)
 using Il2CppScheduleOne.NPCs;
 #else
 using ScheduleOne.NPCs;

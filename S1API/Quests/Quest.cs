@@ -1,4 +1,4 @@
-﻿#if (IL2CPPMELON)
+﻿#if (IL2CPPMELON || IL2CPPBEPINEX)
 using S1Quests = Il2CppScheduleOne.Quests;
 using S1Dev = Il2CppScheduleOne.DevUtilities;
 using S1Map = Il2CppScheduleOne.Map;

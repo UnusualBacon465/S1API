@@ -59,10 +59,13 @@ public static class DialogueInjector
         if (isHooked) return;
         isHooked = true;
         
+        // TODO (@omar-akermi): Can we please look into attaching during the patch process of NPCs?
+        // I really do not like the use of Coroutines and this in particular is causing issues in Il2CppBepInEx builds...
 #if (IL2CPPMELON || MONOMELON)
         MelonCoroutines.Start(WaitForNPCsAndInject());
 #elif (IL2CPPBEPINEX || MONOBEPINEX)
-        InstanceFinder.TimeManager.StartCoroutine(WaitForNPCsAndInject());
+        // InstanceFinder.TimeManager.StartCoroutine(WaitForNPCsAndInject());
+        
 #endif
     }
 
