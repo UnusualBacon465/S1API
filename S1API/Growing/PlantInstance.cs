@@ -62,7 +62,7 @@ namespace S1API.Growing
         /// <summary>
         /// The GameObject of the plant.
         /// </summary>
-        public GameObject GameObject => 
+        private GameObject GameObject => 
             S1Plant.gameObject;
 
         /// <summary>
