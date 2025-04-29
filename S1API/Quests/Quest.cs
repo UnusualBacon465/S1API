@@ -1,23 +1,27 @@
-﻿#if (IL2CPPMELON || IL2CPPBEPINEX)
+﻿#if (IL2CPPMELON)
 using S1Quests = Il2CppScheduleOne.Quests;
 using S1Dev = Il2CppScheduleOne.DevUtilities;
 using S1Map = Il2CppScheduleOne.Map;
 using S1Data = Il2CppScheduleOne.Persistence.Datas;
 using S1Contacts = Il2CppScheduleOne.UI.Phone.ContactsApp;
-using Il2CppSystem.Collections.Generic;
-#elif (MONOMELON || MONOBEPINEX)
+#elif (MONOMELON || MONOBEPINEX || IL2CPPBEPINEX)
 using S1Quests = ScheduleOne.Quests;
 using S1Dev = ScheduleOne.DevUtilities;
 using S1Map = ScheduleOne.Map;
 using S1Data = ScheduleOne.Persistence.Datas;
 using S1Contacts = ScheduleOne.UI.Phone.ContactsApp;
+#endif
+
+#if (MONOMELON || MONOBEPINEX)
 using System.Reflection;
 using System.Collections.Generic;
+using HarmonyLib;
+#elif (IL2CPPMELON || IL2CPPBEPINEX)
+using Il2CppSystem.Collections.Generic;
 #endif
 
 using System;
 using System.IO;
-using HarmonyLib;
 using S1API.Internal.Abstraction;
 using S1API.Internal.Utils;
 using S1API.Quests.Constants;
@@ -59,7 +63,7 @@ namespace S1API.Quests
         /// <summary>
         /// A list of all quest entries added to this quest.
         /// </summary>
-        protected readonly QuestEntry[] QuestEntries = Array.Empty<QuestEntry>();
+        protected readonly List<QuestEntry> QuestEntries = new List<QuestEntry>();
 
         [SaveableField("QuestData")]
         private readonly QuestData _questData;
@@ -216,7 +220,7 @@ namespace S1API.Quests
                 Title = title,
                 POIPosition = poiPosition ?? Vector3.zero
             };
-            QuestEntries.AddItem(questEntry);
+            QuestEntries.Add(questEntry);
 
             return questEntry;
         }

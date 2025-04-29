@@ -1,13 +1,7 @@
-﻿#if (IL2CPPMELON || IL2CPPBEPINEX)
-using static Il2CppScheduleOne.Quests.QuestManager;
-#elif (MONOMELON || MONOBEPINEX)
-using static ScheduleOne.Quests.QuestManager;
-#endif
-
-namespace S1API.Quests.Constants
+﻿namespace S1API.Quests.Constants
 {
     /// <summary>
-    /// A wrapper around <see cref="EQuestAction"/>
+    /// A wrapper around EQuestAction
     /// </summary>
     public enum QuestAction
     {

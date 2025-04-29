@@ -1,10 +1,14 @@
-﻿#if (IL2CPPMELON || IL2CPPBEPINEX)
+﻿#if (IL2CPPMELON)
 using S1Loaders = Il2CppScheduleOne.Persistence.Loaders;
 using S1NPCs = Il2CppScheduleOne.NPCs;
-using Il2CppSystem.Collections.Generic;
-#elif (MONOMELON || MONOBEPINEX)
+#elif (MONOMELON || MONOBEPINEX || IL2CPPBEPINEX)
 using S1Loaders = ScheduleOne.Persistence.Loaders;
 using S1NPCs = ScheduleOne.NPCs;
+#endif
+
+#if (IL2CPPMELON || IL2CPPBEPINEX)
+using Il2CppSystem.Collections.Generic;
+#elif (MONOMELON || MONOBEPINEX)
 using System.Collections.Generic;
 #endif
 
@@ -42,7 +46,7 @@ namespace S1API.Internal.Patches
                 // We skip any S1API NPCs, as they are base NPC wrappers.
                 if (type.Assembly == Assembly.GetExecutingAssembly())
                     continue;
-                
+
                 string npcPath = Path.Combine(mainPath, customNPC.S1NPC.SaveFolderName);
                 customNPC.LoadInternal(npcPath);
             }
@@ -54,9 +58,9 @@ namespace S1API.Internal.Patches
         /// <param name="__instance">Instance of the NPC</param>
         [HarmonyPatch(typeof(S1NPCs.NPC), "Start")]
         [HarmonyPostfix]
-        private static void NPCStart(S1NPCs.NPC __instance) => 
+        private static void NPCStart(S1NPCs.NPC __instance) =>
             NPC.All.FirstOrDefault(npc => npc.IsCustomNPC && npc.S1NPC == __instance)?.CreateInternal();
-        
+
 
         /// <summary>
         /// Patching performed for when an NPC calls to save data.
@@ -68,7 +72,7 @@ namespace S1API.Internal.Patches
         [HarmonyPostfix]
         private static void NPCWriteData(S1NPCs.NPC __instance, string parentFolderPath, ref List<string> __result) =>
             NPC.All.FirstOrDefault(npc => npc.IsCustomNPC && npc.S1NPC == __instance)?.SaveInternal(parentFolderPath, ref __result);
-        
+
         /// <summary>
         /// Patching performed for when an NPC is destroyed.
         /// </summary>

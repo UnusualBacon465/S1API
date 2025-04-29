@@ -1,8 +1,8 @@
-﻿#if (IL2CPPMELON || IL2CPPBEPINEX)
+﻿#if (IL2CPPMELON)
 using S1Quests = Il2CppScheduleOne.Quests;
 using S1Variables = Il2CppScheduleOne.Variables;
 using static Il2CppScheduleOne.Quests.QuestManager;
-#elif (MONOMELON || MONOBEPINEX)
+#elif (MONOMELON || MONOBEPINEX || IL2CPPBEPINEX)
 using S1Quests = ScheduleOne.Quests;
 using S1Variables = ScheduleOne.Variables;
 using static ScheduleOne.Quests.QuestManager;
@@ -82,10 +82,10 @@ namespace S1API.Conditions
             switch (evaluation)
             {
                 case EvaluationType.PassOnTrue:
-                    ArrayUtils.Add(ref S1SystemTrigger.onEvaluateTrueVariableSetters, variableSetter);
+                    S1SystemTrigger.onEvaluateTrueVariableSetters = S1SystemTrigger.onEvaluateTrueVariableSetters.AddItemToArray(variableSetter);
                     break;
                 case EvaluationType.PassOnFalse:
-                    ArrayUtils.Add(ref S1SystemTrigger.onEvaluateFalseVariableSetters, variableSetter);
+                    S1SystemTrigger.onEvaluateFalseVariableSetters = S1SystemTrigger.onEvaluateFalseVariableSetters.AddItemToArray(variableSetter);
                     break;
             }
         }
@@ -121,10 +121,10 @@ namespace S1API.Conditions
             switch (evaluation)
             {
                 case EvaluationType.PassOnTrue:
-                    ArrayUtils.Add(ref S1SystemTrigger.onEvaluateTrueQuestSetters, questStateSetter);
+                    S1SystemTrigger.onEvaluateTrueQuestSetters = S1SystemTrigger.onEvaluateTrueQuestSetters.AddItemToArray(questStateSetter);
                     break;
                 case EvaluationType.PassOnFalse:
-                    ArrayUtils.Add(ref S1SystemTrigger.onEvaluateFalseQuestSetters, questStateSetter);
+                    S1SystemTrigger.onEvaluateFalseQuestSetters = S1SystemTrigger.onEvaluateFalseQuestSetters.AddItemToArray(questStateSetter);
                     break;
             }
         }

@@ -1,6 +1,6 @@
-﻿#if (IL2CPPMELON || IL2CPPBEPINEX)
+﻿#if (IL2CPPMELON)
 using S1Calling = Il2CppScheduleOne.Calling;
-#elif (MONOMELON || MONOBEPINEX)
+#elif (MONOMELON || MONOBEPINEX || IL2CPPBEPINEX)
 using S1Calling = ScheduleOne.Calling;
 #endif
 
