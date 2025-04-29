@@ -1,16 +1,20 @@
 using System.Collections.Generic;
-
 using UnityEngine;
-using MelonLoader;
 using S1API.Dialogues;
+#if (IL2CPPMELON || MONOMELON)
+using MelonLoader;
+#endif
+
 #if IL2CPPMELON || IL2CPPBEPINEX
 using Il2CppScheduleOne.Dialogue;
 using Il2CppScheduleOne.NPCs;
 using Il2CppScheduleOne.NPCs.Schedules;
+using Il2CppFishNet;
 #else
 using ScheduleOne.Dialogue;
 using ScheduleOne.NPCs;
 using ScheduleOne.NPCs.Schedules;
+using FishNet;
 #endif
 /// <summary>
 /// The DialogueInjector class is a static utility that facilitates the injection of custom dialogue entries
@@ -54,8 +58,12 @@ public static class DialogueInjector
     {
         if (isHooked) return;
         isHooked = true;
-
+        
+#if (IL2CPPMELON || MONOMELON)
         MelonCoroutines.Start(WaitForNPCsAndInject());
+#elif (IL2CPPBEPINEX || MONOBEPINEX)
+        InstanceFinder.TimeManager.StartCoroutine(WaitForNPCsAndInject());
+#endif
     }
 
     /// <summary>
@@ -117,7 +125,7 @@ public static class DialogueInjector
         DialogueNodeData node = null;
         for (int i = 0; i < container.DialogueNodeData.Count; i++)
         {
-            var n = container.DialogueNodeData[i];
+            var n = container.DialogueNodeData.ToArray()[i];
             if (n != null && n.Guid == injection.FromNodeGuid)
             {
                 node = n;
@@ -158,6 +166,7 @@ public static class DialogueInjector
 
         DialogueChoiceListener.Register(handler, injection.ChoiceLabel, injection.OnConfirmed);
 
-        MelonLogger.Msg($"[DialogueInjector] Injected '{injection.ChoiceLabel}' into NPC '{npc.name}'");
+        // TODO (@omar-akermi): Can you convert this to the new logger pls?
+        // MelonLogger.Msg($"[DialogueInjector] Injected '{injection.ChoiceLabel}' into NPC '{npc.name}'");
     }
 }
