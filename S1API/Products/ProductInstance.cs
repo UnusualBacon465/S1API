@@ -4,8 +4,9 @@ using S1Product = Il2CppScheduleOne.Product;
 using S1Product = ScheduleOne.Product;
 #endif
 
+using Il2CppScheduleOne.ItemFramework;
 using S1API.Internal.Utils;
-using S1API.Items;
+using ItemInstance = S1API.Items.ItemInstance;
 
 namespace S1API.Products
 {
@@ -37,5 +38,11 @@ namespace S1API.Products
         /// </summary>
         public PackagingDefinition AppliedPackaging =>
             new PackagingDefinition(S1ProductInstance.AppliedPackaging);
+        /// <summary>
+        /// The quality of this product instance.
+        /// </summary>
+        public EQuality Quality => S1ProductInstance.Quality;
+
     }
+
 }
