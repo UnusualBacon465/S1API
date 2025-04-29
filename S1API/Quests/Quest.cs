@@ -63,7 +63,7 @@ namespace S1API.Quests
         /// <summary>
         /// A list of all quest entries added to this quest.
         /// </summary>
-        protected readonly List<QuestEntry> QuestEntries = new List<QuestEntry>();
+        protected readonly System.Collections.Generic.List<QuestEntry> QuestEntries = new System.Collections.Generic.List<QuestEntry>();
 
         [SaveableField("QuestData")]
         private readonly QuestData _questData;

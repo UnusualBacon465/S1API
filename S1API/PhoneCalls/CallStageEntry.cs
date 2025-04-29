@@ -37,13 +37,13 @@ namespace S1API.PhoneCalls
         /// <summary>
         /// @TODO: Docs
         /// </summary>
-        protected readonly List<SystemTriggerEntry> StartTriggerEntries = new List<SystemTriggerEntry>();
+        protected readonly System.Collections.Generic.List<SystemTriggerEntry> StartTriggerEntries = new System.Collections.Generic.List<SystemTriggerEntry>();
 
         // ReSharper disable once MemberCanBePrivate.Global
         /// <summary>
         /// @TODO: Docs
         /// </summary>
-        protected readonly List<SystemTriggerEntry> DoneTriggerEntries = new List<SystemTriggerEntry>();
+        protected readonly System.Collections.Generic.List<SystemTriggerEntry> DoneTriggerEntries = new System.Collections.Generic.List<SystemTriggerEntry>();
 
         /// <summary>
         /// INTERNAL: Creates a stage entry from an in-game stage instance.

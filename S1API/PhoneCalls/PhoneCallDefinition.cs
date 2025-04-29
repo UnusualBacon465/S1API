@@ -35,7 +35,7 @@ namespace S1API.PhoneCalls
         /// <summary>
         /// A list of all stage entries added to this phone call.
         /// </summary>
-        protected readonly List<CallStageEntry> StageEntries = new List<CallStageEntry>();
+        protected readonly System.Collections.Generic.List<CallStageEntry> StageEntries = new System.Collections.Generic.List<CallStageEntry>();
 
         /// <summary>
         /// INTERNAL: Public constructor used for instancing a new <see cref="S1ScriptableObjects.PhoneCallData"/>
