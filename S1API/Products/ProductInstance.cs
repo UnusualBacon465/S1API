@@ -1,10 +1,12 @@
 ﻿#if (IL2CPPMELON || IL2CPPBEPINEX)
 using S1Product = Il2CppScheduleOne.Product;
+using Il2CppScheduleOne.ItemFramework;
+
 #elif (MONOMELON || MONOBEPINEX || IL2CPPBEPINEX)
 using S1Product = ScheduleOne.Product;
+using ScheduleOne.ItemFramework;
 #endif
 
-using Il2CppScheduleOne.ItemFramework;
 using S1API.Internal.Utils;
 using ItemInstance = S1API.Items.ItemInstance;
 
