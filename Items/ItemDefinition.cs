@@ -94,11 +94,12 @@ namespace S1API.Items
         /// <summary>
         /// Legal status of the item (e.g., illegal drugs).
         /// </summary>
-        public S1ItemFramework.ELegalStatus LegalStatus
+        public LegalStatus LegalStatus
         {
-            get => S1ItemDefinition.legalStatus;
-            set => S1ItemDefinition.legalStatus = value;
+            get => (LegalStatus)S1ItemDefinition.legalStatus;
+            set => S1ItemDefinition.legalStatus = (S1ItemFramework.ELegalStatus)value;
         }
+
 
         /// <summary>
         /// The color of the label shown in UI.
@@ -127,6 +128,7 @@ namespace S1API.Items
             return new ItemInstance(inst);
         }
 
+
         public string GUID => ID;
 
         public override bool Equals(object? obj) =>
@@ -140,5 +142,15 @@ namespace S1API.Items
 
         public static bool operator !=(ItemDefinition? a, ItemDefinition? b) =>
             !(a == b);
+    }
+
+    /// <summary>
+    /// Represents the legal status of an item (e.g., legal or illegal).
+    /// </summary>
+    public enum LegalStatus
+    {
+        Legal,
+        Illegal,
+        // More if needed
     }
 }

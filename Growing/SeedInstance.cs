@@ -32,7 +32,7 @@ namespace S1API.Growing
         /// <summary>
         /// The underlying GameObject of this seed.
         /// </summary>
-        public GameObject GameObject => 
+        private GameObject GameObject => 
             S1FunctionalSeed.gameObject;
 
         /// <summary>
