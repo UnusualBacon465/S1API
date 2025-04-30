@@ -185,7 +185,7 @@ namespace S1API.Entities
             Appearance = new NPCAppearance(this);
 
             // Enable our custom gameObjects so they can initialize
-            gameObject.name = S1NPC.fullName;
+            gameObject.name = S1NPC.FirstName ?? "UnknownNPC";
             gameObject.SetActive(true);
 
             All.Add(this);
