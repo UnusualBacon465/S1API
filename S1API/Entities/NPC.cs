@@ -161,7 +161,6 @@ namespace S1API.Entities
             });
             S1NPC.awareness.VisionCone = visionCone;
 
-
             // Suspicious ? icon in world space
             S1NPC.awareness.VisionCone.QuestionMarkPopup = gameObject.AddComponent<S1WorkspacePopup.WorldspacePopup>();
 
@@ -182,10 +181,11 @@ namespace S1API.Entities
             // Pickpocket behaviour
             inventory.PickpocketIntObj = gameObject.AddComponent<S1Interaction.InteractableObject>();
 
-            // Defaulting to the local player for Avatar TODO: Change
-            S1NPC.Avatar = S1AvatarFramework.MugshotGenerator.Instance.MugshotRig;
+            // Set the appearance for the NPC
+            Appearance = new NPCAppearance(this);
 
             // Enable our custom gameObjects so they can initialize
+            gameObject.name = S1NPC.fullName;
             gameObject.SetActive(true);
 
             All.Add(this);
@@ -197,6 +197,14 @@ namespace S1API.Entities
         /// </summary>
         /// <param name="response">The response that was loaded.</param>
         protected virtual void OnResponseLoaded(Response response) { }
+
+        /// <summary>
+        /// Override OnCreated to create the Mugshot for the NPC
+        /// </summary>
+        protected override void OnCreated()
+        {
+            Appearance.GenerateMugshot();
+        }
 
         #endregion
 
@@ -529,6 +537,11 @@ namespace S1API.Entities
             add => EventHelper.AddListener(value, S1NPC.Inventory.onContentsChanged);
             remove => EventHelper.RemoveListener(value, S1NPC.Inventory.onContentsChanged);
         }
+
+        /// <summary>
+        /// The current <see cref="NPCAppearance"/> instance.
+        /// </summary>
+        public NPCAppearance Appearance { get; private set; }
 
         /// <summary>
         /// Sends a text message from this NPC to the players.
