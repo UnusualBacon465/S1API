@@ -41,6 +41,7 @@ namespace S1API.Growing
         /// <summary>
         /// Clones an existing SeedDefinition and registers it.
         /// </summary>
+        // @KaBooMa and @omar-akermi this needs more testing, currently give infinite seed plants.
         public static SeedDefinition CloneSeed(string existingSeedId, string newId, string newName, string newDescription)
         {
             var baseSeed = ScheduleOneRegistry.GetItem<S1Growing.SeedDefinition>(existingSeedId);
