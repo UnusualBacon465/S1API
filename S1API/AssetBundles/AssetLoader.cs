@@ -8,7 +8,7 @@ namespace S1API.AssetBundles
 
     public static class AssetLoader
     {
-#if IL2CPP
+#if IL2CPPMELON
         /// <summary>
         /// Loads an Il2Cpp AssetBundle from an embedded resource stream by name.
         /// </summary>
@@ -38,7 +38,7 @@ namespace S1API.AssetBundles
                 return new(bundle);
             }
         }
-#else
+#elif MONOMELON
         public static WrappedAssetBundle GetAssetBundleFromStream(string fullResourceName)
         {
             // Attempt to find the embedded resource in the executing assembly
