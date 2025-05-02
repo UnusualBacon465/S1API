@@ -1,5 +1,5 @@
 #if IL2CPPBEPINEX
-﻿using Il2CppInterop.Runtime.InteropTypes;
+using Il2CppInterop.Runtime.InteropTypes;
 using Il2CppInterop.Runtime;
 using System;
 

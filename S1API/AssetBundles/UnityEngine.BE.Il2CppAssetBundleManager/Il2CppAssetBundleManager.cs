@@ -1,5 +1,5 @@
 #if IL2CPPBEPINEX
-﻿using Il2CppSystem.IO;
+using Il2CppSystem.IO;
 using Il2CppInterop.Runtime;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 
@@ -34,9 +34,9 @@ namespace UnityEngine
         }
 
         public static Il2CppAssetBundle LoadFromFile(string path) => LoadFromFile(path, 0u, 0UL);
-        
+
         public static Il2CppAssetBundle LoadFromFile(string path, uint crc) => LoadFromFile(path, crc, 0UL);
-        
+
         public static Il2CppAssetBundle LoadFromFile(string path, uint crc, ulong offset)
         {
             if (string.IsNullOrEmpty(path))
@@ -48,9 +48,9 @@ namespace UnityEngine
         }
 
         public static Il2CppAssetBundleCreateRequest LoadFromFileAsync(string path) => LoadFromFileAsync(path, 0u, 0UL);
-        
+
         public static Il2CppAssetBundleCreateRequest LoadFromFileAsync(string path, uint crc) => LoadFromFileAsync(path, crc, 0UL);
-        
+
         public static Il2CppAssetBundleCreateRequest LoadFromFileAsync(string path, uint crc, ulong offset)
         {
             if (string.IsNullOrEmpty(path))
@@ -62,7 +62,7 @@ namespace UnityEngine
         }
 
         public static Il2CppAssetBundle LoadFromMemory(Il2CppStructArray<byte> binary) => LoadFromMemory(binary, 0u);
-        
+
         public static Il2CppAssetBundle LoadFromMemory(Il2CppStructArray<byte> binary, uint crc)
         {
             if (binary == null)
@@ -74,7 +74,7 @@ namespace UnityEngine
         }
 
         public static Il2CppAssetBundleCreateRequest LoadFromMemoryAsync(Il2CppStructArray<byte> binary) => LoadFromMemoryAsync(binary, 0u);
-        
+
         public static Il2CppAssetBundleCreateRequest LoadFromMemoryAsync(Il2CppStructArray<byte> binary, uint crc)
         {
             if (binary == null)
@@ -86,9 +86,9 @@ namespace UnityEngine
         }
 
         public static Il2CppAssetBundle LoadFromStream(Stream stream) => LoadFromStream(stream, 0u, 0u);
-        
+
         public static Il2CppAssetBundle LoadFromStream(Stream stream, uint crc) => LoadFromStream(stream, crc, 0u);
-        
+
         public static Il2CppAssetBundle LoadFromStream(Stream stream, uint crc, uint managedReadBufferSize)
         {
             if (stream == null)
@@ -100,9 +100,9 @@ namespace UnityEngine
         }
 
         public static Il2CppAssetBundleCreateRequest LoadFromStreamAsync(Stream stream) => LoadFromStreamAsync(stream, 0u, 0u);
-        
+
         public static Il2CppAssetBundleCreateRequest LoadFromStreamAsync(Stream stream, uint crc) => LoadFromStreamAsync(stream, crc, 0u);
-        
+
         public static Il2CppAssetBundleCreateRequest LoadFromStreamAsync(Stream stream, uint crc, uint managedReadBufferSize)
         {
             if (stream == null)

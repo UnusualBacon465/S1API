@@ -1,5 +1,5 @@
 #if IL2CPPBEPINEX
-﻿using System;
+using System;
 using Il2CppInterop.Runtime;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 
@@ -72,4 +72,5 @@ namespace UnityEngine
         private delegate IntPtr get_allAssetsDelegate(IntPtr _this);
         private static get_allAssetsDelegate get_allAssetsDelegateField;
     }
-}#endif
+}
+#endif

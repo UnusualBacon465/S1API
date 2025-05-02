@@ -1,14 +1,15 @@
-﻿using System;
-using System.IO;
-using System.Reflection;
+﻿using System.Reflection;
+
 using UnityEngine;
 
 namespace S1API.AssetBundles
 {
-
-    public static class AssetLoader
+    /// <summary>
+    /// The asset bundle manager
+    /// </summary>
+    public static class AssetBundleManager
     {
-#if IL2CPPMELON
+#if IL2CPPMELON || IL2CPPBEPINEX
         /// <summary>
         /// Loads an Il2Cpp AssetBundle from an embedded resource stream by name.
         /// </summary>
@@ -30,57 +31,61 @@ namespace S1API.AssetBundles
                 // Load the AssetBundle from memory
                 Il2CppAssetBundle bundle = Il2CppAssetBundleManager.LoadFromMemory(data);
 
-                if (bundle == null){
-                MelonLoader.Logger.Error($"Failed to load AssetBundle from memory: {fullResourceName}");
+                if (bundle == null)
+                {
+                    MelonLoader.Logger.Error($"Failed to load AssetBundle from memory: {fullResourceName}");
                     throw new Exception($"Failed to load AssetBundle from memory: {fullResourceName}");
-                    }
+                }
 
                 return new(bundle);
             }
         }
-#elif MONOMELON
+#elif MONOMELON || MONOBEPINEX
+        /// <summary>
+        /// Load a <see cref="WrappedAssetBundle"/> instance by <see cref="string"/> resource name.
+        /// </summary>
+        /// <param name="fullResourceName">The full embedded resource name (including namespace path);</param>
+        /// <returns>The loaded AssetBundle instance</returns>
         public static WrappedAssetBundle GetAssetBundleFromStream(string fullResourceName)
         {
             // Attempt to find the embedded resource in the executing assembly
             var assembly = Assembly.GetExecutingAssembly();
-
             var stream = assembly.GetManifestResourceStream(fullResourceName);
-
-            return new(AssetBundle.LoadFromStream(stream));
+            return new WrappedAssetBundle(AssetBundle.LoadFromStream(stream));
         }
 #endif
 
         /// <summary>
-        /// 
-        /// No need to type the assembly just the path stuff. 
-        /// 
-        /// Example if carassetbundle is in subfolder /bundles/: 
-        /// 
+        ///
+        /// No need to type the assembly just the path stuff.
+        ///
+        /// Example if carassetbundle is in subfolder /bundles/:
+        ///
         ///         GameObject myCar = Instantiate(EasyLoad<GameObject>("bundles.carassetbundle", "MyCarGameObject"));
-        ///         
+        ///
         /// </summary>
-        public static T EasyLoad<T>(string bundle_name, string object_name) where T : UnityEngine.Object
+        public static T EasyLoad<T>(string bundleName, string objectName) where T : Object
         {
-            return EasyLoad<T>(bundle_name, object_name, Assembly.GetExecutingAssembly(), out _);
+            return EasyLoad<T>(bundleName, objectName, Assembly.GetExecutingAssembly(), out _);
         }
 
-        public static T EasyLoad<T>(string bundle_name, string object_name, out WrappedAssetBundle bundle) where T : UnityEngine.Object
+        public static T EasyLoad<T>(string bundleName, string objectName, out WrappedAssetBundle bundle) where T : Object
         {
-            return EasyLoad<T>(bundle_name, object_name, Assembly.GetExecutingAssembly(), out bundle);
+            return EasyLoad<T>(bundleName, objectName, Assembly.GetExecutingAssembly(), out bundle);
         }
 
-        public static T EasyLoad<T>(string bundle_name, string object_name, Assembly assemblyOverride) where T : UnityEngine.Object
+        public static T EasyLoad<T>(string bundleName, string objectName, Assembly assemblyOverride) where T : Object
         {
-            return EasyLoad<T>(bundle_name, object_name, assemblyOverride, out _);
+            return EasyLoad<T>(bundleName, objectName, assemblyOverride, out _);
         }
 
-        public static T EasyLoad<T>(string bundle_name, string object_name, Assembly assemblyOverride, out WrappedAssetBundle bundle) where T : UnityEngine.Object
+        public static T EasyLoad<T>(string bundleName, string objectName, Assembly assemblyOverride, out WrappedAssetBundle bundle) where T : Object
         {
             // Get the asset bundle from the assembly
-            bundle = GetAssetBundleFromStream($"{assemblyOverride.GetName().Name}.{bundle_name}");
+            bundle = GetAssetBundleFromStream($"{assemblyOverride.GetName().Name}.{bundleName}");
 
             // Load the asset from the bundle
-            return bundle.LoadAsset<T>(object_name);
+            return bundle.LoadAsset<T>(objectName);
         }
 
     }
