@@ -1,7 +1,7 @@
 ﻿#if (IL2CPPMELON || IL2CPPBEPINEX)
 using S1Product = Il2CppScheduleOne.Product;
 using Il2CppSystem.Collections.Generic;
-#elif (MONOMELON || MONOBEPINEX)
+#elif (MONOMELON || MONOBEPINEX || IL2CPPBEPINEX)
 using S1Product = ScheduleOne.Product;
 #endif
 using System.Linq;

@@ -16,7 +16,7 @@ namespace S1API.DeadDrops
         /// <summary>
         /// Gets all dead drops in the scene.
         /// </summary>
-        public static DeadDropInstance[] All => 
+        public static DeadDropInstance[] All =>
             S1Economy.DeadDrop.DeadDrops.ToArray()
                 .Select(deadDrop => new DeadDropInstance(deadDrop)).ToArray(); }
 }

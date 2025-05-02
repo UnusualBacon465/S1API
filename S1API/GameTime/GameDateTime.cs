@@ -2,7 +2,7 @@
 using S1GameDateTime = Il2CppScheduleOne.GameTime.GameDateTime;
 using S1TimeManager = Il2CppScheduleOne.GameTime.TimeManager;
 using S1GameDateTimeData = Il2CppScheduleOne.Persistence.Datas.GameDateTimeData;
-#elif (MONOMELON || MONOBEPINEX)
+#elif (MONOMELON || MONOBEPINEX || IL2CPPBEPINEX)
 using S1GameDateTime = ScheduleOne.GameTime.GameDateTime;
 using S1TimeManager = ScheduleOne.GameTime.TimeManager;
 using S1GameDateTimeData = ScheduleOne.Persistence.Datas.GameDateTimeData;

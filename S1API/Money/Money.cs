@@ -6,7 +6,6 @@ using S1MoneyFramework = Il2CppScheduleOne.Money;
 using ScheduleOne;
 using S1ItemFramework = ScheduleOne.ItemFramework;
 using S1MoneyFramework = ScheduleOne.Money;
-
 #endif
 
 using S1API.Internal.Utils;

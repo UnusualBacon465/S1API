@@ -13,7 +13,6 @@ using S1Behaviour = Il2CppScheduleOne.NPCs.Behaviour;
 using S1Vehicles = Il2CppScheduleOne.Vehicles;
 using S1Vision = Il2CppScheduleOne.Vision;
 using S1NPCs = Il2CppScheduleOne.NPCs;
-using Il2CppSystem.Collections.Generic;
 #elif (MONOMELON || MONOBEPINEX)
 using S1DevUtilities = ScheduleOne.DevUtilities;
 using S1Interaction = ScheduleOne.Interaction;
@@ -29,6 +28,11 @@ using S1Behaviour = ScheduleOne.NPCs.Behaviour;
 using S1Vehicles = ScheduleOne.Vehicles;
 using S1Vision = ScheduleOne.Vision;
 using S1NPCs = ScheduleOne.NPCs;
+#endif
+
+#if (IL2CPPBEPINEX || IL2CPPMELON)
+using Il2CppSystem.Collections.Generic;
+#else
 using System.Collections.Generic;
 #endif
 
@@ -54,12 +58,12 @@ namespace S1API.Entities
         // Protected members intended to be used by modders.
         // Intended to be used from within the class / derived classes ONLY.
         #region Protected Members
-        
+
         /// <summary>
         /// A list of text responses you've added to your NPC.
         /// </summary>
         protected readonly System.Collections.Generic.List<Response> Responses = new System.Collections.Generic.List<Response>();
-        
+
         /// <summary>
         /// Base constructor for a new NPC.
         /// Not intended for instancing your NPC!
@@ -70,18 +74,18 @@ namespace S1API.Entities
         /// <param name="lastName">The last name for your NPC.</param>
         /// <param name="icon">The icon for your NPC for messages, realationships, etc.</param>
         protected NPC(
-            string id, 
-            string? firstName, 
-            string? lastName, 
+            string id,
+            string? firstName,
+            string? lastName,
             Sprite? icon = null
             )
         {
             IsCustomNPC = true;
             gameObject = new GameObject();
-            
+
             // Deactivate game object til we're done
             gameObject.SetActive(false);
-            
+
             // Setup the base NPC class
             S1NPC = gameObject.AddComponent<S1NPCs.NPC>();
             S1NPC.FirstName = firstName;
@@ -93,22 +97,22 @@ namespace S1API.Entities
             // ReSharper disable once UseObjectOrCollectionInitializer (IL2CPP COMPAT)
             S1NPC.ConversationCategories = new List<S1Messaging.EConversationCategory>();
             S1NPC.ConversationCategories.Add(S1Messaging.EConversationCategory.Customer);
-            
+
             // Create our MessageConversation
 #if (IL2CPPMELON || IL2CPPBEPINEX)
             S1NPC.CreateMessageConversation();
 #elif (MONOMELON || MONOBEPINEX)
             MethodInfo createConvoMethod = AccessTools.Method(typeof(S1NPCs.NPC), "CreateMessageConversation");
             createConvoMethod.Invoke(S1NPC, null);
-#endif 
-            
+#endif
+
             // Add UnityEvents for NPCHealth
             S1NPC.Health = gameObject.GetComponent<S1NPCs.NPCHealth>();
             S1NPC.Health.onDie = new UnityEvent();
             S1NPC.Health.onKnockedOut = new UnityEvent();
             S1NPC.Health.Invincible = true;
             S1NPC.Health.MaxHealth = 100f;
-            
+
             // Awareness behaviour
             GameObject awarenessObject = new GameObject("NPCAwareness");
             awarenessObject.transform.SetParent(gameObject.transform);
@@ -122,31 +126,31 @@ namespace S1API.Entities
             S1NPC.awareness.onNoticedPlayerViolatingCurfew = new UnityEvent<S1PlayerScripts.Player>();
             S1NPC.awareness.onNoticedSuspiciousPlayer = new UnityEvent<S1PlayerScripts.Player>();
             S1NPC.awareness.Listener = gameObject.AddComponent<S1Noise.Listener>();
-            
+
             /////// START BEHAVIOUR CODE ////////
             // NPCBehaviours behaviour
             GameObject behaviourObject = new GameObject("NPCBehaviour");
             behaviourObject.transform.SetParent(gameObject.transform);
             S1Behaviour.NPCBehaviour behaviour = behaviourObject.AddComponent<S1Behaviour.NPCBehaviour>();
-            
+
             GameObject cowingBehaviourObject = new GameObject("CowingBehaviour");
             cowingBehaviourObject.transform.SetParent(behaviourObject.transform);
             S1Behaviour.CoweringBehaviour coweringBehaviour = cowingBehaviourObject.AddComponent<S1Behaviour.CoweringBehaviour>();
-            
+
             GameObject fleeBehaviourObject = new GameObject("FleeBehaviour");
             fleeBehaviourObject.transform.SetParent(behaviourObject.transform);
             S1Behaviour.FleeBehaviour fleeBehaviour = fleeBehaviourObject.AddComponent<S1Behaviour.FleeBehaviour>();
-            
+
             behaviour.CoweringBehaviour = coweringBehaviour;
             behaviour.FleeBehaviour = fleeBehaviour;
             S1NPC.behaviour = behaviour;
             /////// END BEHAVIOUR CODE ////////
-            
+
             // Response to actions like gunshots, drug deals, etc.
             GameObject responsesObject = new GameObject("NPCResponses");
             responsesObject.transform.SetParent(gameObject.transform);
             S1NPC.awareness.Responses = responsesObject.AddComponent<S1Responses.NPCResponses_Civilian>();
-            
+
             // Vision cone object and behaviour
             GameObject visionObject = new GameObject("VisionCone");
             visionObject.transform.SetParent(gameObject.transform);
@@ -156,11 +160,10 @@ namespace S1API.Entities
                 state = S1PlayerScripts.PlayerVisualState.EVisualState.PettyCrime, RequiredNoticeTime = 0.1f
             });
             S1NPC.awareness.VisionCone = visionCone;
-            
-            
+
             // Suspicious ? icon in world space
             S1NPC.awareness.VisionCone.QuestionMarkPopup = gameObject.AddComponent<S1WorkspacePopup.WorldspacePopup>();
-            
+
             // Interaction behaviour
 #if (IL2CPPMELON || IL2CPPBEPINEX)
             S1NPC.intObj = gameObject.AddComponent<S1Interaction.InteractableObject>();
@@ -168,38 +171,47 @@ namespace S1API.Entities
             FieldInfo intObjField = AccessTools.Field(typeof(S1NPCs.NPC), "intObj");
             intObjField.SetValue(S1NPC, gameObject.AddComponent<S1Interaction.InteractableObject>());
 #endif
-            
+
             // Relationship data
             S1NPC.RelationData = new S1Relation.NPCRelationData();
 
             // Inventory behaviour
             S1NPCs.NPCInventory inventory = gameObject.AddComponent<S1NPCs.NPCInventory>();
-            
+
             // Pickpocket behaviour
             inventory.PickpocketIntObj = gameObject.AddComponent<S1Interaction.InteractableObject>();
-            
-            // Defaulting to the local player for Avatar TODO: Change
-            S1NPC.Avatar = S1AvatarFramework.MugshotGenerator.Instance.MugshotRig;
-            
+
+            // Set the appearance for the NPC
+            Appearance = new NPCAppearance(this);
+
             // Enable our custom gameObjects so they can initialize
+            gameObject.name = S1NPC.FirstName ?? "UnknownNPC";
             gameObject.SetActive(true);
-            
+
             All.Add(this);
         }
-        
+
         /// <summary>
         /// Called when a response is loaded from the save file.
         /// Override this method for attaching your callbacks to your methods.
         /// </summary>
         /// <param name="response">The response that was loaded.</param>
         protected virtual void OnResponseLoaded(Response response) { }
-        
+
+        /// <summary>
+        /// Override OnCreated to create the Mugshot for the NPC
+        /// </summary>
+        protected override void OnCreated()
+        {
+            Appearance.GenerateMugshot();
+        }
+
         #endregion
-        
+
         // Public members intended to be used by modders.
         // Can be used inside your derived class, or outside via instance reference.
         #region Public Members
-        
+
         /// <summary>
         /// INTERNAL: Tracking for the GameObject associated with this NPC.
         /// Not intended for use by modders!
@@ -214,7 +226,7 @@ namespace S1API.Entities
             get => gameObject.transform.position;
             set => S1NPC.Movement.Warp(value);
         }
-        
+
         /// <summary>
         /// The transform of the NPC.
         /// Please do not set the properties of this transform.
@@ -226,7 +238,7 @@ namespace S1API.Entities
         /// List of all NPCs within the base game and modded.
         /// </summary>
         public static readonly System.Collections.Generic.List<NPC> All = new System.Collections.Generic.List<NPC>();
-        
+
         /// <summary>
         /// The first name of this NPC.
         /// </summary>
@@ -235,7 +247,7 @@ namespace S1API.Entities
             get => S1NPC.FirstName;
             set => S1NPC.FirstName = value;
         }
-        
+
         /// <summary>
         /// The last name of this NPC.
         /// </summary>
@@ -244,14 +256,14 @@ namespace S1API.Entities
             get => S1NPC.LastName;
             set => S1NPC.LastName = value;
         }
-        
+
         /// <summary>
         /// The full name of this NPC.
         /// If there is no last name, it will just return the first name.
         /// </summary>
-        public string FullName => 
+        public string FullName =>
             S1NPC.fullName;
-        
+
         /// <summary>
         /// The unique identifier to assign to this NPC.
         /// Used when saving and loading. Probably other things within the base game code.
@@ -270,7 +282,7 @@ namespace S1API.Entities
             get => S1NPC.MugshotSprite;
             set => S1NPC.MugshotSprite = value;
         }
-        
+
         /// <summary>
         /// Whether the NPC is currently conscious or not.
         /// </summary>
@@ -294,13 +306,13 @@ namespace S1API.Entities
         /// </summary>
         public bool IsPanicking =>
             S1NPC.IsPanicked;
-        
+
         /// <summary>
         /// Whether the NPC is currently unsettled or not.
         /// </summary>
         public bool IsUnsettled =>
             S1NPC.isUnsettled;
-        
+
         /// <summary>
         /// UNCONFIRMED: Whether the NPC is currently visible to the player or not.
         /// If you confirm this, please let us know so we can update the documentation!
@@ -321,9 +333,9 @@ namespace S1API.Entities
         /// The region the NPC is associated with.
         /// Note: Not the region they're in currently. Just the region they're designated to.
         /// </summary>
-        public Region Region => 
+        public Region Region =>
             (Region)S1NPC.Region;
-        
+
         /// <summary>
         /// UNCONFIRMED: How long the NPC will panic for.
         /// If you confirm this, please let us know so we can update the documentation!
@@ -348,7 +360,7 @@ namespace S1API.Entities
         /// </summary>
         public bool IsKnockedOut =>
             S1NPC.Health.IsKnockedOut;
-        
+
         /// <summary>
         /// UNCONFIRMED: Whether the NPC requires the region unlocked in order to deal to.
         /// If you confirm this, please let us know so we can update the documentation!
@@ -358,13 +370,13 @@ namespace S1API.Entities
             get => (bool)_requiresRegionUnlockedField.GetValue(S1NPC)!;
             set => _panicField.SetValue(S1NPC, value);
         }
-        
+
         // TODO: Add CurrentBuilding (currently missing NPCEnterableBuilding abstraction)
         // public ??? CurrentBuilding { get; set; }
-        
+
         // TODO: Add CurrentVehicle (currently missing LandVehicle abstraction)
         // public ??? CurrentVehicle { get; set; }
-        
+
         // TODO: Add Inventory (currently missing NPCInventory abstraction)
         // public ??? Inventory { get; set; }
 
@@ -412,7 +424,7 @@ namespace S1API.Entities
         {
             if (amount <= 0)
                 return;
-            
+
             S1NPC.Health.TakeDamage(amount, true);
         }
 
@@ -443,7 +455,7 @@ namespace S1API.Entities
         /// <param name="duration">Length of time they should stay unsettled.</param>
         public void Unsettle(float duration) =>
             _unsettleMethod.Invoke(S1NPC, new object[] { duration });
-        
+
         /// <summary>
         /// Smoothly scales the NPC over lerpTime.
         /// </summary>
@@ -477,37 +489,37 @@ namespace S1API.Entities
         /// <param name="position">The position to travel to.</param>
         public void Goto(Vector3 position) =>
             S1NPC.Movement.SetDestination(position);
-        
+
         // TODO: Add OnEnterVehicle listener (currently missing LandVehicle abstraction)
         // public event Action OnEnterVehicle { }
-        
+
         // TODO: Add OnExitVehicle listener (currently missing LandVehicle abstraction)
         // public event Action OnExitVehicle { }
-        
+
         // TODO: Add OnExplosionHeard listener (currently missing NoiseEvent abstraction)
         // public event Action OnExplosionHeard { }
-        
+
         // TODO: Add OnGunshotHeard listener (currently missing NoiseEvent abstraction)
         // public event Action OnGunshotHeard { }
-        
+
         // TODO: Add OnHitByCar listener (currently missing LandVehicle abstraction)
         // public event Action OnHitByCar { }
-        
+
         // TODO: Add OnNoticedDrugDealing listener (currently missing Player abstraction)
         // public event Action OnNoticedDrugDealing { }
-        
+
         // TODO: Add OnNoticedGeneralCrime listener (currently missing Player abstraction)
         // public event Action OnNoticedGeneralCrime { }
-        
+
         // TODO: Add OnNoticedPettyCrime listener (currently missing Player abstraction)
         // public event Action OnNoticedPettyCrime { }
-        
+
         // TODO: Add OnPlayerViolatingCurfew listener (currently missing Player abstraction)
         // public event Action OnPlayerViolatingCurfew { }
-        
+
         // TODO: Add OnNoticedSuspiciousPlayer listener (currently missing Player abstraction)
         // public event Action OnNoticedSuspiciousPlayer { }
-        
+
         /// <summary>
         /// Called when the NPC died.
         /// </summary>
@@ -516,7 +528,7 @@ namespace S1API.Entities
             add => EventHelper.AddListener(value, S1NPC.Health.onDie);
             remove => EventHelper.RemoveListener(value, S1NPC.Health.onDie);
         }
-        
+
         /// <summary>
         /// Called when the NPC's inventory contents change.
         /// </summary>
@@ -525,7 +537,12 @@ namespace S1API.Entities
             add => EventHelper.AddListener(value, S1NPC.Inventory.onContentsChanged);
             remove => EventHelper.RemoveListener(value, S1NPC.Inventory.onContentsChanged);
         }
-        
+
+        /// <summary>
+        /// The current <see cref="NPCAppearance"/> instance.
+        /// </summary>
+        public NPCAppearance Appearance { get; private set; }
+
         /// <summary>
         /// Sends a text message from this NPC to the players.
         /// Supports responses with callbacks for additional logic.
@@ -538,22 +555,22 @@ namespace S1API.Entities
         {
             S1NPC.SendTextMessage(message);
             S1NPC.MSGConversation.ClearResponses();
-            
+
             if (responses == null || responses.Length == 0)
                 return;
 
             Responses.Clear();
-            
+
             List<S1Messaging.Response> responsesList = new List<S1Messaging.Response>();
-            
+
             foreach (Response response in responses)
             {
                 Responses.Add(response);
                 responsesList.Add(response.S1Response);
             }
-            
+
             S1NPC.MSGConversation.ShowResponses(
-                responsesList, 
+                responsesList,
                 responseDelay,
                 network
             );
@@ -568,18 +585,18 @@ namespace S1API.Entities
         /// <returns></returns>
         public static NPC? Get<T>() =>
             All.FirstOrDefault(npc => npc.GetType() == typeof(T));
-        
+
         #endregion
 
         // Internal members used by S1API.
         // Please do not attempt to use these members!
         #region Internal Members
-        
+
         /// <summary>
         /// INTERNAL: Reference to the NPC on the S1 side.
         /// </summary>
         internal readonly S1NPCs.NPC S1NPC;
-        
+
         /// <summary>
         /// INTERNAL: Constructor used for base game NPCs.
         /// </summary>
@@ -604,26 +621,26 @@ namespace S1API.Entities
                 Responses.Add(response);
                 OnResponseLoaded(response);
             }
-            
+
             base.CreateInternal();
         }
-        
+
         internal override void SaveInternal(string folderPath, ref List<string> extraSaveables)
         {
             string npcPath = Path.Combine(folderPath, S1NPC.SaveFolderName);
             base.SaveInternal(npcPath, ref extraSaveables);
         }
         #endregion
-        
+
         // Private members used by the NPC class.
         // Please do not attempt to use these members!
         #region Private Members
-        
+
         internal readonly bool IsCustomNPC;
-        
+
         private readonly FieldInfo _panicField = AccessTools.Field(typeof(S1NPCs.NPC), "PANIC_DURATION");
         private readonly FieldInfo _requiresRegionUnlockedField = AccessTools.Field(typeof(S1NPCs.NPC), "RequiresRegionUnlocked");
-        
+
         private readonly MethodInfo _unsettleMethod = AccessTools.Method(typeof(S1NPCs.NPC), "SetUnsettled");
         private readonly MethodInfo _removePanicMethod = AccessTools.Method(typeof(S1NPCs.NPC), "RemovePanicked");
 

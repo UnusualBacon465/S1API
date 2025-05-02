@@ -1,4 +1,5 @@
 using S1API.Internal.Utils;
+
 #if (IL2CPPMELON || IL2CPPBEPINEX)
 using S1Product = Il2CppScheduleOne.Product;
 #else
