@@ -7,7 +7,7 @@ namespace S1API.AssetBundles
     /// <summary>
     /// The asset bundle manager
     /// </summary>
-    public static class AssetBundleManager
+    public static class AssetLoader
     {
 #if IL2CPPMELON || IL2CPPBEPINEX
         /// <summary>
