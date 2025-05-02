@@ -1,8 +1,9 @@
 using System;
 using UnityEngine.Events;
-#if IL2CPPBEPINEX || IL2CPPMELON
+
+#if  IL2CPPMELON
 using Il2CppScheduleOne.Dialogue;
-#elif MONOBEPINEX || MONOMELON
+#elif MONOBEPINEX || MONOMELON || IL2CPPBEPINEX
 using ScheduleOne.Dialogue;
 #endif
 

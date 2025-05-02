@@ -1,11 +1,11 @@
 using System.Collections.Generic;
+
 using UnityEngine;
-using S1API.Dialogues;
 #if (IL2CPPMELON || MONOMELON)
 using MelonLoader;
 #endif
 
-#if IL2CPPMELON || IL2CPPBEPINEX
+#if IL2CPPMELON
 using Il2CppScheduleOne.Dialogue;
 using Il2CppScheduleOne.NPCs;
 using Il2CppScheduleOne.NPCs.Schedules;
@@ -16,6 +16,9 @@ using ScheduleOne.NPCs;
 using ScheduleOne.NPCs.Schedules;
 using FishNet;
 #endif
+
+using S1API.Dialogues;
+
 /// <summary>
 /// The DialogueInjector class is a static utility that facilitates the injection of custom dialogue entries
 /// into a game's dialogue system at runtime. It provides methods for registering custom dialogue injections
@@ -28,7 +31,7 @@ public static class DialogueInjector
     /// This variable stores pending dialogue link or choice modifications that need to be applied to NPC dialogue systems
     /// and is used during a coroutine process to find the relevant NPC and complete the injection.
     /// </summary>
-    private static List<DialogueInjection> pendingInjections = new List<DialogueInjection>();
+    private static System.Collections.Generic.List<DialogueInjection> pendingInjections = new System.Collections.Generic.List<DialogueInjection>();
 
     /// <summary>
     /// A boolean variable that indicates whether the update loop for injecting dialogue is currently hooked.
@@ -58,11 +61,11 @@ public static class DialogueInjector
     {
         if (isHooked) return;
         isHooked = true;
-        
+
 #if (IL2CPPMELON || MONOMELON)
         MelonCoroutines.Start(WaitForNPCsAndInject());
 #elif (IL2CPPBEPINEX || MONOBEPINEX)
-        InstanceFinder.TimeManager.StartCoroutine(WaitForNPCsAndInject());
+        InstanceFinder.TimeManager.StartCoroutine("WaitForNPCsAndInject");
 #endif
     }
 
