@@ -577,6 +577,15 @@ namespace S1API.Entities
         }
 
         /// <summary>
+        /// Set's whether the text message can be deleted/hidden
+        /// </summary>
+        public bool ConversationCanBeHidden
+        {
+            get => S1NPC.ConversationCanBeHidden;
+            set => S1NPC.ConversationCanBeHidden = value;
+        }
+
+        /// <summary>
         /// Gets the instance of an NPC.
         /// Supports base NPCs as well as other mod NPCs.
         /// For base NPCs, <see cref="NPCs"/>.
