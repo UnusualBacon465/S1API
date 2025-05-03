@@ -1,4 +1,4 @@
-﻿#if (IL2CPPMELON || IL2CPPBEPINEX)
+﻿#if (IL2CPPMELON)
 using S1ScriptableObjects = Il2CppScheduleOne.ScriptableObjects;
 using S1Quests = Il2CppScheduleOne.Quests;
 using S1Variables = Il2CppScheduleOne.Variables;
