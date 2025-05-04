@@ -1,8 +1,11 @@
-#if (IL2CPPMELON || IL2CPPBEPINEX)
+#if (IL2CPPMELON)
 using S1Growing = Il2CppScheduleOne.Growing;
-#elif (MONOMELON || MONOBEPINEX)
+#elif (MONOMELON || MONOBEPINEX || IL2CPPBEPINEX)
 using S1Growing = ScheduleOne.Growing;
 #endif
+
+using System;
+using UnityEngine;
 
 using S1API.Internal.Utils;
 using S1API.Items;
@@ -17,7 +20,7 @@ namespace S1API.Growing
         /// <summary>
         /// INTERNAL: Stored reference to the SeedDefinition.
         /// </summary>
-        internal S1Growing.SeedDefinition S1SeedDefinition => 
+        internal S1Growing.SeedDefinition S1SeedDefinition =>
             CrossType.As<S1Growing.SeedDefinition>(S1ItemDefinition);
 
         /// <summary>
@@ -29,24 +32,22 @@ namespace S1API.Growing
         /// <summary>
         /// The prefab that is spawned when planting this seed.
         /// </summary>
-        public UnityEngine.GameObject FunctionalSeedPrefab => 
-            S1SeedDefinition.FunctionSeedPrefab?.gameObject;
+        public GameObject? FunctionalSeedPrefab => S1SeedDefinition.FunctionSeedPrefab?.gameObject;
 
         /// <summary>
         /// The plant prefab this seed grows into.
         /// </summary>
-        public UnityEngine.GameObject PlantPrefab => 
-            S1SeedDefinition.PlantPrefab?.gameObject;
+        public GameObject? PlantPrefab => S1SeedDefinition.PlantPrefab?.gameObject;
 
         /// <summary>
         /// Creates an instance of this seed in the world (FunctionalSeed prefab).
         /// </summary>
-        public UnityEngine.GameObject CreateSeedInstance()
+        public GameObject CreateSeedInstance()
         {
             if (S1SeedDefinition.FunctionSeedPrefab != null)
                 return UnityEngine.Object.Instantiate(S1SeedDefinition.FunctionSeedPrefab).gameObject;
 
-            throw new System.NullReferenceException("No FunctionalSeedPrefab assigned to this SeedDefinition!");
+            throw new NullReferenceException("No FunctionalSeedPrefab assigned to this SeedDefinition!");
         }
 
 

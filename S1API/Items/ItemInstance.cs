@@ -1,6 +1,6 @@
 ﻿#if (IL2CPPMELON)
 using S1ItemFramework = Il2CppScheduleOne.ItemFramework;
-#elif (MONOMELON || MONOBEPINEX)
+#elif (MONOMELON || MONOBEPINEX || IL2CPPBEPINEX)
 using S1ItemFramework = ScheduleOne.ItemFramework;
 #endif
 
@@ -46,7 +46,7 @@ namespace S1API.Items
         /// <summary>
         /// Whether this instance is stackable (based on StackLimit).
         /// </summary>
-        public bool IsStackable => 
+        public bool IsStackable =>
             Definition.StackLimit > 1;
     }
 }

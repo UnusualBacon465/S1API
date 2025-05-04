@@ -1,6 +1,6 @@
-#if (IL2CPPMELON || IL2CPPBEPINEX)
+#if (IL2CPPMELON)
 using S1Growing = Il2CppScheduleOne.Growing;
-#elif (MONOMELON || MONOBEPINEX)
+#elif (MONOMELON || MONOBEPINEX || IL2CPPBEPINEX)
 using S1Growing = ScheduleOne.Growing;
 #endif
 
@@ -32,7 +32,7 @@ namespace S1API.Growing
         /// <summary>
         /// The underlying GameObject of this seed.
         /// </summary>
-        private GameObject GameObject => 
+        private GameObject GameObject =>
             S1FunctionalSeed.gameObject;
 
         /// <summary>

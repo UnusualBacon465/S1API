@@ -1,16 +1,14 @@
-#if (IL2CPPMELON || IL2CPPBEPINEX)
+#if (IL2CPPMELON)
 using S1Growing = Il2CppScheduleOne.Growing;
 using S1ItemFramework = Il2CppScheduleOne.ItemFramework;
 using S1Registry = Il2CppScheduleOne.Registry;
-#elif  (MONOMELON || MONOBEPINEX)
+#elif  (MONOMELON || MONOBEPINEX || IL2CPPBEPINEX)
 using S1Growing = ScheduleOne.Growing;
 using S1ItemFramework = ScheduleOne.ItemFramework;
 using S1Registry = ScheduleOne.Registry;
 #endif
 
 using UnityEngine;
-using System.Linq;
-
 
 namespace S1API.Growing
 {
@@ -24,9 +22,9 @@ namespace S1API.Growing
             string name,
             string description,
             int stackLimit = 10,
-            GameObject functionSeedPrefab = null,
-            GameObject plantPrefab = null,
-            Sprite icon = null)
+            GameObject? functionSeedPrefab = null,
+            GameObject? plantPrefab = null,
+            Sprite? icon = null)
         {
             S1Growing.SeedDefinition seed = ScriptableObject.CreateInstance<S1Growing.SeedDefinition>();
 
@@ -54,4 +52,4 @@ namespace S1API.Growing
         }
 
     }
-}        
+}

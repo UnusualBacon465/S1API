@@ -1,6 +1,6 @@
-#if (IL2CPPMELON || IL2CPPBEPINEX)
+#if (IL2CPPMELON)
 using S1Growing = Il2CppScheduleOne.Growing;
-#elif (MONOMELON || MONOBEPINEX)
+#elif (MONOMELON || MONOBEPINEX || IL2CPPBEPINEX)
 using S1Growing = ScheduleOne.Growing;
 #endif
 
@@ -32,37 +32,37 @@ namespace S1API.Growing
         /// <summary>
         /// The current growth stage as a float from 0.0 to 1.0.
         /// </summary>
-        public float NormalizedGrowth => 
+        public float NormalizedGrowth =>
             S1Plant.NormalizedGrowthProgress;
 
         /// <summary>
         /// Whether the plant is fully grown.
         /// </summary>
-        public bool IsFullyGrown => 
+        public bool IsFullyGrown =>
             S1Plant.IsFullyGrown;
 
         /// <summary>
         /// The SeedDefinition that this plant originated from.
         /// </summary>
-        public SeedDefinition SeedDefinition => 
+        public SeedDefinition SeedDefinition =>
             new SeedDefinition(S1Plant.SeedDefinition);
 
         /// <summary>
         /// The quality level of this plant.
         /// </summary>
-        public float Quality => 
+        public float Quality =>
             S1Plant.QualityLevel;
 
         /// <summary>
         /// The yield level (amount) of this plant.
         /// </summary>
-        public float Yield => 
+        public float Yield =>
             S1Plant.YieldLevel;
 
         /// <summary>
         /// The GameObject of the plant.
         /// </summary>
-        private GameObject GameObject => 
+        private GameObject GameObject =>
             S1Plant.gameObject;
 
         /// <summary>
