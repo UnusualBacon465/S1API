@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 
 #if IL2CPPBEPINEX || IL2CPPMELON
@@ -18,21 +19,24 @@ namespace S1API.AssetBundles
     public static class AssetLoader
     {
         private static readonly Log _logger = new Log("AssetLoader");
+        private static readonly Dictionary<string, WrappedAssetBundle> _cachedAssetBundles = new Dictionary<string, WrappedAssetBundle>();
 
 #if IL2CPPMELON || IL2CPPBEPINEX
         /// <summary>
         /// Loads an Il2Cpp AssetBundle from an embedded resource stream by name.
         /// </summary>
         /// <param name="fullResourceName">The full embedded resource name (including namespace path).</param>
+        /// <param name="overrideAssembly">The assembly to load the embedded resource from.</param>
         /// <returns>The loaded Il2CppAssetBundle, or throws on failure.</returns>
-        public static WrappedAssetBundle GetAssetBundleFromStream(string fullResourceName)
+        public static WrappedAssetBundle GetAssetBundleFromStream(string fullResourceName, Assembly overrideAssembly)
         {
-            // Attempt to find the embedded resource in the executing assembly
-            Assembly assembly = Assembly.GetExecutingAssembly();
+            if (_cachedAssetBundles.TryGetValue(fullResourceName, out WrappedAssetBundle cachedWrappedAssetBundle))
+                return cachedWrappedAssetBundle;
 
-            using Stream? stream = assembly.GetManifestResourceStream(fullResourceName);
+            // Attempt to find the embedded resource in the executing assembly
+            using Stream? stream = overrideAssembly.GetManifestResourceStream(fullResourceName);
             if (stream == null)
-                throw new Exception($"Embedded resource '{fullResourceName}' not found in {assembly.FullName}."); // hoping these throws will be melon/bepinex-agnostic
+                throw new Exception($"Embedded resource '{fullResourceName}' not found in {overrideAssembly.FullName}."); // hoping these throws will be melon/bepinex-agnostic
 
             // Read the stream into a byte array
             byte[] data = new byte[stream.Length];
@@ -43,20 +47,29 @@ namespace S1API.AssetBundles
             if (bundle == null)
                 throw new Exception($"Failed to load AssetBundle from memory: {fullResourceName}");
 
-            return new WrappedAssetBundle(bundle);
+            WrappedAssetBundle wrappedAssetBundle = new WrappedAssetBundle(bundle);
+            _cachedAssetBundles.TryAdd(fullResourceName, wrappedAssetBundle);
+            return wrappedAssetBundle;
         }
 #elif MONOMELON || MONOBEPINEX
         /// <summary>
         /// Load a <see cref="WrappedAssetBundle"/> instance by <see cref="string"/> resource name.
         /// </summary>
         /// <param name="fullResourceName">The full embedded resource name (including namespace path);</param>
+        /// <param name="overrideAssembly">The assembly to load the embedded resource from.</param>
         /// <returns>The loaded AssetBundle instance</returns>
-        public static WrappedAssetBundle GetAssetBundleFromStream(string fullResourceName)
+        public static WrappedAssetBundle GetAssetBundleFromStream(string fullResourceName, Assembly overrideAssembly)
         {
+            // Attempt to retrieve the cached asset bundle
+            if (_cachedAssetBundles.TryGetValue(fullResourceName, out WrappedAssetBundle cachedWrappedAssetBundle))
+                return cachedWrappedAssetBundle;
+
             // Attempt to find the embedded resource in the executing assembly
-            var assembly = Assembly.GetExecutingAssembly();
-            var stream = assembly.GetManifestResourceStream(fullResourceName);
-            return new WrappedAssetBundle(AssetBundle.LoadFromStream(stream));
+            var stream = overrideAssembly.GetManifestResourceStream(fullResourceName);
+
+            WrappedAssetBundle wrappedAssetBundle = new WrappedAssetBundle(AssetBundle.LoadFromStream(stream));
+            _cachedAssetBundles.TryAdd(fullResourceName, wrappedAssetBundle);
+            return wrappedAssetBundle;
         }
 #endif
 
@@ -110,7 +123,7 @@ namespace S1API.AssetBundles
         public static T EasyLoad<T>(string bundleName, string objectName, Assembly assemblyOverride, out WrappedAssetBundle bundle) where T : Object
         {
             // Get the asset bundle from the assembly
-            bundle = GetAssetBundleFromStream($"{assemblyOverride.GetName().Name}.{bundleName}");
+            bundle = GetAssetBundleFromStream($"{assemblyOverride.GetName().Name}.{bundleName}", assemblyOverride);
 
             // Load the asset from the bundle
             return bundle.LoadAsset<T>(objectName);
