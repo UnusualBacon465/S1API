@@ -1,6 +1,6 @@
-﻿#if (IL2CPPMELON)
+﻿#if (IL2CPPMELON || IL2CPPBEPINEX)
 using S1ItemFramework = Il2CppScheduleOne.ItemFramework;
-#elif (MONOMELON || MONOBEPINEX || IL2CPPBEPINEX)
+#elif (MONOMELON || MONOBEPINEX)
 using S1ItemFramework = ScheduleOne.ItemFramework;
 #endif
 
@@ -128,41 +128,20 @@ namespace S1API.Items
             return new ItemInstance(inst);
         }
 
-        /// <summary>
-        /// Gets the globally unique identifier (GUID) of the item, which is equivalent to the ID.
-        /// </summary>
+
         public string GUID => ID;
 
-        /// <summary>
-        /// Determines whether the specified object is equal to the current object.
-        /// </summary>
-        /// <param name="obj">The object to compare with the current object.</param>
-        /// <returns><c>true</c> if the specified object is an <see cref="ItemDefinition"/> and has the same S1ItemDefinition; otherwise, <c>false</c>.</returns>
         public override bool Equals(object? obj) =>
             obj is ItemDefinition other && S1ItemDefinition == other.S1ItemDefinition;
 
-        /// <summary>
-        /// Serves as the default hash function.
-        /// </summary>
-        /// <returns>A hash code for the current object based on S1ItemDefinition.</returns>
-        public override int GetHashCode() => S1ItemDefinition.GetHashCode();
+        public override int GetHashCode() =>
+            S1ItemDefinition?.GetHashCode() ?? 0;
 
-        /// <summary>
-        /// Determines whether two <see cref="ItemDefinition"/> instances are equal.
-        /// </summary>
-        /// <param name="a">The first <see cref="ItemDefinition"/> to compare.</param>
-        /// <param name="b">The second <see cref="ItemDefinition"/> to compare.</param>
-        /// <returns><c>true</c> if both instances are equal or have the same S1ItemDefinition; otherwise, <c>false</c>.</returns>
         public static bool operator ==(ItemDefinition? a, ItemDefinition? b) =>
-            ReferenceEquals(a, b) || a != null && b != null && a.S1ItemDefinition == b.S1ItemDefinition;
+            ReferenceEquals(a, b) || (a is not null && b is not null && a.S1ItemDefinition == b.S1ItemDefinition);
 
-        /// <summary>
-        /// Determines whether two <see cref="ItemDefinition"/> instances are not equal.
-        /// </summary>
-        /// <param name="a">The first <see cref="ItemDefinition"/> to compare.</param>
-        /// <param name="b">The second <see cref="ItemDefinition"/> to compare.</param>
-        /// <returns><c>true</c> if the instances are not equal; otherwise, <c>false</c>.</returns>
-        public static bool operator !=(ItemDefinition? a, ItemDefinition? b) => !(a == b);
+        public static bool operator !=(ItemDefinition? a, ItemDefinition? b) =>
+            !(a == b);
     }
 
     /// <summary>
