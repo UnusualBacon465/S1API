@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-#if IL2CPPMELON
+#if IL2CPPMELON || IL2CPPBEPINEX
 using Il2CppSystem;
 using AssetBundle = UnityEngine.Il2CppAssetBundle;
 using AssetBundleRequest = UnityEngine.Il2CppAssetBundleRequest;

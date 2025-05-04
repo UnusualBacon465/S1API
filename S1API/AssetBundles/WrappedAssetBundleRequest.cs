@@ -1,5 +1,9 @@
 ﻿using UnityEngine;
 
+#if IL2CPPBEPINEX || IL2CPPMELON
+using AssetBundleRequest = UnityEngine.Il2CppAssetBundleRequest;
+#endif
+
 namespace S1API.AssetBundles
 {
     /// <summary>
