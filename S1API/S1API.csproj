@@ -41,6 +41,7 @@
         <Reference Include="$(MelonLoaderAssembliesPath)\Il2CppInterop.Common.dll" Condition="'$(Configuration)' == 'Il2CppMelon'" />
         <Reference Include="$(MelonLoaderAssembliesPath)\Il2CppInterop.HarmonySupport.dll" Condition="'$(Configuration)' == 'Il2CppMelon'" />
         <Reference Include="$(MelonLoaderAssembliesPath)\Il2CppInterop.Generator.dll" Condition="'$(Configuration)' == 'Il2CppMelon'" />
+        <Reference Include="$(MelonLoaderAssembliesPath)\UnityEngine.Il2CppAssetBundleManager.dll" Condition="'$(Configuration)' == 'Il2CppMelon'" />
 
         <Reference Include="$(BepInExAssembliesPath)\Il2CppInterop.Runtime.dll" Condition="'$(Configuration)' == 'Il2CppBepInEx'" />
         <Reference Include="$(BepInExAssembliesPath)\Il2CppInterop.Common.dll" Condition="'$(Configuration)' == 'Il2CppBepInEx'" />
@@ -70,6 +71,7 @@
         <Reference Include="$(MonoAssembliesPath)\UnityEngine.CoreModule.dll" />
         <Reference Include="$(MonoAssembliesPath)\FishNet.Runtime.dll" />
         <Reference Include="$(MonoAssembliesPath)\UnityEngine.UI.dll" />
+        <Reference Include="$(MonoAssembliesPath)\UnityEngine.AssetBundleModule.dll" />
         <Reference Include="$(MonoAssembliesPath)\UnityEngine.UIModule.dll" />
         <Reference Include="$(MonoAssembliesPath)\UnityEngine.JSONSerializeModule.dll" />
         <Reference Include="$(MonoAssembliesPath)\UnityEngine.TextRenderingModule.dll" />
